@@ -17,13 +17,7 @@ using namespace Rcpp;
 
 // [[Rcpp::export]]
 int writelut(IntegerVector x, std::string filename) {
-   // Rcout << "Lorem" << std::endl;
-    // std::ofstream ofs ("/Users/puetz/test.txt", std::ofstream::out);
-    // 
-    // ofs << "lorem ipsum" << std::endl;
-    // 
-    // ofs.close();
-    
+   
     //Rcout << filename << std::endl;
     std::ofstream out(filename, 
                       std::ofstream::out | std::ofstream::binary);
