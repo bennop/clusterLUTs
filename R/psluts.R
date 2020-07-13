@@ -22,6 +22,7 @@ require(gtools)      # for even()
 ##---  R functions -----------------
 #' LUT generation for hierachical clustering tree
 #'
+#' Main function of this package. 
 #' \code{clusters} defines the cluster assignments per cut. The number of clusters
 #' is taken from the unique values per column (need not be regular).
 #'
@@ -54,7 +55,7 @@ treeluts <- function(clusters = read.tree(),
 
               #pal <- c(rainbow(n, end = 0.65))
               #fullpal <- pal[v]
-              fullpal <- cut.shades(v)
+              fullpal <- cut.shades(v, ...)
               pmat <- c(fullpal,                      # colors
                         rep(col2rgb('#000000'),       # more black
                             lut.length - nc - 1),
@@ -186,7 +187,8 @@ ColorShadeRamp <- function(col,
 #' This is determined by setting \code{direction} to 'bright', 'dark', or 'all', 
 #' respectively. The latter is the default.
 #'
-#' @param col color vector; must be a valid argument to \code{\link[grDevices]{col2rgb}}.
+#' @param col color vector; must be a valid argument to \code{\link[grDevices]{col2rgb}}
+#'  or a \eqn{3xN} RGB color matrix (one column per color).
 #' @param reps vector of repetitions
 #' @param scale how much of the range to white should be covered
 #' @param direction which way to build the shades, see Description
@@ -298,23 +300,38 @@ reidx.cut <- function(cut){
     return(rcut)
 }
 
+default.rgb <- function(n, ...){
+    rainbow(n, end = 5/6)
+}
+
+default.hcl <- function(n, ...){
+    rainbow_hcl(n, end = 5/6)
+}
+
+default.lab <- function(n, ...){
+    rainbow_lab(n, end = 5/6)
+}
 #' prepare shades and reorder to match cut
 #'
 #' For the given cut \code{cut} analyze the internal structure of each cluster
 #' and use that as basis for a shading through \code{\link{color.shades}}. Then
 #' reorder the shading to arrange according to cluster members.
+#' 
+#' 
 #'
 #' @param cut vector of cluster assignments
+#' @param col.fun function mapping a number to that many colors from a palette
 #'
 #' @return color shades reordered (see details)
 #' @export
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
 #' @examples
-cut.shades <- function(cut){
+cut.shades <- function(cut,
+                       col.fun = default.rgb){
     tbl <- table(cut)
-    cs <- color.shades(rainbow(length(tbl), end = 0.8),
-                 tbl)
+    cs <- color.shades(col.fun(length(tbl)),
+                       tbl)
     cso <- cs[, order(reidx.cut(cut))]
     attr(cso, 'reps') <- attr(cs, 'reps')
     attr(cso, 'cut') <- cut
@@ -371,9 +388,36 @@ vec2hsv<- function(v,
     return(col2rgb(hsv(v[1], v[2], v[3])))
 }
 
+#' LAB-based Rainbow colorramp function
+#'
+#' Calculating the rainbow colors in LAB colorspace gives slightly better distinction 
+#' between neighboring colors.
+#'  
+#' For normal usage \code{full=FALSE} should yield good results. If, however, a
+#' correspondence to hue is desired,  \code{full=TRUE} should be used.
+#' @param full whether to go all around to red or only to purple
+#'
+#' @return color ramp function
+#' @export
+#' @author Benno Pütz \email{puetz@@psych.mpg.de}
+#'
+#' @examples
+#' rainbow_lab_ramp()(0)       # red
+#' rainbow_lab_ramp()(1)       # purple
+#' rainbow_lab_ramp(TRUE)(1)   # red
+#' show.lut(t(rainbow_lab_ramp()(0:11/11)))
+#' show.lut(t(rainbow_lab_ramp(TRUE)(0:11/11)))
+rainbow_lab_ramp <- function(full = FALSE){
+    base.colors <- c('red', 'yellow', 'green', 'cyan', 'blue', "#ff00ff")
+    if(full) base.colors <- c(base.colors, 'red')
+    return(colorRamp(base.colors,
+                     space = 'Lab'))
+}
+
 #' rainbow via Lab-based colorRamp
 #'
 #' @param n number of colors to return
+#' @param full if set, go from red to red, otherwise red to purple
 #' @param ... ignored
 #'
 #' @return
@@ -382,12 +426,12 @@ vec2hsv<- function(v,
 #'
 #' @examples
 rainbow_lab <- function(n,
+                        full = FALSE,
                         ...){
     # rainbow lab function
-    rlf <- colorRamp(c('red', 'yellow', 'green', 'cyan', 'blue', "#ff00ff"),
-                     space = 'Lab')
     return(t(rlf(seq(0,1, length.out = n))))
 }
+
 
 ##----  Display functions ----
 
@@ -568,9 +612,9 @@ show.brain.lut <- function(n, clusters = read.tree()){
     # orrt <- order(rank(rt,
     #                    na.last = 'keep'))
     # recovered.lut <- l[orrt[1:n],]
-    recovered.lut <- l[order(reidx.cut(clusters[, (n/5)-1]))]
+    recovered.lut <- l[, order(reidx.cut(clusters[, (n/5)-1]))]
     
-    lsshow <- rbind(l[1:150,], recovered.lut)
+    lsshow <- cbind(l[,1:150], recovered.lut)
     show.lut(lsshow)
     abline(v=c(146,150))
     return(invisible(l))
@@ -599,3 +643,42 @@ show.cut <- function(cut){
     segments(raw, 0, scaled.cut[cut], 1)
 }
 
+## special helpers ----
+#' randomize cluster assignments
+#'
+#' In R's implementation of \code{\link[stats]{cutree}} the first element is
+#' always assigned to cluster 1, unlike what Matlab produces. This function 
+#' attemps to make a \code{\link[stats]{cutree}} result more similar to it's
+#' Matlab counterpart (or what \code{\link{read.tree}} produces of it).
+#' 
+#' All the columns where the number of levels does not equal the number of rows
+#' (elements) is reordered (and it is considered a problem if no full column is 
+#' found).
+#' @param cutree result of  \code{\link[stats]{cutree}}
+#' @param ... ignored
+#'
+#' @return reordered matrix
+#' @export
+#' @author Benno Pütz \email{puetz@@psych.mpg.de}
+#'
+#' @examples
+#' m <- matrix(rnorm(15*1000), nrow = 15)
+#' hc <- hclust(dist(m))
+#' ct <- cutree(hc, seq(5,15, by=5))
+#' cbind(ct,randomize.cutree(ct))
+randomize.cutree <- function(cutree, ...){
+    levels <- apply(cutree, 2, function(v)length(unique(v)))
+    full <- levels == nrow(cutree)
+    if (!any(full)){
+        stop("no full cut found")
+    }
+    for (i in 1:length(full)){
+        if (!full[i]){
+            rmp <- 1:levels[i]
+            # use prob to make it less likely that 1 is first
+            cutree[,i] <- sample(rmp, prob = rmp)[cutree[,i]]
+        }
+    }
+    return(cutree)
+}
+    
