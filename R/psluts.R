@@ -265,7 +265,7 @@ color.shades <- function(col,
 
 
 
-#' re-index cut
+#' re-index cut(ree) vector
 #'
 #' internal rank increasing within ties so that after reordering the order of ties
 #' can be preseerved
@@ -398,7 +398,7 @@ vec2hsv<- function(v,
 #' @param full whether to go all around to red or only to purple
 #'
 #' @return color ramp function
-#' @export
+#' @exportdiff
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
 #' @examples
@@ -662,9 +662,9 @@ show.cut <- function(cut){
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
 #' @examples
-#' m <- matrix(rnorm(15*1000), nrow = 15)
+#' m <- matrix(rnorm(9*1000), nrow = 9)
 #' hc <- hclust(dist(m))
-#' ct <- cutree(hc, seq(5,15, by=5))
+#' ct <- cutree(hc, seq(3,9, by=3))
 #' cbind(ct,randomize.cutree(ct))
 randomize.cutree <- function(cutree, ...){
     levels <- apply(cutree, 2, function(v)length(unique(v)))
