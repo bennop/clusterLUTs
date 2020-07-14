@@ -51,7 +51,7 @@ treeluts <- function(clusters = read.tree(),
     last.cut <- ncol(clusters)
     apply(clusters, 2,   # for each cut
           function(v){
-              n <- length(unique(v))
+              n <- vlevels(v)
 
               #pal <- c(rainbow(n, end = 0.65))
               #fullpal <- pal[v]
@@ -145,7 +145,7 @@ readlut <- function(file,
 read.tree <- function(file = '~/Work/4philipp/BrainLUTs/sbm_1_145_0_result_hclust_atlas.mat'){
     ci <- readMat(file)$cluster.info
     tree <- sapply(ci, function(l)l[[1]])
-    cuts <- apply(tree, 2, function(v)length(unique(v)) )
+    cuts <- apply(tree, 2, vlevels)
     colnames(tree) <- cuts
     return(invisible(tree))
 }
@@ -340,6 +340,48 @@ cut.shades <- function(cut,
 
 ##----  Helper functions, mostly for internal use ----
 
+#' vector levels
+#'
+#' count the number of unique entries in vector (usually an index vector with
+#' integer elements)
+#' @param v vector
+#'
+#' @return number of unique lements in \code{v}
+#' @export
+#' @author Benno Pütz \email{puetz@@psych.mpg.de}
+#'
+#' @examples
+#' v <- c(1:4, 1:3, 1:2, 1)
+#' vlevels(v)
+#' table(v)
+vlevels <- function(v){
+    return(length(unique(v)))
+}
+
+#' matrix to list
+#'
+#' Convert matrix \code{mat} to a list of either column verctors (for \code{which == 2})
+#' or row vectors  (\code{which == 1}).
+#' @param mat input matrix
+#' @param which 1 for row, 2 for column vectors
+#' @param ... ignored
+#'
+#' @return list with matrix split in vectors
+#' @export
+#' @author Benno Pütz \email{puetz@@psych.mpg.de}
+#'
+#' @examples
+#' m <- matrix(1:6, ncol = 2)
+#' mat2list(m)
+#' maat2list(m, 1)
+mat2list <- function(mat, which = 2, ...){
+    if(which == 2){
+        lapply(1:ncol(mat), function(i)mat[,i])
+    } else {
+        lapply(1:nrow(mat), function(i)mat[i,])
+    }
+}
+
 #' convert 3-element RGB-vector to color
 #'
 #' Wrapper for \code{\link{rgb}} that allows using it with a 3-element vector
@@ -432,6 +474,119 @@ rainbow_lab <- function(n,
     return(t(rlf(seq(0,1, length.out = n))))
 }
 
+#' Split a hue range according to \code{split.tbl}
+#'
+#' A hue range is defined by a lower and an upper hue bound, given either as 
+#' 2-element vector or a \eqn{2xN} matrix where each column defines such a range.
+#' 
+#' The splits are defined by \code{split.tbl}, a vector giving the the relative 
+#' weights (corresponding to "width" in colorspace) to be given to the individual 
+#' splits.
+#' 
+#' The spacing between split ranges is defined by \code{blank} where a fraction 
+#' of \code{blank} of the original range is divided among the splits. Thus, for 
+#' an \eqn{n}-element vector \code{split.tbl}, each split covers \eqn{blank/(n-1)}
+#' of the range and the remaining "area" is dived among the \eqn{n} splits 
+#' according to their weights speecified in \code{split.tbl}. See the examples.
+#' 
+#' In either case, \code{blank} is assumed to be a "global" parameter across all
+#' hue ranges. 
+#' @param hue.range hue range vector or matrix
+#' @param split.tbl vector giving the weights of the splits (or list of such 
+#'                  vectors applied to corresponding matrix colunm)
+#' @param blank which fraction of the range should be left blank 
+#'
+#' @return a hue range vector (only one split) or matrix
+#' @export
+#' @author Benno Pütz \email{puetz@@psych.mpg.de}
+#'
+#' @examples
+#' hm2 <- split.hue.range(c(0,5/6), 4:2) # matrix(c(0, 4,5,11,12,20)/24, nr = 2)
+#' ##           [,1]      [,2]      [,3]
+#' ## [1,] 0.0000000 0.2083333 0.5000000
+#' ## [2,] 0.1666667 0.4583333 0.8333333
+#' hm3 <- split.hue.range(hm2, list(c(2,1,1), 3, c(1,1)))
+#' ##       [,1]       [,2]      [,3]      [,4] [,5]      [,6]
+#' ## [1,] 0.000 0.08333333 0.1291667 0.2083333 0.50 0.6833333
+#' ## [2,] 0.075 0.12083333 0.1666667 0.4333333 0.65 0.8333333
+split.hue.range <- function(hue.range, 
+                            split.tbl,
+                            blank = 0.1) {
+    
+    if(is.null(dim(hue.range))) hue.range <- matrix(hue.range, nrow = 2)
+    if(!is.list(split.tbl)) split.tbl <- list(split.tbl)
+    split.tbl <- lapply(split.tbl, as.vector)    # take care of, e.g., table
+    lens <- lapply(split.tbl, length)
+    
+    relative.widths <- lapply(split.tbl,                    # list
+                              function(n) n/sum(n))
+    diffs <- apply(hue.range, 2, diff)                      # original width
+                                                            # scalar or vector
+    new.ranges <- diffs * ifelse(lens==1,1,(1-blank))       # new width (- blank)
+                                                            # scalar or vector
+    widths <- mapply(`*`, 
+                     as.list(new.ranges), 
+                     relative.widths,
+                     SIMPLIFY = FALSE)
+    blanks <- mapply(function(d,n) d*blank/(length(n)-1), 
+                     diffs, 
+                     split.tbl)
+    #browser()
+    
+    offsets <- mapply(function(w,b,l) c(0, cumsum(w+b))[1:l],
+                      as.list(widths),
+                      as.list(blanks),
+                      as.list(lens),
+                      SIMPLIFY = FALSE)
+    
+    ends <- mapply(`+`,
+                   offsets,
+                   widths,
+                   SIMPLIFY = FALSE)       
+    rel.ranges <- mapply(rbind, 
+                         offsets,
+                         ends,
+                         SIMPLIFY = FALSE)
+    real.ranges <- mapply(`+`, 
+                          rel.ranges, 
+                          as.list(hue.range[1,]),
+                          SIMPLIFY = FALSE)
+    if(length(real.ranges)>1){
+        real.ranges <- do.call(cbind, real.ranges)
+    } else {
+        real.ranges <- real.ranges[[1]]
+    }
+    return(real.ranges)
+}
+
+
+tree.ranges <- function(cutree, ...){
+    ct.levels <- apply(cutree, 2, vlevels)
+    ocl <- order(ct.levels)         # to order cutree by levels (if needed)
+    ordered <- TRUE
+    if (!all.equal(ocl, 1:ncol(cutree))){
+        ordered <- FALSE
+        rcl <- rank(ct.levels)      # to return to original order afterwards
+        cutree <- cutree[, ocl] # order columns
+        octl <- ct.levels[ocl]      
+    }
+    add.top <- FALSE
+    if(!any(ct.levels==1)){
+        add.top <- TRUE
+        cutree <- cbind(rep(1, nrow(cutree)), cutree)
+    }
+    # initialize with full range
+    hue.splits <- list(huerange(from = 0, to = 5/6))
+    # iteratively finer
+    for (i in 2:ncol(cutree)){
+        hue.splits[i] <- lapply(1:length(hue.splits[i-1]),
+                                function(ii)split(hue.splits[i-1][[ii]],
+                                                  table(ct[ ct[,i-1] == ii, i])))}
+    if(add.top){
+        hue.splits <- hue.splits[-1]
+    }
+    return(hue.splits)
+}
 
 ##----  Display functions ----
 
@@ -469,6 +624,43 @@ show.colmat <- function(cv){
             }
         }
     }
+}
+
+#' plot hue range
+#'
+#' for now only horizontal 
+#' @param hue.range 
+#' @param y 
+#' @param ... passed on to \code{\link{segments}}
+#' @param col consume any color that may be provided
+#'
+#' @return
+#' @export
+#' @author Benno Pütz \email{puetz@@psych.mpg.de}
+#'
+#' @examples
+hue.range.lines <- function(hue.range,
+                            y = 1, 
+                            add = FALSE,
+                            ..., 
+                            col = 'red'){
+    ctr <- apply(hue.range, 2, mean)
+    if(!add){
+        plot(0:1, 0:1,
+             type ='n',
+             axes = FALSE,
+             xlab = 'hue',
+             ylab = '')
+        axis(1)
+    }
+    hues <- apply(hue.range, 2, mean)
+    print(hues)
+    segments(x0 = hue.range[1,],
+             y0 = y, 
+             x1 = hue.range[2,],
+             
+          col = hsv(hues),
+          ...)
 }
 
 #' show LUT ([color] lookup table)
