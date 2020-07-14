@@ -1,0 +1,14 @@
+Package: clusterLUTs
+Type: Package
+Title: Color lookup ables for use with hierarchical clustering
+Version: 0.1.0
+Date: 2020-07-14
+Author: Benno Pütz 
+Maintainer: Benno Pütz  <puetz@psych.mpg.de>
+Description: Create related color lookup tables (LUTs) so that for clustering 
+  across different cluster numbers the individual clusters stay in i a fixed hue 
+  relation.
+Encoding: UTF-8
+License: GPL (>= 2)
+Imports: Rcpp (>= 1.0.4)
+LinkingTo: Rcpp
