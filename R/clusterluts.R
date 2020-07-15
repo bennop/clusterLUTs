@@ -1,7 +1,7 @@
 ##----------- C A V E A T --------------------------------------------------------------
 ##
 ##      Adjust local defaults
-##      
+##
 ## these settings define DEFAULTS that depend on my directory structure and
 ## need to be adjusted to work for others
 ##
@@ -22,7 +22,7 @@ require(gtools)      # for even()
 ##---  R functions -----------------
 #' LUT generation for hierachical clustering tree
 #'
-#' Main function of this package. 
+#' Main function of this package.
 #' \code{clusters} defines the cluster assignments per cut. The number of clusters
 #' is taken from the unique values per column (need not be regular).
 #'
@@ -83,7 +83,7 @@ treeluts <- function(clusters = read.tree(),
 #'
 #' The file will be read as binary with three (unsigned) bytes per color and
 #' return a color matrix with columns corresponding to the color entries (RGB).
-#' 
+#'
 #' If \code{length} is specified, read only that many entries, otherwise all.
 #' Some sonsistency checks on the file size are performed.
 #'
@@ -128,8 +128,8 @@ readlut <- function(file,
 #' assignments (the number of cluters at each cut is given by the number of unique
 #' entries)
 #'
-#' Each of these matrices (vectors) is forms one column in the output matrix as 
-#' would be obtained by \code{\link[stats]{cutree}}. The matrix is given column 
+#' Each of these matrices (vectors) is forms one column in the output matrix as
+#' would be obtained by \code{\link[stats]{cutree}}. The matrix is given column
 #' names indicating the number of clusters for that cut.
 #'
 #' @param file Matlab hclust result file (Matlab *.mat-file)
@@ -182,9 +182,9 @@ ColorShadeRamp <- function(col,
 #'
 #' If \code{reps} is scalar it is recycled, otherwise it is filled with ones should
 #' it be shorter than \code{col}.
-#' 
-#' The shades can be constructed either towards white, black, or, symmetrically. 
-#' This is determined by setting \code{direction} to 'bright', 'dark', or 'all', 
+#'
+#' The shades can be constructed either towards white, black, or, symmetrically.
+#' This is determined by setting \code{direction} to 'bright', 'dark', or 'all',
 #' respectively. The latter is the default.
 #'
 #' @param col color vector; must be a valid argument to \code{\link[grDevices]{col2rgb}}
@@ -204,7 +204,7 @@ ColorShadeRamp <- function(col,
 color.shades <- function(col,
                          reps,
                          scale = ifelse(direction == 'bright', 0.7, 0.5),
-                         direction = c('all', 'bright', 'dark'), 
+                         direction = c('all', 'bright', 'dark'),
                          ...){
     # handle parameters
     direction <- match.arg(direction)
@@ -216,25 +216,25 @@ color.shades <- function(col,
     }
     len.diff <- ncol(col) - length(reps)
     if(len.diff > 0){
-        reps <- if(length(reps == 1)){   # scalar: 
+        reps <- if(length(reps == 1)){   # scalar:
             rep(reps, ncol(col))       #    replicate
         } else {                         # vector:
             c(reps, rep(1, len.diff))    #    use 1 for positions not specified
         }
     }
-    
+
     col.reps <- list()
-    
+
     for (cidx in 1:ncol(col)){
         # color function (black - color - white)
         csf <- ColorShadeRamp(vec2rgb(col[,cidx]), ...)
-        
+
         # the max() contruct is needed to avoid division by
         # zero when reps[cidx]==1
         rmp.n <- ifelse(direction == 'all' && even(reps[cidx]),
                         reps[cidx]+1 ,
                         reps[cidx])
-        
+
         ramp.vals <- if(rmp.n == 1){
             0.5
         } else {
@@ -249,9 +249,9 @@ color.shades <- function(col,
                            v
                        }
                    },
-                   bright = seq(0.5, 1-(1-scale)*0.5, 
+                   bright = seq(0.5, 1-(1-scale)*0.5,
                                 length.out = rmp.n),
-                   dark =  seq(0.5, (1-scale)*0.5, 
+                   dark =  seq(0.5, (1-scale)*0.5,
                                length.out = rmp.n)
             )
         }
@@ -307,7 +307,7 @@ reidx.cut <- function(cut){
 #' @param n number of colors
 #' @param ...  passed to rainbow_rgb
 #'
-#' @return rainbow colors 
+#' @return rainbow colors
 #' @export
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
@@ -322,7 +322,7 @@ default.rgb <- function(n = 12, ...){
 #' @param n number of colors
 #' @param ... passed to rainbow_hcl
 #'
-#' @return rainbow colors 
+#' @return rainbow colors
 #' @export
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
@@ -337,7 +337,7 @@ default.hcl <- function(n = 12, ...){
 #' @param n number of colors
 #' @param ... passed to rainbow_lab
 #'
-#' @return rainbow colors 
+#' @return rainbow colors
 #' @export
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
@@ -352,8 +352,8 @@ default.lab <- function(n = 12, ...){
 #' For the given cut \code{cut} analyze the internal structure of each cluster
 #' and use that as basis for a shading through \code{\link{color.shades}}. Then
 #' reorder the shading to arrange according to cluster members.
-#' 
-#' 
+#'
+#'
 #'
 #' @param cut vector of cluster assignments
 #' @param col.fun function mapping a number to that many colors from a palette
@@ -378,13 +378,13 @@ cut.shades <- function(cut,
 
 #' Concatenate a list of tables
 #'
-#' Tables are 
-#' The individual tables---assumed to be output from \code{table}---in 
+#' Tables are
+#' The individual tables---assumed to be output from \code{table}---in
 #' \code{tbl.list} are split into their name and value part which are combined
 #' to 2-row matrices via \code{rbind}. Those matrices are in turn concatenated
 #' via \code{cbind}.
-#' 
-#' Names of the sub-tables are assumed to be numeric as is the case for the table 
+#'
+#' Names of the sub-tables are assumed to be numeric as is the case for the table
 #' lists
 #' @param tbl.lst list of tables
 #' @param ... ignored
@@ -397,7 +397,7 @@ cut.shades <- function(cut,
 concat.tbl.list <- function(tbl.lst,
                             ...){
     tbl.mat <- do.call(cbind,
-                       lapply(tbl.lst, 
+                       lapply(tbl.lst,
                               function(tbl){
                                   rbind(as.numeric(names(tbl)),
                                         as.vector(tbl))
@@ -498,9 +498,9 @@ vec2hsv<- function(v,
 
 #' LAB-based Rainbow colorramp function
 #'
-#' Calculating the rainbow colors in LAB colorspace gives slightly better distinction 
+#' Calculating the rainbow colors in LAB colorspace gives slightly better distinction
 #' between neighboring colors.
-#'  
+#'
 #' For normal usage \code{full=FALSE} should yield good results. If, however, a
 #' correspondence to hue is desired,  \code{full=TRUE} should be used.
 #' @param full whether to go all around to red or only to purple
@@ -542,25 +542,25 @@ rainbow_lab <- function(n,
 
 #' Split a hue range according to \code{split.tbl}
 #'
-#' A hue range is defined by a lower and an upper hue bound, given either as 
+#' A hue range is defined by a lower and an upper hue bound, given either as
 #' 2-element vector or a \eqn{2xN} matrix where each column defines such a range.
-#' 
-#' The splits are defined by \code{split.tbl}, a vector giving the the relative 
-#' weights (corresponding to "width" in colorspace) to be given to the individual 
+#'
+#' The splits are defined by \code{split.tbl}, a vector giving the the relative
+#' weights (corresponding to "width" in colorspace) to be given to the individual
 #' splits.
-#' 
-#' The spacing between split ranges is defined by \code{blank} where a fraction 
-#' of \code{blank} of the original range is divided among the splits. Thus, for 
+#'
+#' The spacing between split ranges is defined by \code{blank} where a fraction
+#' of \code{blank} of the original range is divided among the splits. Thus, for
 #' an \eqn{n}-element vector \code{split.tbl}, each split covers \eqn{blank/(n-1)}
-#' of the range and the remaining "area" is dived among the \eqn{n} splits 
+#' of the range and the remaining "area" is dived among the \eqn{n} splits
 #' according to their weights speecified in \code{split.tbl}. See the examples.
-#' 
+#'
 #' In either case, \code{blank} is assumed to be a "global" parameter across all
-#' hue ranges. 
+#' hue ranges.
 #' @param hue.range hue range vector or matrix
-#' @param split.tbl vector giving the weights of the splits (or list of such 
+#' @param split.tbl vector giving the weights of the splits (or list of such
 #'                  vectors applied to corresponding matrix colunm)
-#' @param blank which fraction of the range should be left blank 
+#' @param blank which fraction of the range should be left blank
 #'
 #' @return a hue range vector (only one split) or matrix
 #' @export
@@ -575,46 +575,46 @@ rainbow_lab <- function(n,
 #' ##       [,1]       [,2]      [,3]      [,4] [,5]      [,6]
 #' ## [1,] 0.000 0.08333333 0.1291667 0.2083333 0.50 0.6833333
 #' ## [2,] 0.075 0.12083333 0.1666667 0.4333333 0.65 0.8333333
-split.hue.range <- function(hue.range, 
+split.hue.range <- function(hue.range,
                             split.tbl,
                             blank = 0.1) {
-    
+
     if(is.null(dim(hue.range))) hue.range <- matrix(hue.range, nrow = 2)
     if(!is.list(split.tbl)) split.tbl <- list(split.tbl)
     split.tbl <- lapply(split.tbl, as.vector)    # take care of, e.g., table
     lens <- lapply(split.tbl, length)
-    
+
     relative.widths <- lapply(split.tbl,                    # list
                               function(n) n/sum(n))
     diffs <- apply(hue.range, 2, diff)                      # original width
                                                             # scalar or vector
     new.ranges <- diffs * ifelse(lens==1,1,(1-blank))       # new width (- blank)
                                                             # scalar or vector
-    widths <- mapply(`*`, 
-                     as.list(new.ranges), 
+    widths <- mapply(`*`,
+                     as.list(new.ranges),
                      relative.widths,
                      SIMPLIFY = FALSE)
-    blanks <- mapply(function(d,n) d*blank/(length(n)-1), 
-                     diffs, 
+    blanks <- mapply(function(d,n) d*blank/(length(n)-1),
+                     diffs,
                      split.tbl)
     #browser()
-    
+
     offsets <- mapply(function(w,b,l) c(0, cumsum(w+b))[1:l],
                       as.list(widths),
                       as.list(blanks),
                       as.list(lens),
                       SIMPLIFY = FALSE)
-    
+
     ends <- mapply(`+`,
                    offsets,
                    widths,
-                   SIMPLIFY = FALSE)       
-    rel.ranges <- mapply(rbind, 
+                   SIMPLIFY = FALSE)
+    rel.ranges <- mapply(rbind,
                          offsets,
                          ends,
                          SIMPLIFY = FALSE)
-    real.ranges <- mapply(`+`, 
-                          rel.ranges, 
+    real.ranges <- mapply(`+`,
+                          rel.ranges,
                           as.list(hue.range[1,]),
                           SIMPLIFY = FALSE)
     if(length(real.ranges)>1){
@@ -628,15 +628,15 @@ split.hue.range <- function(hue.range,
 
 #' full hue range set for cutree
 #'
-#' @param cutree 
-#' @param ... 
+#' @param cutree
+#' @param ...
 #'
 #' @return
 #' @export
 #'
 #' @examples
 #' tree.ranges(dummy.tree())
-tree.ranges <- function(cutree, 
+tree.ranges <- function(cutree,
                         blank = 0.1,
                         ...){
     ct.levels <- apply(cutree, 2, vlevels)
@@ -647,7 +647,7 @@ tree.ranges <- function(cutree,
         ordered <- FALSE
         rcl <- rank(ct.levels)      # to return to original order afterwards
         cutree <- cutree[, ocl]     # order columns
-        ct.levels <- ct.levels[ocl]      
+        ct.levels <- ct.levels[ocl]
     }
     add.top <- FALSE
     if(!any(ct.levels==1)){
@@ -655,24 +655,24 @@ tree.ranges <- function(cutree,
         cutree <- cbind(rep(1, nrow(cutree)), cutree)
     }
     # initialize with full range
-    hue.splits <- list(`1`=  matrix(c( 0, 5/6), 
+    hue.splits <- list(`1`=  matrix(c( 0, 5/6),
                                     nrow = 2))
     sub.tables <- list(`1` = table(1))
     # iteratively finer
     for (i in 2:ncol(cutree)){
         # browser(text = 'level 15',
-        #         expr = i == 16) 
+        #         expr = i == 16)
         sub.tables[[i]] <- lapply(1:vlevels(cutree[,i-1]),
                                   function(l)table(cutree[ cutree[,i-1] == l, i]))
-        
-        ## CAVEAT: the order of the sub-tables is not related to the order in 
+
+        ## CAVEAT: the order of the sub-tables is not related to the order in
         ##         the dendrogram (arbitrary anyway) but is internally determined
         ##         by the clustering procedure.
         ##         - The index (position) corresponds to the position of the
         ##           parent cluster on the next higher level
         ##         - the level names for each sub-table refer to the corresponding
         ##           cluster indices on the current level
-                   
+
         # print(sub.tables[[i]])
         # print(hue.splits[[i-1]])
         #browser()
@@ -729,9 +729,9 @@ show.colmat <- function(cv){
 }
 
 #' initialize hue range plot
-#' 
+#'
 #' empty "frame" (just x-axis) with x- and y-range 0:1
-#'  
+#'
 #' @param ... ignored
 #'
 #' @return none
@@ -752,7 +752,7 @@ init.huerange.plot <- function(...){
 
 #' convert hue range matrix to corresponding colors
 #'
-#' A hue range matrix is a \eqn{2\times N} matrix where each column defines a range in 
+#' A hue range matrix is a \eqn{2\times N} matrix where each column defines a range in
 #' @param hr hue range matrix
 #' @param extractfun function to calculate efective hue from hue range
 #' @param ... passed to \code{\link{hsv}}
@@ -775,9 +775,9 @@ hue.range.colors <- function(hr,
 
 #' plot hue range
 #'
-#' for now only horizontal 
-#' @param hue.range 
-#' @param y 
+#' for now only horizontal
+#' @param hue.range
+#' @param y
 #' @param ... passed on to \code{\link{segments}}
 #' @param col consume any color that may be provided
 #'
@@ -787,9 +787,9 @@ hue.range.colors <- function(hr,
 #'
 #' @examples
 hue.range.lines <- function(hue.range,
-                            y   = 1, 
+                            y   = 1,
                             add = FALSE,
-                            ..., 
+                            ...,
                             col = 'red'){
     ctr <- apply(hue.range, 2, mean)
     if(!add){
@@ -798,7 +798,7 @@ hue.range.lines <- function(hue.range,
     hues <- apply(hue.range, 2, mean)
     # print(hues)
     segments(x0  = hue.range[1,],
-             y0  = y, 
+             y0  = y,
              x1  = hue.range[2,],
              col = hue.range.colors(hue.range, ...),
              ...)
@@ -819,7 +819,7 @@ show.tree.ranges <- function(tr,
                              add = FALSE,
                              ...){
     n <- length(tr)
-    if (! add) init.huerange.plot()
+    if (! add) init.huerange.plot(...)
 
     for(i in 1:n){
         hue.range.lines(tr[[i]],
@@ -831,21 +831,21 @@ show.tree.ranges <- function(tr,
 
 #' show LUT ([color] lookup table)
 #'
-#' Give a visual representation of the colors represented in a LUT. 
-#' 
-#' First a color band showing the colors is presented, below the RGB components are plotted 
+#' Give a visual representation of the colors represented in a LUT.
+#'
+#' First a color band showing the colors is presented, below the RGB components are plotted
 #'
 #' @param lut lookup table
-#' @param colorspace 
-#' @param ... 
+#' @param colorspace
+#' @param ...
 #'
 #' @return none
 #' @export
 #'
 #' @examples
 #' show.lut(rainbow(12, end = 11/12, v  = 0.9))
-show.lut <- function(lut, 
-                     colorspace = c('RGB', 'HSV'), 
+show.lut <- function(lut,
+                     colorspace = c('RGB', 'HSV'),
                      ...){
     colorspace <- toupper(colorspace)
     colorspace <- match.arg(colorspace)
@@ -869,10 +869,10 @@ show.lut <- function(lut,
     crange <- 0:5/5
     axis(2, at = crange, labels = crange, las = 1, col = NA, col.ticks = grey(.5))
     abline(h   = crange,
-           lty = 3, 
+           lty = 3,
            col = grey(c(.5, rep(.8, 4), .5), 0.8))
     rect(x - .5, 1.05, x + .5, 1.2,
-         col = rgb(lut[1,], lut[2,], lut[3,], 
+         col = rgb(lut[1,], lut[2,], lut[3,],
                    maxColorValue = scale),
          border = NA)
 }
@@ -884,7 +884,7 @@ show.lut <- function(lut,
 #'
 #' The "base" colors are shown along the axis indicated by \code{orient}, the shades
 #' are stacked perpendicular to that. If the shades were created with \code{dir = 'all'},
-#' the shade stacks are aligned on the base colors 
+#' the shade stacks are aligned on the base colors
 #'
 #' @param shades shades as produced by \code{\link{color.shades}}
 #' @param orient orientation for main colors
@@ -911,7 +911,7 @@ show.shades <- function(shades,
     s.offset <- function(n, center){
         ifelse(rep(center, length(n)),
                1 + n %/% (-2),
-               0) 
+               0)
     }
     if(center){
         max.rep <- max(reps)
@@ -963,15 +963,15 @@ show.shades <- function(shades,
 show.brain.lut <- function(n, clusters = read.tree()){
     l <- readlut(sprintf('/Users/puetz/Work/4philipp/BrainLUTs/luts/lut%03d.lut',
                          n))
-    
-    
+
+
     # rt <- rank(clusters[,(n/5)-1])
     # rt[duplicated(rt)]<-NA
     # orrt <- order(rank(rt,
     #                    na.last = 'keep'))
     # recovered.lut <- l[orrt[1:n],]
     recovered.lut <- l[, order(reidx.cut(clusters[, (n/5)-1]))]
-    
+
     lsshow <- cbind(l[,1:150], recovered.lut)
     show.lut(lsshow)
     abline(v=c(146,150))
@@ -1005,12 +1005,12 @@ show.cut <- function(cut){
 #' randomize cluster assignments
 #'
 #' In R's implementation of \code{\link[stats]{cutree}} the first element is
-#' always assigned to cluster 1, unlike what Matlab produces. This function 
+#' always assigned to cluster 1, unlike what Matlab produces. This function
 #' attemps to make a \code{\link[stats]{cutree}} result more similar to it's
 #' Matlab counterpart (or what \code{\link{read.tree}} produces of it).
-#' 
+#'
 #' All the columns where the number of levels does not equal the number of rows
-#' (elements) is reordered (and it is considered a problem if no full column is 
+#' (elements) is reordered (and it is considered a problem if no full column is
 #' found).
 #' @param cutree result of  \code{\link[stats]{cutree}}
 #' @param ... ignored
@@ -1037,14 +1037,14 @@ randomize.cutree <- function(cutree, ...){
     }
     return(cutree)
 }
-    
+
 #' dummy tree data for examples
 #'
 #' The number shoud be reasonably small to keep the example results clear.
-#' 
-#' The \code{cut} vector specifies the number of branches in the dendrogram at 
+#'
+#' The \code{cut} vector specifies the number of branches in the dendrogram at
 #' which the cuts should be made.
-#' 
+#'
 #' @param n number of classes [9]
 #' @param cuts vector of cut numbers
 #' @param ... ignored
@@ -1053,27 +1053,27 @@ randomize.cutree <- function(cutree, ...){
 #' @export
 #'
 #' @examples
-dummy.tree <- function(n = 9, 
-                       cuts = round(seq(0, n, 
+dummy.tree <- function(n = 9,
+                       cuts = round(seq(0, n,
                                         length.out = ceiling(sqrt(n+1)))[-1]),
                        ...){
     set.seed(1234)                                        # make reproducible
     dummy.data <- matrix(rnorm(n*1000),
                          nrow = n)
     hc <- hclust(dist(dummy.data))
-    dt <- cutree(hc, 
+    dt <- cutree(hc,
                  k = cuts)
     attr(dt, 'hc') <- hc
     return(dt)
 }
 
 #' show dendrogram with cut levels overlaid
-#' 
+#'
 #' Mainly for debugging
-#' 
+#'
 #' This needs a "real" hclust object, the output of \code{\link{cutree}} will,
 #' unfortunately,  not work.
-#' 
+#'
 #' The cut levels that are shown are set halfway between the heights of the
 #'  merging levels.
 #' @param hc output of \code{\link{hclust}}
@@ -1085,7 +1085,8 @@ dummy.tree <- function(n = 9,
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
 #' @examples
-#' dend.with.cuts(attr(dummy.tree(), 'hc'), 1:3*3, col = "#ffa050")
+#' dt <- dummy.tree()
+#' dend.with.cuts(attr(dt, 'hc'), as.numeric(colnames(dt)), col = "#ffa050")
 dend.with.cuts <- function(hc, cuts, ...){
     plot(hc)
     hr <- range(hc$height)
