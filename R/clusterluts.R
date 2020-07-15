@@ -376,6 +376,65 @@ cut.shades <- function(cut,
 
 ##----  Helper functions, mostly for internal use ----
 
+#' between test
+#' 
+#' test for \code{x} to lie between \code{low} and \code{high} (including the
+#' margins), i.e., \eqn{low \leq x \leq high}
+#'
+#' \code{between} is vectorized for \code{x} as well as for the limits. In the 
+#' case of vectorized limits \code{low} and \code{high} have to have the same 
+#' length and the ranges are defined by corresponding pairs from \code{low} and 
+#' \code{high} (those ranges are allowed to overlap).
+#' 
+#' 
+#' @param x     value(s) to test
+#' @param low   lower bound(s) of test interval(s)
+#' @param high  upper bound(s) of test interval(s)
+#' @param index when set return indices, otherwise match matrix (see description) 
+#' @param named whether to put names on the return value 
+#' @param ... ignored
+#'
+#' @return index vector or match matrix
+#' @export
+#' @author Benno Pütz \email{puetz@@psych.mpg.de}
+#'
+#' @examples
+#' between(c(1,pi), 0:3,2:5+.5, T)
+#' between(c(1,pi), 0:3,2:5+.5, F)
+between <- function(x, 
+                    low, 
+                    high = NULL,
+                    index = TRUE, 
+                    named = TRUE,
+                    ...) {
+    #browser()
+    if(!is.null(dim(low)) && nrow(low == 2)){
+        high <- low[2,]
+        low <- low[1,]
+    }
+    more <- outer(x, low, `>=`)
+    less <- outer(x, high, `<=`)
+    match.mat <- more & less
+    if(index){
+        idx.mat <- match.mat %*% 1:length(low)
+        if(any(apply(idx.mat,1, function(x)sum(x>0)) > 1)){
+            ret.val <- apply(idx.mat, 1, sum)
+        } else {
+            ret.val <- apply(matrix(1:4, 2), 1, function(v)list(v[1]:v[2]))
+            if(named){
+                names(ret.val) <- x
+            }
+        }
+    } else {
+        ret.val <- match.mat
+        if(named){
+            rownames(ret.val) <- x
+            colnames(ret.val) <- paste(low, high, sep = '-')
+        }
+    }
+    return(ret.val)
+}
+
 #' Concatenate a list of tables
 #'
 #' Tables are
@@ -767,9 +826,10 @@ init.huerange.plot <- function(...){
 #' hue.range.colors(hr)
 hue.range.colors <- function(hr,
                              extractfun = mean,
+                             only.hues = FALSE,
                              ...){
     hues <- apply(hr, 2, extractfun)
-    return(hsv(hues))
+    return(if(only.hues) hues else hsv(hues))
 }
 
 
@@ -804,7 +864,7 @@ hue.range.lines <- function(hue.range,
              ...)
 }
 
-#' show hues for a \code{\link{tree.ranges}} result
+#' plot hues for a \code{\link{tree.ranges}} result
 #'
 #' @param tr output of \code{\link{tree.ranges}}
 #' @param ... passed to \code{\link{hue.range.lines}}
@@ -815,17 +875,31 @@ hue.range.lines <- function(hue.range,
 #' @examples
 #' tr <- tree.ranges(dummy.tree())
 #' show.tree.ranges(tree.ranges(dummy.tree()))
-show.tree.ranges <- function(tr,
+plot.tree.ranges <- function(tr,
                              add = FALSE,
+                             show.tree = FALSE,
                              ...){
     n <- length(tr)
     if (! add) init.huerange.plot(...)
 
+    line.levels <- 1 - (1:n-1)/n
+    #browser()
+    if(show.tree){
+        for (i in 2:n){
+            up.hues <- hue.range.colors(tr[[i-1]], only.hues = TRUE)
+            hues <-  hue.range.colors(tr[[i]], only.hues = TRUE)
+            corresp <- between(hues, trdt[[i-1]])
+            x.up <- up.hues[corresp]
+            segments(hues, line.levels[i], x.up, line.levels[i-1],
+                     col = 'lightgrey')
+        }
+    }
     for(i in 1:n){
         hue.range.lines(tr[[i]],
                         y   = 1 - (i-1)/n,
                         add = TRUE,
                         ...)
+            
     }
 }
 
