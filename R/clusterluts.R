@@ -450,6 +450,23 @@ cut.shades <- function(cut,
 
 ##----  Helper functions, mostly for internal use ----
 
+#' binary AND
+#'
+#' wrapper for \code{\link[base]{bitwAnd}}
+#'
+#' @param a
+#' @param b
+#'
+#' @return bitwise AND of \code{a} and \code{b}
+#' @export
+#' @author Benno Pütz \email{puetz@@psych.mpg.de}
+#'
+#' @examples
+#' 1 %and% 3
+`%&%` <- function(a,b){
+    bitwAnd(a,b)
+}
+
 #' between test
 #'
 #' test for \code{x} to lie between \code{low} and \code{high} (including the
@@ -466,6 +483,7 @@ cut.shades <- function(cut,
 #' @param high  upper bound(s) of test interval(s)
 #' @param index when set return indices, otherwise match matrix (see description)
 #' @param named whether to put names on the return value
+#' @param edges which of a range's edges to include in the range
 #' @param ... ignored
 #'
 #' @return index vector or match matrix
@@ -480,19 +498,46 @@ between <- function(x,
                     high = NULL,
                     index = TRUE,
                     named = TRUE,
+                    edges = NULL,
                     ...) {
     #browser()
-    if(!is.null(dim(low)) && nrow(low == 2)){
-        high <- low[2,]
-        low <- low[1,]
+    if(is.logical(high) || is.character(high)){
+        # high was not provided and some of the other parameters were given
+        # unnamed and, thus, assigned in a wrong order
+#        print(c(hasArg(high), hasArg(index), hasArg(named), hasArg(edges)))
+#        print(c(missing(high), missing(index), missing(named), missing(edges)))
+        if(is.character(high)){
+            if (is.null(edges)){
+                edges <- high
+                high <- NULL
+            }
+        } else {
+            stop("apparently no `high' but unnamed parameters that take it's place - please specify")
+        }
     }
-    # greater or equal to `low`
-    ge.low <- outer(x, low, `>=`)
-    # less or equal to `high`
-    le.high <- outer(x, high, `<=`)
-    inbetween <- ge.low & le.high
+    edges <- match.arg(edges, c('both', 'none', 'left', 'right'))
+
+    if(is.null(high)){
+        if(!is.null(dim(low)) && nrow(low == 2)){
+            # low is matriz with at least 2 rows: keep 1st, assign 2nd to high
+            high <- low[2,]
+            low <- low[1,]
+        } else {
+            # assume pointwise matching
+            high <- low
+            edges <- 'both'
+        }
+    }
+
+    incl.r <- edges %in% c('right', 'both')
+    incl.l <- edges %in% c('left', 'both')
+
+    low.end <- outer(x, low, ifelse(incl.l, `>=`, `>`))
+    high.end <- outer(x, high, ifelse(incl.r, `<=`, `<`))
+    inrange <- low.end & high.end
+
     if(index){
-        idx.mat <- inbetween %*% 1:length(low)
+        idx.mat <- inrange %*% 1:length(low)
         if(named){
             dimnames(idx.mat) <- list(x, 'idx')
         }
@@ -504,7 +549,7 @@ between <- function(x,
             ret.val <- apply(idx.mat, 1, sum)
         }
     } else {
-        ret.val <- inbetween
+        ret.val <- inrange
         if(named){
             rownames(ret.val) <- x
             colnames(ret.val) <- paste(low, high, sep = '-')
@@ -1116,8 +1161,14 @@ show.shades <- function(shades,
 #'
 #' show one of the lookup tables created through \code{\link{treeluts}}
 #'
+#' The LUT can, alternatively, be given through \code{lut}: either a compatible
+#' matrix (3 rows or columns) or a complete file path
 #' @param n number of cuts the table should have
+#' @param lut alternative LUT, see description
 #' @param clusters
+#' @param verbose
+#' @param test
+#' @param ...
 #'
 #' @return
 #' @export
@@ -1127,9 +1178,12 @@ show.shades <- function(shades,
 #' \dontrun{
 #'   show.brain.lut(10)
 #' }
-show.brain.lut <- function(n, 
+show.brain.lut <- function(n,
                            lut = NULL,
-                           clusters = read.tree()){
+                           clusters = read.tree(),
+                           verbose = getOption('verbose'),
+                           test = FALSE,
+                           ...){
     if(is.null(lut)){
         # try default: file in LUTdir()
         lut.file <- sprintf(file.path(LUTdir(),
@@ -1142,23 +1196,35 @@ show.brain.lut <- function(n,
         }
     } else {
         if(is.matrix(lut)){
-            if(nrow(lut == 3)){
+            if(nrow(lut) == 3){
                 # assume directly provided LUT
+                if(verbose) cat("direct lut\n")
+                if(test) return("direct lut")
+
                 l <- lut
-            } else { 
-                if (ncol(lut == 3)){
+            } else {
+                if (ncol(lut) == 3){
                     # assume transposed LUT
-                    # l <- t(lut)
+                    if(verbose) cat("t(lut)\n")
+                    if(test)return("t(lut)")
+                    l <- t(lut)
                 } else {
                     stop("wrong LUT format")
                 }
             }
+            n <- ncol(lut)      # adjust to input
         } else {
             if (is.character(lut)){
+                if(verbose) cat("lut string")
                 if(file.exists(lut)){
                     l <- readlut(lut)
+                    if (nrow(l) != 3){
+                        stop("not an acceptable LUT file")
+                    } else {
+                        if (test) return("LUT from specified file")
+                    }
                 } else {
-                    stop("cannot interpret '", lut, "'")
+                    stop("cannot find '", lut, "'")
                 }
             } else {
                 stop("unknown type of lut")
@@ -1170,13 +1236,17 @@ show.brain.lut <- function(n,
     # orrt <- order(rank(rt,
     #                    na.last = 'keep'))
     # recovered.lut <- l[orrt[1:n],]
-    recovered.lut <- l[, order(reidx.cut(clusters[, (n/5)-1]))]
 
-    lsshow <- cbind(l[,1:150], recovered.lut)
-    show.lut(lsshow)
-    abline(v=c(146,150))
+    ### broken
+    # recovered.lut <- l[, order(reidx.cut(clusters[, (n/5)-1]))]
+    #
+    # lsshow <- cbind(l[,1:150], recovered.lut)
+    # show.lut(lsshow)
+    # abline(v=c(146,150))
+    #show.lut(l)
     return(invisible(l))
 }
+
 
 
 #' show cuts
