@@ -1,14 +1,73 @@
-##----------- C A V E A T --------------------------------------------------------------
-##
-##      Adjust local defaults
-##
-## these settings define DEFAULTS that depend on my directory structure and
-## need to be adjusted to work for others
-##
-BLdir <- '~/Work/4philipp/BrainLUTs'
-LUTdir <- file.path(BLdir, 'luts')
-##
-##---
+
+#' local project directory
+#'
+#' Used as default for \code{\link{tree.luts}} and \code{\link{read.tree}},
+#' simply check for existence and return input (or default).
+#'
+#'
+#' ~~~~~~~~~~~~~~~~~~~ C A V E A T ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#'
+#'       Adjust local defaults
+#'
+#'  these settings define DEFAULTS that depend on my directory structure and
+#'  need to be adjusted to work for others
+#'
+#' @param basedir project directory
+#' @param ... ignored
+#'
+#' @return path to project dirctory
+#' @export
+#' @author Benno Pütz \email{puetz@@psych.mpg.de}
+#'
+#' @examples
+#' projdir()
+projdir <- function(basedir = '~/Work/4philipp/BrainLUTs',
+                    ...){
+    dir.not.found <- function(dir){
+        sprintf("%d dir not found - please specify explicitely", dir)
+    }
+    if(!dir.exists(basedir)) stop(dir.not.found('base'))
+
+     return(basedir)
+
+}
+
+#' local LUT directory
+#'
+#' Used as default for \code{\link{tree.luts}}
+#'
+#'
+#' ~~~~~~~~~~~~~~~~~~~ C A V E A T ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#'
+#'       Adjust local defaults
+#'
+#'  these settings define DEFAULTS that depend on my directory structure and
+#'  need to be adjusted to work for others
+#'
+#' @param basedir parent directory, usually project
+#' @param subdir LUT directory
+#' @param ... ignored
+#'
+#' @return path to LUT dirctory
+#' @export
+#' @author Benno Pütz \email{puetz@@psych.mpg.de}
+#'
+#' @examples
+#' LUTdir()
+LUTdir <- function(basedir = projdir(),
+                   subdir = 'luts',
+                   ...){
+    dir.not.found <- function(dir){
+        sprintf("%d dir not found - please specify explicitely", dir)
+    }
+    if(!dir.exists(basedir)) stop(dir.not.found('base'))
+
+    LUTdir <- file.path(basedir, subdir)
+    if(!dir.exists(LUTdir)) stop(dir.not.found('LUT'))
+    return(LUTdir)
+
+}
+
 
 ## needed packages ----
 require(R.matlab)    # for readMat()
@@ -43,7 +102,7 @@ require(gtools)      # for even()
 #' @examples
 #' treeluts(cbind(sample(1:10,20,TRUE), 1:20), '.', "example")
 treeluts <- function(clusters = read.tree(),
-                     outdir   = LUTdir,
+                     outdir   = LUTdir(),
                      basename = 'lut',
                      ...){
     nc <- nrow(clusters)
@@ -136,13 +195,19 @@ readlut <- function(file,
 #'
 #' @return a matrix with just the cluster assignments
 #' @export
+#' @importFrom R.matlab readMat
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
 #' @examples
 #' \dontrun{
 #'    tree <- read.tree(path_to_treefile)
 #' }
-read.tree <- function(file = '~/Work/4philipp/BrainLUTs/sbm_1_145_0_result_hclust_atlas.mat'){
+read.tree <- function(file = file.path(projdir(),
+                                       'bm_1_145_0_result_hclust_atlas.mat')){
+    if(!file.exists(file)){
+        stop(sprintf("tree file not found\n\t'%s'",
+                     file))
+    }
     ci <- readMat(file)$cluster.info
     tree <- sapply(ci, function(l)l[[1]])
     cuts <- apply(tree, 2, vlevels)
@@ -159,7 +224,10 @@ read.tree <- function(file = '~/Work/4philipp/BrainLUTs/sbm_1_145_0_result_hclus
 #' @param ... also  passed on to \code{\link[grDevices]{colorRamp}}
 #'
 #' @return a function mapping [0,1] to (black ... \code{col} ... white)
+#'
+#' @importFrom grDevices colorRamp
 #' @export
+#'
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
 #' @examples
@@ -195,7 +263,10 @@ ColorShadeRamp <- function(col,
 #' @param ... passed to \code{\link{colorShadeRamp}}
 #'
 #' @return Color matrix with on entry per column
+#' @importFrom grDevices col2rgb
+#' @importFrom gtools even
 #' @export
+#'
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
 #' @examples
@@ -308,6 +379,7 @@ reidx.cut <- function(cut){
 #' @param ...  passed to rainbow_rgb
 #'
 #' @return rainbow colors
+#' @importFrom grDevices rainbow
 #' @export
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
@@ -323,6 +395,7 @@ default.rgb <- function(n = 12, ...){
 #' @param ... passed to rainbow_hcl
 #'
 #' @return rainbow colors
+#' @importFrom colorspace rainbow_hcl
 #' @export
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
@@ -363,6 +436,7 @@ default.lab <- function(n = 12, ...){
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
 #' @examples
+#' cut.shades(sample(6, 15, T))
 cut.shades <- function(cut,
                        col.fun = default.rgb){
     tbl <- table(cut)
@@ -377,21 +451,21 @@ cut.shades <- function(cut,
 ##----  Helper functions, mostly for internal use ----
 
 #' between test
-#' 
+#'
 #' test for \code{x} to lie between \code{low} and \code{high} (including the
 #' margins), i.e., \eqn{low \leq x \leq high}
 #'
-#' \code{between} is vectorized for \code{x} as well as for the limits. In the 
-#' case of vectorized limits \code{low} and \code{high} have to have the same 
-#' length and the ranges are defined by corresponding pairs from \code{low} and 
+#' \code{between} is vectorized for \code{x} as well as for the limits. In the
+#' case of vectorized limits \code{low} and \code{high} have to have the same
+#' length and the ranges are defined by corresponding pairs from \code{low} and
 #' \code{high} (those ranges are allowed to overlap).
-#' 
-#' 
+#'
+#'
 #' @param x     value(s) to test
 #' @param low   lower bound(s) of test interval(s)
 #' @param high  upper bound(s) of test interval(s)
-#' @param index when set return indices, otherwise match matrix (see description) 
-#' @param named whether to put names on the return value 
+#' @param index when set return indices, otherwise match matrix (see description)
+#' @param named whether to put names on the return value
 #' @param ... ignored
 #'
 #' @return index vector or match matrix
@@ -401,10 +475,10 @@ cut.shades <- function(cut,
 #' @examples
 #' between(c(1,pi), 0:3,2:5+.5, T)
 #' between(c(1,pi), 0:3,2:5+.5, F)
-between <- function(x, 
-                    low, 
+between <- function(x,
+                    low,
                     high = NULL,
-                    index = TRUE, 
+                    index = TRUE,
                     named = TRUE,
                     ...) {
     #browser()
@@ -412,21 +486,25 @@ between <- function(x,
         high <- low[2,]
         low <- low[1,]
     }
-    more <- outer(x, low, `>=`)
-    less <- outer(x, high, `<=`)
-    match.mat <- more & less
+    # greater or equal to `low`
+    ge.low <- outer(x, low, `>=`)
+    # less or equal to `high`
+    le.high <- outer(x, high, `<=`)
+    inbetween <- ge.low & le.high
     if(index){
-        idx.mat <- match.mat %*% 1:length(low)
+        idx.mat <- inbetween %*% 1:length(low)
+        if(named){
+            dimnames(idx.mat) <- list(x, 'idx')
+        }
         if(any(apply(idx.mat,1, function(x)sum(x>0)) > 1)){
-            ret.val <- apply(idx.mat, 1, sum)
+            # at least one x in more than one range
+            ret.val <- apply(idx.mat, 1, function(v)list(v[v>0]))
         } else {
-            ret.val <- apply(matrix(1:4, 2), 1, function(v)list(v[1]:v[2]))
-            if(named){
-                names(ret.val) <- x
-            }
+            # only unique (or no) matches
+            ret.val <- apply(idx.mat, 1, sum)
         }
     } else {
-        ret.val <- match.mat
+        ret.val <- inbetween
         if(named){
             rownames(ret.val) <- x
             colnames(ret.val) <- paste(low, high, sep = '-')
@@ -453,6 +531,7 @@ between <- function(x,
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
 #' @examples
+#' concat.tbl.list(list(table(sample(1:3, 10, T)), table(sample(7:9, 10, T))))
 concat.tbl.list <- function(tbl.lst,
                             ...){
     tbl.mat <- do.call(cbind,
@@ -463,6 +542,7 @@ concat.tbl.list <- function(tbl.lst,
                                   }
                               )
                        )
+    return(tbl.mat)
 }
 
 #' vector levels
@@ -485,7 +565,7 @@ vlevels <- function(v){
 
 #' matrix to list
 #'
-#' Convert matrix \code{mat} to a list of either column verctors (for \code{which == 2})
+#' Convert matrix \code{mat} to a list of either column vectors (for \code{which == 2})
 #' or row vectors  (\code{which == 1}).
 #' @param mat input matrix
 #' @param which 1 for row, 2 for column vectors
@@ -498,7 +578,7 @@ vlevels <- function(v){
 #' @examples
 #' m <- matrix(1:6, ncol = 2)
 #' mat2list(m)
-#' maat2list(m, 1)
+#' mat2list(m, 1)
 mat2list <- function(mat, which = 2, ...){
     if(which == 2){
         lapply(1:ncol(mat), function(i)mat[,i])
@@ -565,7 +645,8 @@ vec2hsv<- function(v,
 #' @param full whether to go all around to red or only to purple
 #'
 #' @return color ramp function
-#' @exportdiff
+#' @importFrom grDevices colorRamp
+#' @export
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
 #' @examples
@@ -592,8 +673,10 @@ rainbow_lab_ramp <- function(full = FALSE){
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
 #' @examples
+#' rainbow_lab(12)
 rainbow_lab <- function(n,
                         full = FALSE,
+                        rlf  = rainbow_lab_ramp,
                         ...){
     # rainbow lab function
     return(t(rlf(seq(0,1, length.out = n))))
@@ -687,11 +770,14 @@ split.hue.range <- function(hue.range,
 
 #' full hue range set for cutree
 #'
-#' @param cutree
-#' @param ...
+#' Create a set of hue ranges related through the levels of \code{cutree}.
 #'
-#' @return
+#' @param cutree result of \code{\link{cutree}}
+#' @param ... passed to \code{\link{split.hue.range}}
+#'
+#' @return list of related hue ranges corresponding to the cut levels
 #' @export
+#' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
 #' @examples
 #' tree.ranges(dummy.tree())
@@ -746,6 +832,7 @@ tree.ranges <- function(cutree,
     }
     names(hue.splits) <- ct.levels
     attr(hue.splits, 'sub.tables') <- sub.tables   # may need to be reordered
+    class(hue.splits) <- 'tree.ranges'
     return(invisible(if(ordered) hue.splits else hue.splits[rcl]))
 }
 
@@ -794,6 +881,7 @@ show.colmat <- function(cv){
 #' @param ... ignored
 #'
 #' @return none
+#' @importFrom graphics axis
 #' @export
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
@@ -817,6 +905,7 @@ init.huerange.plot <- function(...){
 #' @param ... passed to \code{\link{hsv}}
 #'
 #' @return color (vector)
+#' @importFrom grDevices hsv
 #' @export
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
@@ -835,17 +924,20 @@ hue.range.colors <- function(hr,
 
 #' plot hue range
 #'
+#'
 #' for now only horizontal
-#' @param hue.range
-#' @param y
+#' @param hue.range hue range or list thereof
+#' @param y y-level at which to plot (scalar or vector of length of \code{hue.range})
 #' @param ... passed on to \code{\link{segments}}
 #' @param col consume any color that may be provided
 #'
-#' @return
+#' @return none
+#' @importFrom graphics segments
 #' @export
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
 #' @examples
+#' hue.range.lines(matrix(0:5/6, nr = 2))
 hue.range.lines <- function(hue.range,
                             y   = 1,
                             add = FALSE,
@@ -870,11 +962,12 @@ hue.range.lines <- function(hue.range,
 #' @param ... passed to \code{\link{hue.range.lines}}
 #'
 #' @return none
+#' @importFrom graphics segments
 #' @export
 #'
 #' @examples
 #' tr <- tree.ranges(dummy.tree())
-#' show.tree.ranges(tree.ranges(dummy.tree()))
+#' plot.tree.ranges(tree.ranges(dummy.tree()))
 plot.tree.ranges <- function(tr,
                              add = FALSE,
                              show.tree = FALSE,
@@ -888,7 +981,7 @@ plot.tree.ranges <- function(tr,
         for (i in 2:n){
             up.hues <- hue.range.colors(tr[[i-1]], only.hues = TRUE)
             hues <-  hue.range.colors(tr[[i]], only.hues = TRUE)
-            corresp <- between(hues, trdt[[i-1]])
+            corresp <- between(hues, tr[[i-1]])
             x.up <- up.hues[corresp]
             segments(hues, line.levels[i], x.up, line.levels[i-1],
                      col = 'lightgrey')
@@ -899,7 +992,7 @@ plot.tree.ranges <- function(tr,
                         y   = 1 - (i-1)/n,
                         add = TRUE,
                         ...)
-            
+
     }
 }
 
@@ -1034,11 +1127,44 @@ show.shades <- function(shades,
 #' \dontrun{
 #'   show.brain.lut(10)
 #' }
-show.brain.lut <- function(n, clusters = read.tree()){
-    l <- readlut(sprintf('/Users/puetz/Work/4philipp/BrainLUTs/luts/lut%03d.lut',
-                         n))
-
-
+show.brain.lut <- function(n, 
+                           lut = NULL,
+                           clusters = read.tree()){
+    if(is.null(lut)){
+        # try default: file in LUTdir()
+        lut.file <- sprintf(file.path(LUTdir(),
+                                      'lut%03d.lut'),
+                            n)
+        if(file.exists(lut.file)){
+            l <- readlut(lut.file, n)
+        } else {
+            stop("no matching file")
+        }
+    } else {
+        if(is.matrix(lut)){
+            if(nrow(lut == 3)){
+                # assume directly provided LUT
+                l <- lut
+            } else { 
+                if (ncol(lut == 3)){
+                    # assume transposed LUT
+                    # l <- t(lut)
+                } else {
+                    stop("wrong LUT format")
+                }
+            }
+        } else {
+            if (is.character(lut)){
+                if(file.exists(lut)){
+                    l <- readlut(lut)
+                } else {
+                    stop("cannot interpret '", lut, "'")
+                }
+            } else {
+                stop("unknown type of lut")
+            }
+        }
+    }
     # rt <- rank(clusters[,(n/5)-1])
     # rt[duplicated(rt)]<-NA
     # orrt <- order(rank(rt,
@@ -1124,6 +1250,7 @@ randomize.cutree <- function(cutree, ...){
 #' @param ... ignored
 #'
 #' @return cutree result
+#' @importFrom stats rnorm hclust dist cutree
 #' @export
 #'
 #' @examples
@@ -1155,6 +1282,7 @@ dummy.tree <- function(n = 9,
 #' @param ... passed to \code{\link{abline}} (\code{col}, \code{lty}, ...)
 #'
 #' @return invisible the cut levels corresponding to \code{cuts}
+#' @importFrom graphics abline
 #' @export
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
@@ -1162,13 +1290,18 @@ dummy.tree <- function(n = 9,
 #' dt <- dummy.tree()
 #' dend.with.cuts(attr(dt, 'hc'), as.numeric(colnames(dt)), col = "#ffa050")
 dend.with.cuts <- function(hc, cuts, ...){
+    # simple dendrogram plot
     plot(hc)
+    # determine appropriate cur levels
     hr <- range(hc$height)
     n <- length(hc$height)
     hrx <- diff(hr)/(2*n)
-    hgt <- rev(c(min(hc$height)-hrx, hc$height, max(hc$height)+hrx))
+    hgt <- rev(c(min(hc$height)-hrx,    # add pseudo levels at top ...
+                 hc$height,
+                 max(hc$height)+hrx))   # ... and bottom
     cuts <- cuts[cuts>0 & cuts <= n+1]
     cutlvl <- (hgt[cuts+1]+hgt[cuts])/2
+    # show them
     abline(h=cutlvl, ...)
     return(invisible(cutlvl))
 }

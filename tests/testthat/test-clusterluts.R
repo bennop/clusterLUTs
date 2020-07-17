@@ -15,6 +15,8 @@ test_that("vlevels", {
 context("color")
 test_that("vec2rgb", {
     expect_equal(vec2rgb(1:3*80), "#50A0F0")
+    expect_equal(vec2rgb(1:3*80/255), "#50A0F0")
+    expect_equal(vec2rgb(1:3*80/255, m = 255), "#000000")
 })
 
 v <- matrix(1,3,3); v[1,] <- 0:2/3

@@ -1,4 +1,4 @@
-#context('between') 
+#context('between')
 #
 # all scalar  ----
 
@@ -10,9 +10,38 @@ named.zero <- 0
 names(named.one) <- x
 names(named.zero) <- x
 
+lw <-  1
+test_that("between - scalar, pointwise",{
+    expect_equal(between(x, lw           ), named.one)
+    # skippng high while not naming the other parameters fails
+    expect_error(between(x, lw, T, T, 'b'), "apparently no `high' but unnamed parameters that take it's place - please specify", fixed = TRUE)
+    # either specify ALL later parameters that could slide in ...
+        expect_equal(between(x, lw, i=T, n=T, e='b'), named.one)
+    # ... or fill in high
+    expect_equal(between(x, lw, NULL, T, T, 'b'), named.one)
+    expect_equal(between(x, lw, i=T, n=T, e='n'), named.one)
+    expect_equal(between(x, lw, i=T, n=T, e='l'), named.one)
+    expect_equal(between(x, lw, i=T, n=T, e='r'), named.one)
+    expect_equal(between(x, lw, i=T, n=F, e='b'), 1)
+    expect_equal(between(x, lw, i=T, n=F, e='n'), 1)
+    expect_equal(between(x, lw, i=T, n=F, e='l'), 1)
+    expect_equal(between(x, lw, i=T, n=F, e='r'), 1)
+    expect_equal(between(x, lw, i=F, n=T, e='b'), matrix(TRUE, dimnames = list(x, paste(lw, lw,
+                                                                                sep = '-'))))
+    expect_equal(between(x, lw, i=F, n=T, e='n'), matrix(TRUE, dimnames = list(x, paste(lw, lw,
+                                                                                sep = '-'))))
+    expect_equal(between(x, lw, i=F, n=T, e='l'), matrix(TRUE, dimnames = list(x, paste(lw, lw,
+                                                                                sep = '-'))))
+    expect_equal(between(x, lw, i=F, n=T, e='r'), matrix(TRUE, dimnames = list(x, paste(lw, lw,
+                                                                                sep = '-'))))
+    expect_equal(between(x, lw, i=F, n=F, e='b'), matrix(TRUE))
+    expect_equal(between(x, lw, i=F, n=F, e='n'), matrix(TRUE))
+    expect_equal(between(x, lw, i=F, n=F, e='l'), matrix(TRUE))
+    expect_equal(between(x, lw, i=F, n=F, e='r'), matrix(TRUE))
+})
+
 lw <- 0
 hg <- 2
-
 test_that("all scalar, fully within", {
     expect_equal(between(x, lw, hg), named.one)    # default, same as next
     expect_equal(between(x, lw, hg, TRUE , TRUE ), named.one)
@@ -26,16 +55,25 @@ test_that("all scalar, fully within", {
 
 x <- 0
 names(named.one) <- x
+names(named.zero) <- x
 
 test_that("all scalar, on lower edge", {
     expect_equal(between(x, lw, hg), named.one)    # default, same as next
     expect_equal(between(x, lw, hg, TRUE , TRUE ), named.one)
     expect_equal(between(x, lw, hg, TRUE , FALSE), 1)
     expect_equal(between(x, lw, hg, FALSE, TRUE ), matrix(TRUE,
-                                                        dimnames = list(x,
-                                                                        paste(lw, hg,
-                                                                              sep = '-'))))
+                                                          dimnames = list(x,
+                                                                          paste(lw, hg,
+                                                                                sep = '-'))))
     expect_equal(between(x, lw, hg, FALSE, FALSE), matrix(TRUE))
+    expect_equal(between(x, lw, hg, e = 'r'), named.zero)    # default, same as next
+    expect_equal(between(x, lw, hg, TRUE , TRUE , e = 'r'), named.zero)
+    expect_equal(between(x, lw, hg, TRUE , FALSE, e = 'r'), 0)
+    expect_equal(between(x, lw, hg, FALSE, TRUE , e = 'r'), matrix(FALSE,
+                                                                   dimnames = list(x,
+                                                                                   paste(lw, hg,
+                                                                                         sep = '-'))))
+    expect_equal(between(x, lw, hg, FALSE, FALSE, e = 'r'), matrix(FALSE))
 })
 
 x <- 2
@@ -153,7 +191,7 @@ test_that("vector x, scalar range, outside both sides", {
     x <- c(-1,3)
     named.zero <- rep(0,lx)
     names(named.zero) <- x
-    
+
     expect_equal(between(x, lw, hg), named.zero)    # default, same as next
     expect_equal(between(x, lw, hg, TRUE , TRUE ), named.zero)
     expect_equal(between(x, lw, hg, TRUE , FALSE), c(0,0))
@@ -179,7 +217,7 @@ test_that("vector x, scalar range, outside above", {
 })
 
 # scalar / vector ----
-context("scalar x / vector range")
+context("between - scalar x / vector range")
 lw <- c(0,2)
 hg <- c(1,3)
 
