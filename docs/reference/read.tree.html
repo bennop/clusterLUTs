@@ -118,9 +118,7 @@ assignments (the number of cluters at each cut is given by the number of unique
 entries)</p>
     </div>
 
-    <pre class="usage"><span class='fu'>read.tree</span>(
-  <span class='kw'>file</span> <span class='kw'>=</span> <span class='st'>"~/Work/4philipp/BrainLUTs/sbm_1_145_0_result_hclust_atlas.mat"</span>
-)</pre>
+    <pre class="usage"><span class='fu'>read.tree</span>(<span class='kw'>file</span> <span class='kw'>=</span> <span class='st'>"sbm_1_145_0_result_hclust_atlas.mat"</span>, <span class='kw'>path</span> <span class='kw'>=</span> <span class='fu'><a href='projdir.html'>projdir</a></span>(), <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -128,6 +126,14 @@ entries)</p>
     <tr>
       <th>file</th>
       <td><p>Matlab hclust result file (Matlab *.mat-file)</p></td>
+    </tr>
+    <tr>
+      <th>path</th>
+      <td><p>directory where to find file</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>ignored</p></td>
     </tr>
     </table>
 
@@ -142,7 +148,7 @@ names indicating the number of clusters for that cut.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-   <span class='no'>tree</span> <span class='kw'>&lt;-</span> <span class='fu'>read.tree</span>(<span class='no'>path_to_treefile</span>)
+   <span class='no'>tree</span> <span class='kw'>&lt;-</span> <span class='fu'>read.tree</span>(<span class='no'>treefile</span>, <span class='no'>path_to_treefile</span>)
 }</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -136,14 +136,16 @@
     <p>invisible the cut levels corresponding to <code>cuts</code></p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>This needs a "real" hclust object, the output of <code><a href='https://rdrr.io/r/stats/cutree.html'>cutree</a></code> will,
-unfortunately,  not work.</p>
+    <p>This needs a "real" <code><a href='https://rdrr.io/r/stats/hclust.html'>hclust</a></code> object, the output of 
+<code><a href='https://rdrr.io/r/stats/cutree.html'>cutree</a></code> will, unfortunately,  not work.</p>
 <p>The cut levels that are shown are set halfway between the heights of the
- merging levels.</p>
+merging levels.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>dt</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='dummy.tree.html'>dummy.tree</a></span>()
-<span class='fu'>dend.with.cuts</span>(<span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>dt</span>, <span class='st'>'hc'</span>), <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span>(<span class='no'>dt</span>)), <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"#ffa050"</span>)</div><div class='img'><img src='dend.with.cuts-1.png' alt='' width='700' height='433' /></div></pre>
+<span class='fu'>dend.with.cuts</span>(<span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>dt</span>, <span class='st'>'hc'</span>),
+               <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span>(<span class='no'>dt</span>)),
+               <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"#ffa050"</span>)</div><div class='img'><img src='dend.with.cuts-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
