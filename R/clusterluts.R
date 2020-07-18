@@ -192,6 +192,8 @@ readlut <- function(file,
 #' names indicating the number of clusters for that cut.
 #'
 #' @param file Matlab hclust result file (Matlab *.mat-file)
+#' @param path directory where to find file
+#' @param ... ignored
 #'
 #' @return a matrix with just the cluster assignments
 #' @export
@@ -200,10 +202,12 @@ readlut <- function(file,
 #'
 #' @examples
 #' \dontrun{
-#'    tree <- read.tree(path_to_treefile)
+#'    tree <- read.tree(treefile, path_to_treefile)
 #' }
-read.tree <- function(file = file.path(projdir(),
-                                       'bm_1_145_0_result_hclust_atlas.mat')){
+read.tree <- function(file = 'sbm_1_145_0_result_hclust_atlas.mat',
+                      path = projdir(),
+                      ...){
+    file <- filepath(path, file)
     if(!file.exists(file)){
         stop(sprintf("tree file not found\n\t'%s'",
                      file))
@@ -450,19 +454,24 @@ cut.shades <- function(cut,
 
 ##----  Helper functions, mostly for internal use ----
 
-#' binary AND
+#' binary bitwise AND
 #'
-#' wrapper for \code{\link[base]{bitwAnd}}
+#' Wrapper for \code{\link[base]{bitwAnd}}, simply providing a binary interface.
+#' 
+#' While \code{a} or \code{b} can be any type of atomic variable, results may be 
+#' difficult to interpret for those other than logical or integer
 #'
-#' @param a
-#' @param b
+#' @param a boolean or numeric (integer)
+#' @param b boolean or numeric (integer)
 #'
 #' @return bitwise AND of \code{a} and \code{b}
 #' @export
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
 #' @examples
-#' 1 %and% 3
+#' 1 %&% 3
+#' pi %&% 2      
+#' 0.5 %&% 0.75
 `%&%` <- function(a,b){
     bitwAnd(a,b)
 }
@@ -500,7 +509,9 @@ between <- function(x,
                     named = TRUE,
                     edges = NULL,
                     ...) {
-    #browser()
+    if(exists("DBG"))
+        browser(expr = DBG==1)   # start browser by setting `DBG=1` on command line
+    
     if(is.logical(high) || is.character(high)){
         # high was not provided and some of the other parameters were given
         # unnamed and, thus, assigned in a wrong order
@@ -933,13 +944,15 @@ show.colmat <- function(cv){
 #' @examples
 #' init.huerange.plot()
 init.huerange.plot <- function(...){
-    plot(0:1, 0:1,
-         type ='n',
-         axes = FALSE,
-         xlab = 'hue',
-         ylab = '',
-         ...)
-    axis(1)
+    suppressWarnings(
+        plot(0:1, 0:1,
+             type ='n',
+             axes = FALSE,
+             xlab = 'hue',
+             ylab = '',
+             ...)
+    )
+axis(1)
 }
 
 #' convert hue range matrix to corresponding colors
@@ -994,16 +1007,23 @@ hue.range.lines <- function(hue.range,
     }
     hues <- apply(hue.range, 2, mean)
     # print(hues)
-    segments(x0  = hue.range[1,],
-             y0  = y,
-             x1  = hue.range[2,],
-             col = hue.range.colors(hue.range, ...),
-             ...)
+    suppressWarnings(
+        segments(x0  = hue.range[1,],
+                 y0  = y,
+                 x1  = hue.range[2,],
+                 col = hue.range.colors(hue.range, ...),
+                 ...)
+    )
 }
 
 #' plot hues for a \code{\link{tree.ranges}} result
 #'
 #' @param tr output of \code{\link{tree.ranges}}
+#' @param add add to existing plot or start new one
+#' @param show.tree show lines indicating the tree structure
+#' @param ts.col tree segment color
+#' @param ts.lty tree segment line type
+#' @param ts.lwd tree segment line width
 #' @param ... passed to \code{\link{hue.range.lines}}
 #'
 #' @return none
@@ -1012,24 +1032,38 @@ hue.range.lines <- function(hue.range,
 #'
 #' @examples
 #' tr <- tree.ranges(dummy.tree())
-#' plot.tree.ranges(tree.ranges(dummy.tree()))
-plot.tree.ranges <- function(tr,
-                             add = FALSE,
+#' plot.tree.ranges(tree.ranges(dummy.tree()), show.tree = TRUE)
+tree.ranges.plot <- function(tr,
+                             add       = FALSE,
                              show.tree = FALSE,
+                             ts.col    = 'lightgrey',
+                             ts.lty    = 1,
+                             ts.lwd    = 1,
                              ...){
-    n <- length(tr)
+    
     if (! add) init.huerange.plot(...)
 
+    n <- length(tr)                       # number of tree levels
     line.levels <- 1 - (1:n-1)/n
+    
     #browser()
     if(show.tree){
+        # trace clusters 
         for (i in 2:n){
+            # hue range center(s) on previous level
             up.hues <- hue.range.colors(tr[[i-1]], only.hues = TRUE)
+            # hue range center(s) on current level
             hues <-  hue.range.colors(tr[[i]], only.hues = TRUE)
+            # which of the preceding range(s) are curent hues in?
             corresp <- between(hues, tr[[i-1]])
+            # properly align matches on preceding level to current hues
+            # (not necessarily any specific order, just correspondence)
             x.up <- up.hues[corresp]
+            # show lines representing those correspondences
             segments(hues, line.levels[i], x.up, line.levels[i-1],
-                     col = 'lightgrey')
+                     lty = ts.lty,
+                     lwd = ts.lwd,
+                     col = ts.col)
         }
     }
     for(i in 1:n){
@@ -1155,7 +1189,61 @@ show.shades <- function(shades,
     }
 }
 
+#' show sub tables
+#'
+#' In the context of this package, subtable refers to either a single table or a
+#' list of tables which represents chunks of a higher level table (thus subtable).
+#' They are used to trace clustering trees.
+#' 
+#' If \code{st} is a list of lists, \code{\link{show.sub.tables}} will be called
+#' recursively. For convenience, it is also possible to directly provide the output 
+#' of \code{\link{tree.ranges}}, where the attribute \code{sub.tables} is extracted 
+#' and used.
+#' 
+#' At this point the table relation across levels is not directly shown, it has 
+#' to be infered from the labels
+#' 
+#' @param st subtables or list thereof (or result of  \code{\link{tree.ranges}})
+#' @param wait for internal use, should not be set by caller
+#'
+#' @return string representation of sub tables
+#' @export
+#' @author Benno Pütz \email{puetz@@psych.mpg.de}
+#'
+#' @examples
+#' trdt <- tree.ranges(dummy.tree())
+#' show.sub.tables(attr(trdt, "sub.tables"))
+show.sub.tables <- function(st, 
+                            wait = FALSE) {
+    if('sub.tables' %in% names(attributes(st))){
+        #return(show.sub.tables(attr(st, 'sub.tables')))
+       st <- attr(st, 'sub.tables')
+    }
+    
+    if(is.list(st[[1]])){
+        # iterate over levels
+        full.rep <- lapply(st, show.sub.tables, wait = TRUE)
+        ret <-  lapply(full.rep, function(sv)paste(sv, collapse = "\n"))
+        lapply(ret, function(s)cat(s, '\n\n'))
+        return(invisible(ret))
+    } else {
+        # table level
+        tbl.reps <- sapply(st, 
+                           function(t)capture.output(t)[-1])
+        lvl.strings <- apply(tbl.reps,
+                             1,
+                             paste,
+                             collapse = '-- ')
+        if(!wait){
+            cat(paste(lvl.strings, 
+                      collapse = '\n'))
+        } else {
+            attr(lvl.strings, "widths") <- sapply(tbl.reps[1], nchar)
+        }
+        return(invisible(lvl.strings))
 
+    }
+}
 
 #' show brain lookuptable
 #'
@@ -1251,6 +1339,8 @@ show.brain.lut <- function(n,
 
 #' show cuts
 #'
+#' show how levels of cut relate to individual features
+#' 
 #' @param cut vector with cluster assignments
 #'
 #' @return none
@@ -1272,6 +1362,7 @@ show.cut <- function(cut){
 }
 
 ## special helpers ----
+
 #' randomize cluster assignments
 #'
 #' In R's implementation of \code{\link[stats]{cutree}} the first element is
@@ -1342,11 +1433,11 @@ dummy.tree <- function(n = 9,
 #'
 #' Mainly for debugging
 #'
-#' This needs a "real" hclust object, the output of \code{\link{cutree}} will,
-#' unfortunately,  not work.
+#' This needs a "real" \code{\link[stats]{hclust}} object, the output of 
+#' \code{\link[stats]{cutree}} will, unfortunately,  not work.
 #'
 #' The cut levels that are shown are set halfway between the heights of the
-#'  merging levels.
+#' merging levels.
 #' @param hc output of \code{\link{hclust}}
 #' @param cuts cut levels to show (cluster numbers)
 #' @param ... passed to \code{\link{abline}} (\code{col}, \code{lty}, ...)
@@ -1358,7 +1449,9 @@ dummy.tree <- function(n = 9,
 #'
 #' @examples
 #' dt <- dummy.tree()
-#' dend.with.cuts(attr(dt, 'hc'), as.numeric(colnames(dt)), col = "#ffa050")
+#' dend.with.cuts(attr(dt, 'hc'), 
+#'                as.numeric(colnames(dt)), 
+#'                col = "#ffa050")
 dend.with.cuts <- function(hc, cuts, ...){
     # simple dendrogram plot
     plot(hc)
