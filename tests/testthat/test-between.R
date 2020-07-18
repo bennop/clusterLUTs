@@ -38,6 +38,7 @@ test_that("between - scalar, pointwise",{
     expect_equal(between(x, lw, i=F, n=F, e='n'), matrix(TRUE))
     expect_equal(between(x, lw, i=F, n=F, e='l'), matrix(TRUE))
     expect_equal(between(x, lw, i=F, n=F, e='r'), matrix(TRUE))
+    expect_error(between(NA, 1:2), "missing value where TRUE/FALSE needed", fixed = TRUE)
 })
 
 lw <- 0
