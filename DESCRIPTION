@@ -3,15 +3,19 @@ Type: Package
 Title: Color lookup ables for use with hierarchical clustering
 Version: 0.1.0
 Date: 2020-07-14
-Author: Benno Pütz 
+Authors@R: person("Benno", "Pütz",
+                  email = "puetz@psych.mpg.de",
+                  role = c("aut", "cre"))
 Maintainer: Benno Pütz  <puetz@psych.mpg.de>
 Description: Create related color lookup tables (LUTs) so that for clustering 
-  across different cluster numbers the individual clusters stay in i a fixed hue 
+  across different cluster numbers the individual clusters stay in a fixed hue 
   relation.
 Encoding: UTF-8
 License: GPL (>= 2)
-Imports: Rcpp (>= 1.0.4)
+Imports: 
+    Rcpp (>= 1.0.4)
 LinkingTo: Rcpp
 RoxygenNote: 7.1.0
 Suggests: 
-    testthat
+    testthat,
+    dendextend
