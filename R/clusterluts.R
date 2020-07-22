@@ -113,6 +113,9 @@ treeluts <- function(clusters   = read.tree(),
 
     n.clust <- nrow(clusters)
     n.cuts <- ncol(clusters)
+
+    tr <- tree.ranges(clusters)
+
     apply(clusters, 2,   # for each cut
           function(v){
               n <- vlevels(v)
@@ -1125,23 +1128,43 @@ show.hue.range <- function(hr,
                            width      = NULL,
                            v.scale    = 1,
                            ...,
-                           wait       = FALSE) {
-    #browser()
+                           wait       = FALSE,
+                           width.x    = width,
+                           width.y    = width) {
+#browser(expr = wait)
     if(is.list(hr)){
         init.blank.plot()
-        n <- length(hr)
-        if(is.null(width)){
+
+        n <- length(hr)                 # number of levels
+
+        if(is.null(width) && (is.null(width.x) || is.null(width.y))){
             width <- rep(1/max(sapply(hr, ncol)) * (1-spacing),
                          n)
         }
-        ys <- 1:n/n - 0.5/n
+        if(is.null(width.x)) {
+            width.x <- rep(width, n)
+        } else {
+            width.x <- rep(width.x, n)
+        }
+        if(is.null(width.y) || width.y == 0){
+            width.y <- rep(pmax(pmin(width, 1/n), 1/n),
+                           n)
+        } else {
+            width.y <- rep(width.y, n)
+        }
+
+        ys <- 1:n/n - 0.5/n             # equidistant y-levels
+
+        print(rbind(width.x, width.y, ys))
+
         lapply(1:n,
                function(i){
                    show.hue.range(hr[[i]],
                                   extractfun = extractfun,
                                   spacing    = spacing,
                                   y          = ys[i],
-                                  width      = width[i],
+                                  width.x    = width.x[i],
+                                  width.y    = width.y[i],
                                   v.scale    = v.scale,
                                   wait       = TRUE,
                                   ...)
@@ -1152,9 +1175,11 @@ show.hue.range <- function(hr,
         if(!wait) {
             init.blank.plot()
             if (is.null(y)) y <-  0.5
-            if (is.null(width) || width == 0) width <-  1/n * (1-spacing)
         }
-
+        if (is.null(width.x) || width.x == 0)
+            width.x <-  1/n * (1-spacing)
+        if(is.null(width.y))
+            width.y <- width.x
         if(exists("DBG"))
             browser(expr = DBG>0)   # start browser by setting `DBG=1` on command line
 
@@ -1162,8 +1187,9 @@ show.hue.range <- function(hr,
                                  extractfun,
                                  only.hues = TRUE)
         xs <- 1:n/n - 0.5/n
-        r <- width * 0.5
-        rect(xs - r, y - r * v.scale, xs + r, y + r * v.scale,
+        r.x <- width.x * 0.5
+        r.y <- width.y * 0.5
+        rect(xs - r.x, y - r.y * v.scale, xs + r.x, y + r.y * v.scale,
              border = NA,
              col    = hsv(hues, 1, 1))
     }
