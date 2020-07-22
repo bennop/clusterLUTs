@@ -11,6 +11,15 @@ test_that("vlevels", {
     expect_equal(vlevels(c(1:4, 1:3, 1:2, 1)), 4)
 })
 
+test_that("concat.tbl.list", {
+    set.seed(42)
+    tl <- list(table(sample(1:2, 10, T)), table(sample(7:9, 10, T)))
+    res  <- matrix(c(1,1,2,2,2, 1,2,7,8,9, 5,5,3,3,4), nr = 3, byrow = T,
+                   dimnames = list(c('index', 'downlink', 'n'), NULL))
+    expect_equal(concat.tbl.list(tl), res[2:3,])
+    expect_equal(concat.tbl.list(tl, idx = TRUE), res)
+})
+
 # color ----
 context("color")
 test_that("vec2rgb", {
@@ -35,9 +44,9 @@ test_that("hue range", {
 
 # debug ----
 context("debug")
-dt <- dummy.tree()
 test_that("dummy tree", {
+    dt <- dummy.tree()
     expect_known_hash(dt, hash = "d4032aea3f")
-    expect_equal(dend.with.cuts(attr(dt, 'hc'), as.numeric(colnames(dt)), col = "#ffa050"),
+    expect_equal(dend.with.cuts(dt, cut.col = "#ffa050"),
                   c(44.89947, 43.97886, 42.27916), tolerance = .00002)
 })

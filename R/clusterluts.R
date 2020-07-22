@@ -34,7 +34,7 @@ projdir <- function(basedir = '~/Work/4philipp/BrainLUTs',
 
 #' local LUT directory
 #'
-#' Used as default for \code{\link{tree.luts}}
+#' Used as default output directory for \code{\link{tree.luts}}
 #'
 #'
 #' ~~~~~~~~~~~~~~~~~~~ C A V E A T ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -73,10 +73,13 @@ LUTdir <- function(basedir = projdir(),
 require(R.matlab)    # for readMat()
 require(gtools)      # for even()
 
+
+
 ##---- Rcpp helper ----------------
 ## source / load Rcpp helper function
 ## fix path problem later
 # Rcpp::sourceCpp("writelut.cpp")
+
 
 ##---  R functions -----------------
 #' LUT generation for hierachical clustering tree
@@ -262,7 +265,7 @@ ColorShadeRamp <- function(col,
 #' @param col color vector; must be a valid argument to \code{\link[grDevices]{col2rgb}}
 #'  or a \eqn{3xN} RGB color matrix (one column per color).
 #' @param reps vector of repetitions
-#' @param scale how much of the range to white should be covered
+#' @param scale how much of the range to black/white should be covered
 #' @param direction which way to build the shades, see Description
 #' @param ... passed to \code{\link{colorShadeRamp}}
 #'
@@ -346,12 +349,13 @@ color.shades <- function(col,
 #' can be preseerved
 #'
 #' the output vector is named with 1000 * original level + position with ties for
-#' that level, see example
+#' that level, see example. this can handles multiplicities of up to 999 which
+#' should suffice for most practical cases.
 #'
 #' This is useful to reorder, e.g., a color LUT from \code{\link{color.shades}}
 #' according to levels.
 #'
-#' @param cut cut from hierarchical clustering
+#' @param cut cut from hierarchical clustering (through \code{link[stats]{cutree}})
 #'
 #' @return rank vector with names to indicate level and order within ties
 #' @export
@@ -430,19 +434,19 @@ default.lab <- function(n = 12, ...){
 #' and use that as basis for a shading through \code{\link{color.shades}}. Then
 #' reorder the shading to arrange according to cluster members.
 #'
-#'
-#'
 #' @param cut vector of cluster assignments
 #' @param col.fun function mapping a number to that many colors from a palette
+#' @param ... ignored
 #'
 #' @return color shades reordered (see details)
 #' @export
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
 #' @examples
-#' cut.shades(sample(6, 15, T))
+#' cut.shades(cut = sample(6, 15, T))
 cut.shades <- function(cut,
-                       col.fun = default.rgb){
+                       col.fun = default.rgb,
+                       ...){
     tbl <- table(cut)
     cs <- color.shades(col.fun(length(tbl)),
                        tbl)
@@ -457,8 +461,8 @@ cut.shades <- function(cut,
 #' binary bitwise AND
 #'
 #' Wrapper for \code{\link[base]{bitwAnd}}, simply providing a binary interface.
-#' 
-#' While \code{a} or \code{b} can be any type of atomic variable, results may be 
+#'
+#' While \code{a} or \code{b} can be any type of atomic variable, results may be
 #' difficult to interpret for those other than logical or integer
 #'
 #' @param a boolean or numeric (integer)
@@ -470,7 +474,7 @@ cut.shades <- function(cut,
 #'
 #' @examples
 #' 1 %&% 3
-#' pi %&% 2      
+#' pi %&% 2
 #' 0.5 %&% 0.75
 `%&%` <- function(a,b){
     bitwAnd(a,b)
@@ -511,7 +515,7 @@ between <- function(x,
                     ...) {
     if(exists("DBG"))
         browser(expr = DBG==1)   # start browser by setting `DBG=1` on command line
-    
+
     if(is.logical(high) || is.character(high)){
         # high was not provided and some of the other parameters were given
         # unnamed and, thus, assigned in a wrong order
@@ -577,9 +581,13 @@ between <- function(x,
 #' to 2-row matrices via \code{rbind}. Those matrices are in turn concatenated
 #' via \code{cbind}.
 #'
+#' Parameter \code{idx} indicates whether or not to include "index" information,
+#' i.e., indicate which table an entry came from (off by default)
+#'
 #' Names of the sub-tables are assumed to be numeric as is the case for the table
 #' lists
 #' @param tbl.lst list of tables
+#' @param idx whether or not to include "index" information
 #' @param ... ignored
 #'
 #' @return matrix corresponding to the \code{cbind}-concatenation of \code{tbl.lst}
@@ -605,9 +613,10 @@ concat.tbl.list <- function(tbl.lst,
 #'
 #' count the number of unique entries in vector (usually an index vector with
 #' integer elements)
+#'
 #' @param v vector
 #'
-#' @return number of unique lements in \code{v}
+#' @return number of unique elements in \code{v}
 #' @export
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
@@ -756,7 +765,8 @@ rainbow_lab <- function(n,
 #' In either case, \code{blank} is assumed to be a "global" parameter across all
 #' hue ranges.
 #' @param hue.range hue range vector or matrix
-#' @param split.tbl vector giving the weights of the splits (or list of such
+#' @param split.tbl vector (possibly result of \code{\link{table}}) giving the
+#'                  weights of the splits (or list of such
 #'                  vectors applied to corresponding matrix colunm)
 #' @param blank which fraction of the range should be left blank
 #'
@@ -823,6 +833,54 @@ split.hue.range <- function(hue.range,
     return(real.ranges)
 }
 
+##' convert table to matrix
+##'
+##' Create a matrix with names and values of the input table forming a row each.
+##'
+##' It is assumed that \code{tbl}'s names are all numeric
+##' @title table to matrix
+##' @param tbl output of \code{\link[base]{table}}
+##' @param extra extra row(s) to be included (see description)
+##' @param vname optional rowname if \code{extra} is a vector
+##' @param ... ignored
+##'
+##' @return a 2-row matrix representing the table.
+##' @export
+##' @author Benno Pütz \email{puetz@@psych.mpg.de}
+##'
+##' @examples
+##' tbl2mat(table(1:3))
+tbl2mat <- function(tbl,
+                    uplink = NULL,
+                    ...){
+    mat <- rbind(as.numeric(names(tbl)),
+                 tbl)
+    rownames(mat) <- c('idx', 'n')
+    colnames(mat) <- mat[1, ]
+
+    if(!is.null(uplink)) {
+        n <- ncol(mat)
+        dex <- dim(uplink)
+        if(is.null(dex)){                             # vector?
+            if(length(uplink) == n){                  # correct length?
+                mat  <- rbind(mat, uplink)
+            } else {
+                warning("incompatible vector 'uplink' - ignored")
+            }
+        } else {
+            if(length(dex) == 2){                     # matrix?
+                if(dim(uplink)[2] == n){              # correct ncol?
+                    mat  <- rbind(mat, uplink)
+                } else {
+                    warning("incompatible matrix 'uplink' - ignored")
+                }
+            } else {
+                warning("incompatible array 'uplink' - ignored")
+            }
+        }
+    }
+    return(mat)
+}
 
 #' full hue range set for cutree
 #'
@@ -924,7 +982,8 @@ show.colmat <- function(cv){
             cat(idx,'\n')
             if(idx <= lcv){
                 print(cv[,idx])
-                rect(j-.5, i-.5, j+.5, i+.5, col = vec2rgb(cv[,idx]))
+                rect(j-.5, i-.5, j+.5, i+.5,
+                     col = vec2rgb(cv[,idx]))
             }
         }
     }
@@ -952,13 +1011,38 @@ init.huerange.plot <- function(...){
              ylab = '',
              ...)
     )
-axis(1)
+    axis(1)
+}
+
+#' blank plot
+#'
+#' just an empty plot [0,1]x[0,1] with nothing on it (no axes, no labels)
+#'
+#' @param ... goes to plot
+#'
+#' @return nne
+#' @export
+#' @author Benno Pütz \email{puetz@@psych.mpg.de}
+#'
+#' @examples
+#' init.blank.plot()
+init.blank.plot <- function(...){
+    suppressWarnings(
+        plot(0:1, 0:1,
+             type ='n',
+             axes = FALSE,
+             xlab = '',
+             ylab = '',
+             ...)
+    )
 }
 
 #' convert hue range matrix to corresponding colors
 #'
-#' A hue range matrix is a \eqn{2\times N} matrix where each column defines a range in
-#' @param hr hue range matrix
+#' A hue range matrix is a \eqn{2\times N} matrix where each column defines a
+#' range in hue space [0 .. 1]
+#'
+#' @param hr hue range matrix or a list thereof
 #' @param extractfun function to calculate efective hue from hue range
 #' @param ... passed to \code{\link{hsv}}
 #'
@@ -975,10 +1059,71 @@ hue.range.colors <- function(hr,
                              extractfun = mean,
                              only.hues = FALSE,
                              ...){
-    hues <- apply(hr, 2, extractfun)
-    return(if(only.hues) hues else hsv(hues))
+    if(is.list(hr)){
+        return(lapply(hr, hue.range.colors,
+               extractfun,
+               only.hues))
+    } else {
+        hues <- apply(hr, 2, extractfun)
+        return(if(only.hues) hues else hsv(hues))
+    }
 }
 
+#' Show hue range colors
+#'
+#' Similar to \code{\link{hue.range.plot}} but show the unordered colors
+#'
+#' @param hr hue range or list thereof
+#' @param spacing
+#' @param y
+#' @param width
+#' @param ... ignored
+#' @param wait for internal use, should not be set by caller
+#'
+#' @return none
+#' @export
+#' @author Benno Pütz \email{puetz@@psych.mpg.de}
+#'
+#' @examples
+show.hue.range <- function(hr,
+                           extractfun = mean,
+                           spacing    = 0.1,
+                           y          = NULL,
+                           width      = NULL,
+                           ...,
+                           wait       = FALSE) {
+    browser()
+    if(is.list(hr)){
+        init.blank.plot()
+        n <- length(hr)
+        width <- 1/max(sapply(hr, length)) * (1-spacing)
+        ys <- 1:n/n - 0.5/n
+        lapply(1:n,
+               function(i){
+                   show.hue.range(hr[[i]],
+                                  extractfun = extractfun,
+                                  y          = ys[i],
+                                  width      = width,
+                                  wait       = TRUE)
+               }
+        )
+    } else {
+        n <- ncol(hr)
+        if(!wait) {
+            init.blank.plot()
+            if (is.null(y)) y <-  0.5
+            if (is.null(width)) width <-  1/n * (1-spacing)
+        }
+        hues <- hue.range.colors(hr,
+                                 extractfun,
+                                 only.hues = TRUE)
+        xs <- 1:n/n - 0.5/n
+        r <- width * 0.5
+        rect(xs - r, y - r, xs + r, y + r,
+             border = NA,
+             col    = hsv(hues, 1, 1))
+    }
+}
 
 #' plot hue range
 #'
@@ -1040,15 +1185,15 @@ tree.ranges.plot <- function(tr,
                              ts.lty    = 1,
                              ts.lwd    = 1,
                              ...){
-    
+
     if (! add) init.huerange.plot(...)
 
     n <- length(tr)                       # number of tree levels
-    line.levels <- 1 - (1:n-1)/n
-    
+    line.levels <- 1 - (1:n-1)/n - 0.5/n
+
     #browser()
     if(show.tree){
-        # trace clusters 
+        # trace clusters
         for (i in 2:n){
             # hue range center(s) on previous level
             up.hues <- hue.range.colors(tr[[i-1]], only.hues = TRUE)
@@ -1066,12 +1211,13 @@ tree.ranges.plot <- function(tr,
                      col = ts.col)
         }
     }
+
+    # color bars
     for(i in 1:n){
         hue.range.lines(tr[[i]],
-                        y   = 1 - (i-1)/n,
+                        y   = line.levels[i],
                         add = TRUE,
                         ...)
-
     }
 }
 
@@ -1194,16 +1340,17 @@ show.shades <- function(shades,
 #' In the context of this package, subtable refers to either a single table or a
 #' list of tables which represents chunks of a higher level table (thus subtable).
 #' They are used to trace clustering trees.
-#' 
+#'
 #' If \code{st} is a list of lists, \code{\link{show.sub.tables}} will be called
-#' recursively. For convenience, it is also possible to directly provide the output 
-#' of \code{\link{tree.ranges}}, where the attribute \code{sub.tables} is extracted 
+#' recursively. For convenience, it is also possible to directly provide the output
+#' of \code{\link{tree.ranges}}, where the attribute \code{sub.tables} is extracted
 #' and used.
-#' 
-#' At this point the table relation across levels is not directly shown, it has 
+#'
+#' At this point the table relation across levels is not directly shown, it has
 #' to be infered from the labels
-#' 
+#'
 #' @param st subtables or list thereof (or result of  \code{\link{tree.ranges}})
+#' @param ... ignored
 #' @param wait for internal use, should not be set by caller
 #'
 #' @return string representation of sub tables
@@ -1211,31 +1358,43 @@ show.shades <- function(shades,
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
 #' @examples
-#' trdt <- tree.ranges(dummy.tree())
-#' show.sub.tables(attr(trdt, "sub.tables"))
-show.sub.tables <- function(st, 
+#' show.sub.tables(attr(tree.ranges(dummy.tree()), "sub.tables"))
+show.sub.tables <- function(st,
+                            ...,
                             wait = FALSE) {
     if('sub.tables' %in% names(attributes(st))){
         #return(show.sub.tables(attr(st, 'sub.tables')))
        st <- attr(st, 'sub.tables')
     }
-    
+
     if(is.list(st[[1]])){
         # iterate over levels
         full.rep <- lapply(st, show.sub.tables, wait = TRUE)
         ret <-  lapply(full.rep, function(sv)paste(sv, collapse = "\n"))
-        lapply(ret, function(s)cat(s, '\n\n'))
+        lens <- (sapply(ret, nchar)-1 ) %/% 4
+        addspc <- max(lens) - lens
+        offset <- sapply(addspc,
+                         function(n){
+                             return(substr('                                                           ',
+                                    1, n))
+                             }
+                         )
+        ret <- mapply(function(o,s)sub("\n", paste0("\n", o), s),
+                      offset,
+                      ret)
+        lapply(rev(paste0(offset, ret)),
+               function(s)cat(s, '\n\n'))
         return(invisible(ret))
     } else {
         # table level
-        tbl.reps <- sapply(st, 
+        tbl.reps <- sapply(st,
                            function(t)capture.output(t)[-1])
         lvl.strings <- apply(tbl.reps,
                              1,
                              paste,
                              collapse = '-- ')
         if(!wait){
-            cat(paste(lvl.strings, 
+            cat(paste(lvl.strings,
                       collapse = '\n'))
         } else {
             attr(lvl.strings, "widths") <- sapply(tbl.reps[1], nchar)
@@ -1433,12 +1592,12 @@ dummy.tree <- function(n = 9,
 #'
 #' Mainly for debugging
 #'
-#' This needs a "real" \code{\link[stats]{hclust}} object, the output of 
+#' This needs a "real" \code{\link[stats]{hclust}} object, the output of
 #' \code{\link[stats]{cutree}} will, unfortunately,  not work.
 #'
 #' The cut levels that are shown are set halfway between the heights of the
 #' merging levels.
-#' @param hc output of \code{\link{hclust}}
+#' @param hc output of \code{\link{dummy.tree}}
 #' @param cuts cut levels to show (cluster numbers)
 #' @param ... passed to \code{\link{abline}} (\code{col}, \code{lty}, ...)
 #'
@@ -1449,22 +1608,61 @@ dummy.tree <- function(n = 9,
 #'
 #' @examples
 #' dt <- dummy.tree()
-#' dend.with.cuts(attr(dt, 'hc'), 
-#'                as.numeric(colnames(dt)), 
-#'                col = "#ffa050")
-dend.with.cuts <- function(hc, cuts, ...){
+#' dend.with.cuts(dt, cut.col = "#ffa050")
+dend.with.cuts <- function(dt,
+                           cuts = NULL,
+                           cut.col =  "#ffa050",
+                           ...){
     # simple dendrogram plot
-    plot(hc)
-    # determine appropriate cur levels
+    if('hc' %in% names(attributes(dt))){
+        # interpret as output of dummy.tree and extract underlying hclust object
+        hc <- attr(dt, 'hc')
+    } else {
+        stop("not recognized as dummy.tree output")
+    }
+
     hr <- range(hc$height)
     n <- length(hc$height)
     hrx <- diff(hr)/(2*n)
+    h.low <- min(hr) - 3*hrx
+    dg <- as.dendrogram(hc)
+    #browser()
+    op <- par(mar=c(4,5,4,5)+.1)
+    DEX <- FALSE
+    if(!require(dendextend)){
+        plot(hc,
+             las = 1,
+             xlab = 'cluster index',
+             axes = FALSE,
+             ...)
+    } else {
+        DEX <- TRUE
+        plot(dg %>% raise.dendrogram(-h.low),
+             axes = FALSE,
+             ...)
+    }
+    par(op)
+
+    if(is.null(cuts)){
+        cuts <- as.numeric(colnames(dt))
+    }
+
+    # determine appropriate cur levels
     hgt <- rev(c(min(hc$height)-hrx,    # add pseudo levels at top ...
                  hc$height,
                  max(hc$height)+hrx))   # ... and bottom
-    cuts <- cuts[cuts>0 & cuts <= n+1]
-    cutlvl <- (hgt[cuts+1]+hgt[cuts])/2
+    cuts <- cuts[cuts > 0 & cuts <= n+1]
+    raise <-  ifelse(DEX, h.low, 0)
+    cutlvl <- (hgt[cuts+1] + hgt[cuts])/2 - raise
     # show them
-    abline(h=cutlvl, ...)
-    return(invisible(cutlvl))
+    abline(h = cutlvl, col = cut.col, ...)
+    axis(4,
+         at = cutlvl,
+         labels = sub(' ', '  ',sprintf("%2d",cuts)),
+         col = NA,
+         lwd = 0,
+         col.ticks = cut.col,
+         las = 1,
+         ...)
+    return(invisible(cutlvl+raise))
 }
