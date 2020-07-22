@@ -20,7 +20,28 @@ test_that("concat.tbl.list", {
     expect_equal(concat.tbl.list(tl, idx = TRUE), res)
 })
 
-# color ----
+test_that("table 2 matrix",{
+    set.seed(42)
+    tbl  <- table(sample(1:3, 10, TRUE))
+    exm1 <- matrix(0, 2,3)
+    exm1b <- exm1; rownames(exm1b) <- letters[1:2]
+    exm2 <- matrix(0, 3,2)
+    rm1 <- matrix(c(1,5,2,3,3,2), nrow=2, dimnames = list(c('idx','n'), 1:3))
+    rm2 <- rbind(rm1, 4:6)
+    rm2b <- rm2; rownames(rm2b)[3] <- 'uplink'
+    rm3 <- rbind(rm1, exm1)
+
+    expect_equal(tbl2mat(tbl), rm1)
+    expect_equal(tbl2mat(tbl, 4:6), rm2b)
+    expect_equal(tbl2mat(tbl, 4:6, vname = 'ext'), rm2b)
+    expect_warning(tbl2mat(tbl, 4:5), "incompatible vector 'uplink' - ignored")
+    expect_equal(tbl2mat(tbl, exm1), rm3)
+    expect_warning(tbl2mat(tbl, matrix(0,2,2)), "incompatible matrix 'uplink' - ignored")
+    expect_warning(tbl2mat(tbl, array(1, dim = rep(1,3))), "incompatible array 'uplink' - ignored")
+
+})
+
+# Color ----
 context("color")
 test_that("vec2rgb", {
     expect_equal(vec2rgb(1:3*80), "#50A0F0")
