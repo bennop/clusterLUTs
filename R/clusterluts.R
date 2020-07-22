@@ -28,7 +28,7 @@ projdir <- function(basedir = '~/Work/4philipp/BrainLUTs',
     }
     if(!dir.exists(basedir)) stop(dir.not.found('base'))
 
-     return(basedir)
+    return(basedir)
 
 }
 
@@ -96,6 +96,7 @@ require(gtools)      # for even()
 #' @param clusters matrix with cluster assignments, one column per cut
 #' @param outdir where to write the LUTs to
 #' @param basename prefix for LUT names ['lut']
+#' @param lut.length length of the LUT (number of entries)
 #' @param ... ignored
 #'
 #' @return
@@ -104,13 +105,14 @@ require(gtools)      # for even()
 #'
 #' @examples
 #' treeluts(cbind(sample(1:10,20,TRUE), 1:20), '.', "example")
-treeluts <- function(clusters = read.tree(),
-                     outdir   = LUTdir(),
-                     basename = 'lut',
+treeluts <- function(clusters   = read.tree(),
+                     outdir     = LUTdir(),
+                     basename   = 'lut',
+                     lut.length = 256,     # required by MRIcron
                      ...){
-    nc <- nrow(clusters)
-    lut.length <- 256     # required by MRIcron
-    last.cut <- ncol(clusters)
+
+    n.clust <- nrow(clusters)
+    n.cuts <- ncol(clusters)
     apply(clusters, 2,   # for each cut
           function(v){
               n <- vlevels(v)
@@ -120,7 +122,7 @@ treeluts <- function(clusters = read.tree(),
               fullpal <- cut.shades(v, ...)
               pmat <- c(fullpal,                      # colors
                         rep(col2rgb('#000000'),       # more black
-                            lut.length - nc - 1),
+                            lut.length - n.clust - 1),
                         col2rgb(ifelse(nc<lut.length, # extra slot?
                                        '#FFFFFF',     # end with white
                                        NULL)
@@ -210,7 +212,7 @@ readlut <- function(file,
 read.tree <- function(file = 'sbm_1_145_0_result_hclust_atlas.mat',
                       path = projdir(),
                       ...){
-    file <- filepath(path, file)
+    file <- file.path(path, file)
     if(!file.exists(file)){
         stop(sprintf("tree file not found\n\t'%s'",
                      file))
@@ -514,7 +516,7 @@ between <- function(x,
                     edges = NULL,
                     ...) {
     if(exists("DBG"))
-        browser(expr = DBG==1)   # start browser by setting `DBG=1` on command line
+        browser(expr = DBG>1)   # start browser by setting `DBG=2` on command line
 
     if(is.logical(high) || is.character(high)){
         # high was not provided and some of the other parameters were given
@@ -1050,7 +1052,7 @@ init.huerange.plot <- function(...){
 #'
 #' @param ... goes to plot
 #'
-#' @return nne
+#' @return none
 #' @export
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
@@ -1115,44 +1117,57 @@ hue.range.colors <- function(hr,
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
 #' @examples
+#' show.hue.range(matrix(0:5/6, nr = 2))
 show.hue.range <- function(hr,
                            extractfun = mean,
                            spacing    = 0.1,
                            y          = NULL,
                            width      = NULL,
+                           v.scale    = 1,
                            ...,
                            wait       = FALSE) {
-    browser()
+    #browser()
     if(is.list(hr)){
         init.blank.plot()
         n <- length(hr)
-        width <- 1/max(sapply(hr, length)) * (1-spacing)
+        if(is.null(width)){
+            width <- rep(1/max(sapply(hr, ncol)) * (1-spacing),
+                         n)
+        }
         ys <- 1:n/n - 0.5/n
         lapply(1:n,
                function(i){
                    show.hue.range(hr[[i]],
                                   extractfun = extractfun,
+                                  spacing    = spacing,
                                   y          = ys[i],
-                                  width      = width,
-                                  wait       = TRUE)
+                                  width      = width[i],
+                                  v.scale    = v.scale,
+                                  wait       = TRUE,
+                                  ...)
                }
-        )
+               )
     } else {
         n <- ncol(hr)
         if(!wait) {
             init.blank.plot()
             if (is.null(y)) y <-  0.5
-            if (is.null(width)) width <-  1/n * (1-spacing)
+            if (is.null(width) || width == 0) width <-  1/n * (1-spacing)
         }
+
+        if(exists("DBG"))
+            browser(expr = DBG>0)   # start browser by setting `DBG=1` on command line
+
         hues <- hue.range.colors(hr,
                                  extractfun,
                                  only.hues = TRUE)
         xs <- 1:n/n - 0.5/n
         r <- width * 0.5
-        rect(xs - r, y - r, xs + r, y + r,
+        rect(xs - r, y - r * v.scale, xs + r, y + r * v.scale,
              border = NA,
              col    = hsv(hues, 1, 1))
     }
+    ignore <- 0                         # suppress return value
 }
 
 #' plot hue range
@@ -1193,6 +1208,8 @@ hue.range.lines <- function(hue.range,
 
 #' plot hues for a \code{\link{tree.ranges}} result
 #'
+#'
+#'
 #' @param tr output of \code{\link{tree.ranges}}
 #' @param add add to existing plot or start new one
 #' @param show.tree show lines indicating the tree structure
@@ -1219,7 +1236,7 @@ tree.ranges.plot <- function(tr,
     if (! add) init.huerange.plot(...)
 
     n <- length(tr)                       # number of tree levels
-    line.levels <- 1 - (1:n-1)/n - 0.5/n
+    line.levels <- rev(1 - (1:n-1)/n - 0.5/n)
 
     #browser()
     if(show.tree){
