@@ -595,19 +595,37 @@ between <- function(x,
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
 #' @examples
-#' concat.tbl.list(list(table(sample(1:3, 10, T)), table(sample(7:9, 10, T))))
+#' table.list <- list(table(sample(1:3, 10, T)), table(sample(7:10, 10, T)))
+#' concat.tbl.list(table.list)
+#' concat.tbl.list(table.list, idx = TRUE)
 concat.tbl.list <- function(tbl.lst,
+                            idx = FALSE,
                             ...){
     tbl.mat <- do.call(cbind,
                        lapply(tbl.lst,
                               function(tbl){
-                                  rbind(as.numeric(names(tbl)),
-                                        as.vector(tbl))
+                                  if('table'%in% class(tbl)){
+                                      rbind(as.numeric(names(tbl)),
+                                            as.vector(tbl))
+                                  } else {
+                                      tb
                                   }
-                              )
+                              }
                        )
+    )
+    if(is.null(rownames(tbl.mat))){
+        rownames(tbl.mat) <- c('downlink',  # index of table on next (i+1) level
+                               'n')         # elements in cluster
+    }
+    if (idx){
+        index <- rep(1:length(tbl.lst),
+                     times = sapply(tbl.lst, length))
+        tbl.mat <- rbind(index = index,     # automatically assign rowname
+                         tbl.mat)
+    }
     return(tbl.mat)
 }
+
 
 #' vector levels
 #'
@@ -1499,7 +1517,7 @@ show.brain.lut <- function(n,
 #' show cuts
 #'
 #' show how levels of cut relate to individual features
-#' 
+#'
 #' @param cut vector with cluster assignments
 #'
 #' @return none

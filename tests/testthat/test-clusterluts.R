@@ -13,11 +13,14 @@ test_that("vlevels", {
 
 test_that("concat.tbl.list", {
     set.seed(42)
-    tl <- list(table(sample(1:2, 10, T)), table(sample(7:9, 10, T)))
-    res  <- matrix(c(1,1,2,2,2, 1,2,7,8,9, 5,5,3,3,4), nr = 3, byrow = T,
+    tl1 <- list(table(sample(1:2, 10, T)), table(sample(7:9, 10, T)))
+
+    res0  <- matrix(c(1,2,7,8,9, 5,5,3,3,4), nr = 2, byrow = T,
+                    dimnames = list(c('downlink', 'n'), NULL))
+    res1  <- matrix(c(1,1,2,2,2, 1,2,7,8,9, 5,5,3,3,4), nr = 3, byrow = T,
                    dimnames = list(c('index', 'downlink', 'n'), NULL))
-    expect_equal(concat.tbl.list(tl), res[2:3,])
-    expect_equal(concat.tbl.list(tl, idx = TRUE), res)
+    expect_equal(concat.tbl.list(tl1), res0)
+    expect_equal(concat.tbl.list(tl1, idx = TRUE), res1)
 })
 
 test_that("table 2 matrix",{
