@@ -41,6 +41,8 @@
 
 <meta property="og:title" content="Show shading in histogram-style plot — show.shades" />
 <meta property="og:description" content="The color matrix shades is expected to have an attribute 'reps' indicating
+the number of shades for each main color (and, thus, the number of main colors.)
+The color matrix shades is expected to have an attribute 'reps' indicating
 the number of shades for each main color (and, thus, the number of main colors.)" />
 
 
@@ -112,9 +114,13 @@ the number of shades for each main color (and, thus, the number of main colors.)
     <div class="ref-description">
     <p>The color matrix <code>shades</code> is expected to have an attribute 'reps' indicating
 the number of shades for each main color (and, thus, the number of main colors.)</p>
+<p>The color matrix <code>shades</code> is expected to have an attribute 'reps' indicating
+the number of shades for each main color (and, thus, the number of main colors.)</p>
     </div>
 
-    <pre class="usage"><span class='fu'>show.shades</span>(<span class='no'>shades</span>, <span class='kw'>orient</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"horizontal"</span>, <span class='st'>"vertical"</span>), <span class='kw'>r</span> <span class='kw'>=</span> <span class='fl'>0.45</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>show.shades</span>(<span class='no'>shades</span>, <span class='kw'>orient</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"horizontal"</span>, <span class='st'>"vertical"</span>), <span class='kw'>r</span> <span class='kw'>=</span> <span class='fl'>0.45</span>, <span class='no'>...</span>)
+
+<span class='fu'>show.shades</span>(<span class='no'>shades</span>, <span class='kw'>orient</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"horizontal"</span>, <span class='st'>"vertical"</span>), <span class='kw'>r</span> <span class='kw'>=</span> <span class='fl'>0.45</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -140,15 +146,20 @@ the number of shades for each main color (and, thus, the number of main colors.)
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>none</p>
+<p>none</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>The "base" colors are shown along the axis indicated by <code>orient</code>, the shades
 are stacked perpendicular to that. If the shades were created with <code>dir = 'all'</code>,
 the shade stacks are aligned on the base colors</p>
+<p>The "base" colors are shown along the axis indicated by <code>orient</code>, the shades
+are stacked perpendicular to that. If the shades were created with <code>dir = 'all'</code>,
+the shade stacks are aligned on the base colors</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>rainbow.shades</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='color.shades.html'>color.shades</a></span>(<span class='fu'><a href='https://rdrr.io/r/grDevices/palettes.html'>rainbow</a></span>(<span class='fl'>20</span>, <span class='kw'>end</span> <span class='kw'>=</span> <span class='fl'>0.8</span>), <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fl'>1</span>:<span class='fl'>10</span>, <span class='fl'>20</span>, <span class='no'>T</span>))
-<span class='fu'>show.shades</span>(<span class='no'>rainbow.shades</span>)</div><div class='img'><img src='show.shades-1.png' alt='' width='700' height='433' /></div></pre>
+<span class='fu'>show.shades</span>(<span class='no'>rainbow.shades</span>)</div><div class='img'><img src='show.shades-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='no'>rainbow.shades</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='color.shades.html'>color.shades</a></span>(<span class='fu'><a href='https://rdrr.io/r/grDevices/palettes.html'>rainbow</a></span>(<span class='fl'>20</span>, <span class='kw'>end</span> <span class='kw'>=</span> <span class='fl'>0.8</span>), <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fl'>1</span>:<span class='fl'>10</span>, <span class='fl'>20</span>, <span class='no'>T</span>))
+<span class='fu'>show.shades</span>(<span class='no'>rainbow.shades</span>)</div><div class='img'><img src='show.shades-2.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

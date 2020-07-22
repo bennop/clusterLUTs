@@ -44,6 +44,11 @@
 The individual tables---assumed to be output from table---in
 tbl.list are split into their name and value part which are combined
 to 2-row matrices via rbind. Those matrices are in turn concatenated
+via cbind.
+Tables are
+The individual tables---assumed to be output from table---in
+tbl.list are split into their name and value part which are combined
+to 2-row matrices via rbind. Those matrices are in turn concatenated
 via cbind." />
 
 
@@ -118,9 +123,16 @@ The individual tables---assumed to be output from <code>table</code>---in
 <code>tbl.list</code> are split into their name and value part which are combined
 to 2-row matrices via <code>rbind</code>. Those matrices are in turn concatenated
 via <code>cbind</code>.</p>
+<p>Tables are
+The individual tables---assumed to be output from <code>table</code>---in
+<code>tbl.list</code> are split into their name and value part which are combined
+to 2-row matrices via <code>rbind</code>. Those matrices are in turn concatenated
+via <code>cbind</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>concat.tbl.list</span>(<span class='no'>tbl.lst</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>concat.tbl.list</span>(<span class='no'>tbl.lst</span>, <span class='kw'>idx</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
+
+<span class='fu'>concat.tbl.list</span>(<span class='no'>tbl.lst</span>, <span class='kw'>idx</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -128,6 +140,10 @@ via <code>cbind</code>.</p>
     <tr>
       <th>tbl.lst</th>
       <td><p>list of tables</p></td>
+    </tr>
+    <tr>
+      <th>idx</th>
+      <td><p>whether or not to include "index" information</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -138,15 +154,32 @@ via <code>cbind</code>.</p>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>matrix corresponding to the <code>cbind</code>-concatenation of <code>tbl.lst</code></p>
+<p>matrix corresponding to the <code>cbind</code>-concatenation of <code>tbl.lst</code></p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Names of the sub-tables are assumed to be numeric as is the case for the table
+    <p>Parameter <code>idx</code> indicates whether or not to include "index" information,
+i.e., indicate which table an entry came from (off by default)</p>
+<p>Names of the sub-tables are assumed to be numeric as is the case for the table
+lists</p>
+<p>Parameter <code>idx</code> indicates whether or not to include "index" information,
+i.e., indicate which table an entry came from (off by default)</p>
+<p>Names of the sub-tables are assumed to be numeric as is the case for the table
 lists</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>concat.tbl.list</span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fl'>1</span>:<span class='fl'>3</span>, <span class='fl'>10</span>, <span class='no'>T</span>)), <span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fl'>7</span>:<span class='fl'>9</span>, <span class='fl'>10</span>, <span class='no'>T</span>))))</div><div class='output co'>#&gt;      [,1] [,2] [,3] [,4] [,5] [,6]
-#&gt; [1,]    1    2    3    7    8    9
-#&gt; [2,]    3    2    5    3    3    4</div></pre>
+    <pre class="examples"><div class='input'><span class='no'>table.list</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fl'>1</span>:<span class='fl'>3</span>, <span class='fl'>10</span>, <span class='no'>T</span>)), <span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fl'>7</span>:<span class='fl'>10</span>, <span class='fl'>10</span>, <span class='no'>T</span>)))
+<span class='fu'>concat.tbl.list</span>(<span class='no'>table.list</span>)</div><div class='output co'>#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7]
+#&gt; [1,]    1    2    3    7    8    9   10
+#&gt; [2,]    3    2    5    3    2    4    1</div><div class='input'><span class='fu'>concat.tbl.list</span>(<span class='no'>table.list</span>, <span class='kw'>idx</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt;       [,1] [,2] [,3] [,4] [,5] [,6] [,7]
+#&gt; index    1    1    1    2    2    2    2
+#&gt;          1    2    3    7    8    9   10
+#&gt;          3    2    5    3    2    4    1</div><div class='input'><span class='no'>table.list</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fl'>1</span>:<span class='fl'>3</span>, <span class='fl'>10</span>, <span class='no'>T</span>)), <span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fl'>7</span>:<span class='fl'>10</span>, <span class='fl'>10</span>, <span class='no'>T</span>)))
+<span class='fu'>concat.tbl.list</span>(<span class='no'>table.list</span>)</div><div class='output co'>#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7]
+#&gt; [1,]    1    2    3    7    8    9   10
+#&gt; [2,]    3    4    3    3    3    3    1</div><div class='input'><span class='fu'>concat.tbl.list</span>(<span class='no'>table.list</span>, <span class='kw'>idx</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt;       [,1] [,2] [,3] [,4] [,5] [,6] [,7]
+#&gt; index    1    1    1    2    2    2    2
+#&gt;          1    2    3    7    8    9   10
+#&gt;          3    4    3    3    3    3    1</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

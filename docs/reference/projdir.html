@@ -41,6 +41,8 @@
 
 <meta property="og:title" content="local project directory — projdir" />
 <meta property="og:description" content="Used as default for tree.luts and read.tree,
+simply check for existence and return input (or default).
+Used as default for tree.luts and read.tree,
 simply check for existence and return input (or default)." />
 
 
@@ -112,9 +114,13 @@ simply check for existence and return input (or default)." />
     <div class="ref-description">
     <p>Used as default for <code>tree.luts</code> and <code><a href='read.tree.html'>read.tree</a></code>,
 simply check for existence and return input (or default).</p>
+<p>Used as default for <code>tree.luts</code> and <code><a href='read.tree.html'>read.tree</a></code>,
+simply check for existence and return input (or default).</p>
     </div>
 
-    <pre class="usage"><span class='fu'>projdir</span>(<span class='kw'>basedir</span> <span class='kw'>=</span> <span class='st'>"~/Work/4philipp/BrainLUTs"</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>projdir</span>(<span class='kw'>basedir</span> <span class='kw'>=</span> <span class='st'>"~/Work/4philipp/BrainLUTs"</span>, <span class='no'>...</span>)
+
+<span class='fu'>projdir</span>(<span class='kw'>basedir</span> <span class='kw'>=</span> <span class='st'>"~/Work/4philipp/BrainLUTs"</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -132,15 +138,20 @@ simply check for existence and return input (or default).</p>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>path to project dirctory</p>
+<p>path to project dirctory</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>~~~~~~~~~~~~~~~~~~~ C A V E A T ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</p>
 <p>Adjust local defaults</p>
 <p>these settings define DEFAULTS that depend on my directory structure and
  need to be adjusted to work for others</p>
+<p>~~~~~~~~~~~~~~~~~~~ C A V E A T ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</p>
+<p>Adjust local defaults</p>
+<p>these settings define DEFAULTS that depend on my directory structure and
+ need to be adjusted to work for others</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>projdir</span>()</div><div class='output co'>#&gt; [1] "~/Work/4philipp/BrainLUTs"</div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>projdir</span>()</div><div class='output co'>#&gt; [1] "~/Work/4philipp/BrainLUTs"</div><div class='input'><span class='fu'>projdir</span>()</div><div class='output co'>#&gt; [1] "~/Work/4philipp/BrainLUTs"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

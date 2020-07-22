@@ -40,7 +40,10 @@
 
 
 <meta property="og:title" content="convert hue range matrix to corresponding colors — hue.range.colors" />
-<meta property="og:description" content="A hue range matrix is a \(2\times N\) matrix where each column defines a range in" />
+<meta property="og:description" content="A hue range matrix is a \(2\times N\) matrix where each column defines a
+range in hue space [0 .. 1]
+A hue range matrix is a \(2\times N\) matrix where each column defines a
+range in hue space [0 .. 1]" />
 
 
 
@@ -109,17 +112,22 @@
     </div>
 
     <div class="ref-description">
-    <p>A hue range matrix is a \(2\times N\) matrix where each column defines a range in</p>
+    <p>A hue range matrix is a \(2\times N\) matrix where each column defines a
+range in hue space [0 .. 1]</p>
+<p>A hue range matrix is a \(2\times N\) matrix where each column defines a
+range in hue space [0 .. 1]</p>
     </div>
 
-    <pre class="usage"><span class='fu'>hue.range.colors</span>(<span class='no'>hr</span>, <span class='kw'>extractfun</span> <span class='kw'>=</span> <span class='no'>mean</span>, <span class='kw'>only.hues</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>hue.range.colors</span>(<span class='no'>hr</span>, <span class='kw'>extractfun</span> <span class='kw'>=</span> <span class='no'>mean</span>, <span class='kw'>only.hues</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
+
+<span class='fu'>hue.range.colors</span>(<span class='no'>hr</span>, <span class='kw'>extractfun</span> <span class='kw'>=</span> <span class='no'>mean</span>, <span class='kw'>only.hues</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>hr</th>
-      <td><p>hue range matrix</p></td>
+      <td><p>hue range matrix or a list thereof</p></td>
     </tr>
     <tr>
       <th>extractfun</th>
@@ -134,9 +142,12 @@
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>color (vector)</p>
+<p>color (vector)</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>hr</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.0</span>, <span class='fl'>0.6</span>,
+               <span class='fl'>0.2</span>, <span class='fl'>0.7</span>), <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='fu'>hue.range.colors</span>(<span class='no'>hr</span>)</div><div class='output co'>#&gt; [1] "#FF9900" "#001AFF"</div><div class='input'><span class='no'>hr</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.0</span>, <span class='fl'>0.6</span>,
                <span class='fl'>0.2</span>, <span class='fl'>0.7</span>), <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 <span class='fu'>hue.range.colors</span>(<span class='no'>hr</span>)</div><div class='output co'>#&gt; [1] "#FF9900" "#001AFF"</div></pre>
   </div>

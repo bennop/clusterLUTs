@@ -41,6 +41,8 @@
 
 <meta property="og:title" content="LAB-based Rainbow colorramp function — rainbow_lab_ramp" />
 <meta property="og:description" content="Calculating the rainbow colors in LAB colorspace gives slightly better distinction
+between neighboring colors.
+Calculating the rainbow colors in LAB colorspace gives slightly better distinction
 between neighboring colors." />
 
 
@@ -112,9 +114,13 @@ between neighboring colors." />
     <div class="ref-description">
     <p>Calculating the rainbow colors in LAB colorspace gives slightly better distinction
 between neighboring colors.</p>
+<p>Calculating the rainbow colors in LAB colorspace gives slightly better distinction
+between neighboring colors.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>rainbow_lab_ramp</span>(<span class='kw'>full</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>rainbow_lab_ramp</span>(<span class='kw'>full</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+
+<span class='fu'>rainbow_lab_ramp</span>(<span class='kw'>full</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -128,16 +134,22 @@ between neighboring colors.</p>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>color ramp function</p>
+<p>color ramp function</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>For normal usage <code>full=FALSE</code> should yield good results. If, however, a
+correspondence to hue is desired,  <code>full=TRUE</code> should be used.</p>
+<p>For normal usage <code>full=FALSE</code> should yield good results. If, however, a
 correspondence to hue is desired,  <code>full=TRUE</code> should be used.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>rainbow_lab_ramp</span>()(<span class='fl'>0</span>)       <span class='co'># red</span></div><div class='output co'>#&gt;      [,1] [,2] [,3]
 #&gt; [1,]  255    0    0</div><div class='input'><span class='fu'>rainbow_lab_ramp</span>()(<span class='fl'>1</span>)       <span class='co'># purple</span></div><div class='output co'>#&gt;      [,1] [,2] [,3]
 #&gt; [1,]  255    0  255</div><div class='input'><span class='fu'>rainbow_lab_ramp</span>(<span class='fl'>TRUE</span>)(<span class='fl'>1</span>)   <span class='co'># red</span></div><div class='output co'>#&gt;      [,1] [,2] [,3]
-#&gt; [1,]  255    0    0</div><div class='input'><span class='fu'><a href='show.lut.html'>show.lut</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span>(<span class='fu'>rainbow_lab_ramp</span>()(<span class='fl'>0</span>:<span class='fl'>11</span>/<span class='fl'>11</span>)))</div><div class='img'><img src='rainbow_lab_ramp-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='show.lut.html'>show.lut</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span>(<span class='fu'>rainbow_lab_ramp</span>(<span class='fl'>TRUE</span>)(<span class='fl'>0</span>:<span class='fl'>11</span>/<span class='fl'>11</span>)))</div><div class='img'><img src='rainbow_lab_ramp-2.png' alt='' width='700' height='433' /></div></pre>
+#&gt; [1,]  255    0    0</div><div class='input'><span class='fu'><a href='show.lut.html'>show.lut</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span>(<span class='fu'>rainbow_lab_ramp</span>()(<span class='fl'>0</span>:<span class='fl'>11</span>/<span class='fl'>11</span>)))</div><div class='img'><img src='rainbow_lab_ramp-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='show.lut.html'>show.lut</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span>(<span class='fu'>rainbow_lab_ramp</span>(<span class='fl'>TRUE</span>)(<span class='fl'>0</span>:<span class='fl'>11</span>/<span class='fl'>11</span>)))</div><div class='img'><img src='rainbow_lab_ramp-2.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>rainbow_lab_ramp</span>()(<span class='fl'>0</span>)       <span class='co'># red</span></div><div class='output co'>#&gt;      [,1] [,2] [,3]
+#&gt; [1,]  255    0    0</div><div class='input'><span class='fu'>rainbow_lab_ramp</span>()(<span class='fl'>1</span>)       <span class='co'># purple</span></div><div class='output co'>#&gt;      [,1] [,2] [,3]
+#&gt; [1,]  255    0  255</div><div class='input'><span class='fu'>rainbow_lab_ramp</span>(<span class='fl'>TRUE</span>)(<span class='fl'>1</span>)   <span class='co'># red</span></div><div class='output co'>#&gt;      [,1] [,2] [,3]
+#&gt; [1,]  255    0    0</div><div class='input'><span class='fu'><a href='show.lut.html'>show.lut</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span>(<span class='fu'>rainbow_lab_ramp</span>()(<span class='fl'>0</span>:<span class='fl'>11</span>/<span class='fl'>11</span>)))</div><div class='img'><img src='rainbow_lab_ramp-3.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='show.lut.html'>show.lut</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span>(<span class='fu'>rainbow_lab_ramp</span>(<span class='fl'>TRUE</span>)(<span class='fl'>0</span>:<span class='fl'>11</span>/<span class='fl'>11</span>)))</div><div class='img'><img src='rainbow_lab_ramp-4.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

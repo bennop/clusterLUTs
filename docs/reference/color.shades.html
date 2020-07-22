@@ -42,6 +42,9 @@
 <meta property="og:title" content="create color shades — color.shades" />
 <meta property="og:description" content="For each color in col create as many shades as indicated by the value
 of reps at the corresponding index by grading towards 'white' - the
+shades are going scale of the way to white.
+For each color in col create as many shades as indicated by the value
+of reps at the corresponding index by grading towards 'white' - the
 shades are going scale of the way to white." />
 
 
@@ -114,9 +117,20 @@ shades are going scale of the way to white." />
     <p>For each color in <code>col</code> create as many shades as indicated by the value
 of <code>reps</code> at the corresponding index by grading towards 'white' - the
 shades are going <code>scale</code> of the way to white.</p>
+<p>For each color in <code>col</code> create as many shades as indicated by the value
+of <code>reps</code> at the corresponding index by grading towards 'white' - the
+shades are going <code>scale</code> of the way to white.</p>
     </div>
 
     <pre class="usage"><span class='fu'>color.shades</span>(
+  <span class='no'>col</span>,
+  <span class='no'>reps</span>,
+  <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span>(<span class='no'>direction</span> <span class='kw'>==</span> <span class='st'>"bright"</span>, <span class='fl'>0.7</span>, <span class='fl'>0.5</span>),
+  <span class='kw'>direction</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"all"</span>, <span class='st'>"bright"</span>, <span class='st'>"dark"</span>),
+  <span class='no'>...</span>
+)
+
+<span class='fu'>color.shades</span>(
   <span class='no'>col</span>,
   <span class='no'>reps</span>,
   <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span>(<span class='no'>direction</span> <span class='kw'>==</span> <span class='st'>"bright"</span>, <span class='fl'>0.7</span>, <span class='fl'>0.5</span>),
@@ -138,7 +152,7 @@ or a \(3xN\) RGB color matrix (one column per color).</p></td>
     </tr>
     <tr>
       <th>scale</th>
-      <td><p>how much of the range to white should be covered</p></td>
+      <td><p>how much of the range to black/white should be covered</p></td>
     </tr>
     <tr>
       <th>direction</th>
@@ -153,6 +167,7 @@ or a \(3xN\) RGB color matrix (one column per color).</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Color matrix with on entry per column</p>
+<p>Color matrix with on entry per column</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>If <code>reps</code> is scalar it is recycled, otherwise it is filled with ones should
@@ -160,9 +175,21 @@ it be shorter than <code>col</code>.</p>
 <p>The shades can be constructed either towards white, black, or, symmetrically.
 This is determined by setting <code>direction</code> to 'bright', 'dark', or 'all',
 respectively. The latter is the default.</p>
+<p>If <code>reps</code> is scalar it is recycled, otherwise it is filled with ones should
+it be shorter than <code>col</code>.</p>
+<p>The shades can be constructed either towards white, black, or, symmetrically.
+This is determined by setting <code>direction</code> to 'bright', 'dark', or 'all',
+respectively. The latter is the default.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>color.shades</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>'red'</span>, <span class='st'>'blue'</span>), <span class='fl'>3</span>)</div><div class='output co'>#&gt;           [,1] [,2]     [,3]      [,4] [,5]     [,6]
+#&gt; [1,] 122.21130  255 255.0000  36.15900    0 178.5536
+#&gt; [2,]  26.90505    0 158.1102  17.05695    0 139.0923
+#&gt; [3,]  12.18135    0 129.3845 119.53125  255 255.0000
+#&gt; attr(,"reps")
+#&gt; [1] 3 3
+#&gt; attr(,"dir")
+#&gt; [1] "all"</div><div class='input'><span class='fu'><a href='show.shades.html'>show.shades</a></span>(<span class='fu'>color.shades</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>'red'</span>, <span class='st'>'green'</span>, <span class='st'>'blue'</span>), <span class='fl'>2</span>:<span class='fl'>4</span>))</div><div class='input'><span class='fu'>color.shades</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>'red'</span>, <span class='st'>'blue'</span>), <span class='fl'>3</span>)</div><div class='output co'>#&gt;           [,1] [,2]     [,3]      [,4] [,5]     [,6]
 #&gt; [1,] 122.21130  255 255.0000  36.15900    0 178.5536
 #&gt; [2,]  26.90505    0 158.1102  17.05695    0 139.0923
 #&gt; [3,]  12.18135    0 129.3845 119.53125  255 255.0000

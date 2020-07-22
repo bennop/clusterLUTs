@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="show color matrix — show.colmat" />
-<meta property="og:description" content="show colors represented in color vector cv as matrix of colored boxes." />
+<meta property="og:description" content="show colors represented in color vector cv as matrix of colored boxes.
+show colors represented in color vector cv as matrix of colored boxes." />
 
 
 
@@ -110,9 +111,12 @@
 
     <div class="ref-description">
     <p>show colors represented in color vector <code>cv</code> as matrix of colored boxes.</p>
+<p>show colors represented in color vector <code>cv</code> as matrix of colored boxes.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>show.colmat</span>(<span class='no'>cv</span>)</pre>
+    <pre class="usage"><span class='fu'>show.colmat</span>(<span class='no'>cv</span>)
+
+<span class='fu'>show.colmat</span>(<span class='no'>cv</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -126,9 +130,45 @@
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>none</p>
+<p>none</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>show.colmat</span>(<span class='fu'><a href='https://rdrr.io/r/grDevices/palettes.html'>rainbow</a></span>(<span class='fl'>12</span>, <span class='kw'>end</span> <span class='kw'>=</span> <span class='fl'>0.8</span>))</div><div class='img'><img src='show.colmat-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; 1 
+    <pre class="examples"><div class='input'><span class='fu'>show.colmat</span>(<span class='fu'><a href='https://rdrr.io/r/grDevices/palettes.html'>rainbow</a></span>(<span class='fl'>12</span>, <span class='kw'>end</span> <span class='kw'>=</span> <span class='fl'>0.8</span>))</div><div class='output co'>#&gt; 1 
+#&gt;   red green  blue 
+#&gt;   255     0     0 
+#&gt; 2 
+#&gt;   red green  blue 
+#&gt;   255   111     0 
+#&gt; 3 
+#&gt;   red green  blue 
+#&gt;   255   223     0 
+#&gt; 4 
+#&gt;   red green  blue 
+#&gt;   176   255     0 
+#&gt; 5 
+#&gt;   red green  blue 
+#&gt;    65   255     0 
+#&gt; 6 
+#&gt;   red green  blue 
+#&gt;     0   255    46 
+#&gt; 7 
+#&gt;   red green  blue 
+#&gt;     0   255   158 
+#&gt; 8 
+#&gt;   red green  blue 
+#&gt;     0   241   255 
+#&gt; 9 
+#&gt;   red green  blue 
+#&gt;     0   130   255 
+#&gt; 10 
+#&gt;   red green  blue 
+#&gt;     0    19   255 
+#&gt; 11 
+#&gt;   red green  blue 
+#&gt;    93     0   255 
+#&gt; 12 
+#&gt;   red green  blue 
+#&gt;   204     0   255 </div><div class='input'><span class='fu'>show.colmat</span>(<span class='fu'><a href='https://rdrr.io/r/grDevices/palettes.html'>rainbow</a></span>(<span class='fl'>12</span>, <span class='kw'>end</span> <span class='kw'>=</span> <span class='fl'>0.8</span>))</div><div class='img'><img src='show.colmat-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; 1 
 #&gt;   red green  blue 
 #&gt;   255     0     0 
 #&gt; 2 

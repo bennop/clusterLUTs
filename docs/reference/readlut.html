@@ -41,6 +41,8 @@
 
 <meta property="og:title" content="read lookup table — readlut" />
 <meta property="og:description" content="The file will be read as binary with three (unsigned) bytes per color and
+return a color matrix with columns corresponding to the color entries (RGB).
+The file will be read as binary with three (unsigned) bytes per color and
 return a color matrix with columns corresponding to the color entries (RGB)." />
 
 
@@ -112,9 +114,13 @@ return a color matrix with columns corresponding to the color entries (RGB)." />
     <div class="ref-description">
     <p>The file will be read as binary with three (unsigned) bytes per color and
 return a color matrix with columns corresponding to the color entries (RGB).</p>
+<p>The file will be read as binary with three (unsigned) bytes per color and
+return a color matrix with columns corresponding to the color entries (RGB).</p>
     </div>
 
-    <pre class="usage"><span class='fu'>readlut</span>(<span class='no'>file</span>, <span class='kw'>length</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/file.info.html'>file.size</a></span>(<span class='no'>file</span>)/<span class='fl'>3</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>readlut</span>(<span class='no'>file</span>, <span class='kw'>length</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/file.info.html'>file.size</a></span>(<span class='no'>file</span>)/<span class='fl'>3</span>, <span class='no'>...</span>)
+
+<span class='fu'>readlut</span>(<span class='no'>file</span>, <span class='kw'>length</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/file.info.html'>file.size</a></span>(<span class='no'>file</span>)/<span class='fl'>3</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -136,13 +142,19 @@ return a color matrix with columns corresponding to the color entries (RGB).</p>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>color matrix (see description)</p>
+<p>color matrix (see description)</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>If <code>length</code> is specified, read only that many entries, otherwise all.
 Some sonsistency checks on the file size are performed.</p>
+<p>If <code>length</code> is specified, read only that many entries, otherwise all.
+Some sonsistency checks on the file size are performed.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+   <span class='no'>lut</span> <span class='kw'>&lt;-</span>  <span class='fu'>readlut</span>(<span class='st'>'test.lut'</span>)
+}
+<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
    <span class='no'>lut</span> <span class='kw'>&lt;-</span>  <span class='fu'>readlut</span>(<span class='st'>'test.lut'</span>)
 }</div></pre>
   </div>

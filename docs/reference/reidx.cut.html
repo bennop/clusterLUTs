@@ -41,6 +41,8 @@
 
 <meta property="og:title" content="re-index cut(ree) vector — reidx.cut" />
 <meta property="og:description" content="internal rank increasing within ties so that after reordering the order of ties
+can be preseerved
+internal rank increasing within ties so that after reordering the order of ties
 can be preseerved" />
 
 
@@ -112,31 +114,47 @@ can be preseerved" />
     <div class="ref-description">
     <p>internal rank increasing within ties so that after reordering the order of ties
 can be preseerved</p>
+<p>internal rank increasing within ties so that after reordering the order of ties
+can be preseerved</p>
     </div>
 
-    <pre class="usage"><span class='fu'>reidx.cut</span>(<span class='no'>cut</span>)</pre>
+    <pre class="usage"><span class='fu'>reidx.cut</span>(<span class='no'>cut</span>)
+
+<span class='fu'>reidx.cut</span>(<span class='no'>cut</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>cut</th>
-      <td><p>cut from hierarchical clustering</p></td>
+      <td><p>cut from hierarchical clustering (through <code>link[stats]{cutree}</code>)</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>rank vector with names to indicate level and order within ties</p>
+<p>rank vector with names to indicate level and order within ties</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>the output vector is named with 1000 * original level + position with ties for
-that level, see example</p>
+that level, see example. this can handles multiplicities of up to 999 which
+should suffice for most practical cases.</p>
+<p>This is useful to reorder, e.g., a color LUT from <code><a href='color.shades.html'>color.shades</a></code>
+according to levels.</p>
+<p>the output vector is named with 1000 * original level + position with ties for
+that level, see example. this can handles multiplicities of up to 999 which
+should suffice for most practical cases.</p>
 <p>This is useful to reorder, e.g., a color LUT from <code><a href='color.shades.html'>color.shades</a></code>
 according to levels.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>cut</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>4</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>4</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>3</span>, <span class='fl'>1</span>, <span class='fl'>3</span>)
+<span class='fu'>reidx.cut</span>(<span class='no'>cut</span>)</div><div class='output co'>#&gt; 4001 1001 2001 3001 1002 1003 1004 1005 4002 1006 1007 3002 1008 3003 
+#&gt;   13    1    9   10    2    3    4    5   14    6    7   11    8   12 </div><div class='input'><span class='co'>## 4001 1001 2001 3001 1002 1003 1004 1005 4002 1006 1007 3002 1008 3003</span>
+<span class='co'>##   13    1    9   10    2    3    4    5   14    6    7   11    8   12</span>
+<span class='co'>## the first occurence of level 1 is named 1001 (see details)</span>
+<span class='no'>cs</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='color.shades.html'>color.shades</a></span>(<span class='fu'><a href='https://rdrr.io/r/grDevices/palettes.html'>rainbow</a></span>(<span class='fl'>4</span>), <span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span>(<span class='no'>t1</span>))</div><div class='output co'>#&gt; <span class='error'>Error in table(t1): object 't1' not found</span></div><div class='input'><span class='no'>rocs</span> <span class='kw'>&lt;-</span> <span class='no'>cs</span>[, <span class='fu'>reidx.cut</span>(<span class='no'>t1</span>)]</div><div class='output co'>#&gt; <span class='error'>Error in eval(expr, envir, enclos): object 'cs' not found</span></div><div class='input'><span class='no'>cut</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>4</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>4</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>3</span>, <span class='fl'>1</span>, <span class='fl'>3</span>)
 <span class='fu'>reidx.cut</span>(<span class='no'>cut</span>)</div><div class='output co'>#&gt; 4001 1001 2001 3001 1002 1003 1004 1005 4002 1006 1007 3002 1008 3003 
 #&gt;   13    1    9   10    2    3    4    5   14    6    7   11    8   12 </div><div class='input'><span class='co'>## 4001 1001 2001 3001 1002 1003 1004 1005 4002 1006 1007 3002 1008 3003</span>
 <span class='co'>##   13    1    9   10    2    3    4    5   14    6    7   11    8   12</span>

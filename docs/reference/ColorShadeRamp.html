@@ -41,6 +41,8 @@
 
 <meta property="og:title" content="Create a color ramp with  shades — ColorShadeRamp" />
 <meta property="og:description" content="The shades will range from black over col to white.
+for symmetry the color should be a color with full saturation
+The shades will range from black over col to white.
 for symmetry the color should be a color with full saturation" />
 
 
@@ -112,9 +114,13 @@ for symmetry the color should be a color with full saturation" />
     <div class="ref-description">
     <p>The shades will range from black over <code>col</code> to white.
 for symmetry the color should be a color with full saturation</p>
+<p>The shades will range from black over <code>col</code> to white.
+for symmetry the color should be a color with full saturation</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ColorShadeRamp</span>(<span class='no'>col</span>, <span class='kw'>space</span> <span class='kw'>=</span> <span class='st'>"Lab"</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>ColorShadeRamp</span>(<span class='no'>col</span>, <span class='kw'>space</span> <span class='kw'>=</span> <span class='st'>"Lab"</span>, <span class='no'>...</span>)
+
+<span class='fu'>ColorShadeRamp</span>(<span class='no'>col</span>, <span class='kw'>space</span> <span class='kw'>=</span> <span class='st'>"Lab"</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -136,14 +142,20 @@ for symmetry the color should be a color with full saturation</p>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>a function mapping [0,1] to (black ... <code>col</code> ... white)</p>
+<p>a function mapping [0,1] to (black ... <code>col</code> ... white)</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>ColorShadeRamp</span>(<span class='st'>'red'</span>)</div><div class='output co'>#&gt; function (x) 
 #&gt; roundcolor(convertColor(cbind(palette[[1L]](x), palette[[2L]](x), 
 #&gt;     palette[[3L]](x), if (alpha) palette[[4L]](x)), from = "Lab", 
 #&gt;     to = "sRGB")) * 255
-#&gt; &lt;bytecode: 0x7f8bce2c0f50&gt;
-#&gt; &lt;environment: 0x7f8bce2c3340&gt;</div></pre>
+#&gt; &lt;bytecode: 0x7f9c56165820&gt;
+#&gt; &lt;environment: 0x7f9c56167c10&gt;</div><div class='input'><span class='fu'>ColorShadeRamp</span>(<span class='st'>'red'</span>)</div><div class='output co'>#&gt; function (x) 
+#&gt; roundcolor(convertColor(cbind(palette[[1L]](x), palette[[2L]](x), 
+#&gt;     palette[[3L]](x), if (alpha) palette[[4L]](x)), from = "Lab", 
+#&gt;     to = "sRGB")) * 255
+#&gt; &lt;bytecode: 0x7f9c56165820&gt;
+#&gt; &lt;environment: 0x7f9c51e76e08&gt;</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

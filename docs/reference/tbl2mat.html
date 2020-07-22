@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>binary bitwise AND — %&amp;% • clusterLUTs</title>
+<title>table to matrix — tbl2mat • clusterLUTs</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,8 @@
 
 
 
-<meta property="og:title" content="binary bitwise AND — %&amp;%" />
-<meta property="og:description" content="Wrapper for bitwAnd, simply providing a binary interface.
-Wrapper for bitwAnd, simply providing a binary interface." />
+<meta property="og:title" content="table to matrix — tbl2mat" />
+<meta property="og:description" content="convert table to matrix" />
 
 
 
@@ -104,46 +103,50 @@ Wrapper for bitwAnd, simply providing a binary interface." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>binary bitwise AND</h1>
+    <h1>table to matrix</h1>
     
-    <div class="hidden name"><code>grapes-and-grapes.Rd</code></div>
+    <div class="hidden name"><code>tbl2mat.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Wrapper for <code><a href='https://rdrr.io/r/base/bitwise.html'>bitwAnd</a></code>, simply providing a binary interface.</p>
-<p>Wrapper for <code><a href='https://rdrr.io/r/base/bitwise.html'>bitwAnd</a></code>, simply providing a binary interface.</p>
+    <p>convert table to matrix</p>
     </div>
 
-    <pre class="usage"><span class='no'>a</span> <span class='kw'>%&amp;%</span> <span class='no'>b</span>
-
-<span class='no'>a</span> <span class='kw'>%&amp;%</span> <span class='no'>b</span></pre>
+    <pre class="usage"><span class='fu'>tbl2mat</span>(<span class='no'>tbl</span>, <span class='kw'>uplink</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>a</th>
-      <td><p>boolean or numeric (integer)</p></td>
+      <th>tbl</th>
+      <td><p>output of <code><a href='https://rdrr.io/r/base/table.html'>table</a></code></p></td>
     </tr>
     <tr>
-      <th>b</th>
-      <td><p>boolean or numeric (integer)</p></td>
+      <th>...</th>
+      <td><p>ignored</p></td>
+    </tr>
+    <tr>
+      <th>extra</th>
+      <td><p>extra row(s) to be included (see description)</p></td>
+    </tr>
+    <tr>
+      <th>vname</th>
+      <td><p>optional rowname if <code>extra</code> is a vector</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>bitwise AND of <code>a</code> and <code>b</code></p>
-<p>bitwise AND of <code>a</code> and <code>b</code></p>
+    <p>a 2-row matrix representing the table.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>While <code>a</code> or <code>b</code> can be any type of atomic variable, results may be
-difficult to interpret for those other than logical or integer</p>
-<p>While <code>a</code> or <code>b</code> can be any type of atomic variable, results may be
-difficult to interpret for those other than logical or integer</p>
+    <p>Create a matrix with names and values of the input table forming a row each.</p>
+<p>It is assumed that <code>tbl</code>'s names are all numeric</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fl'>1</span> <span class='kw'>%&amp;%</span> <span class='fl'>3</span></div><div class='output co'>#&gt; [1] 1</div><div class='input'><span class='no'>pi</span> <span class='kw'>%&amp;%</span> <span class='fl'>2</span></div><div class='output co'>#&gt; [1] 2</div><div class='input'><span class='fl'>0.5</span> <span class='kw'>%&amp;%</span> <span class='fl'>0.75</span></div><div class='output co'>#&gt; [1] 0</div><div class='input'><span class='fl'>1</span> <span class='kw'>%&amp;%</span> <span class='fl'>3</span></div><div class='output co'>#&gt; [1] 1</div><div class='input'><span class='no'>pi</span> <span class='kw'>%&amp;%</span> <span class='fl'>2</span></div><div class='output co'>#&gt; [1] 2</div><div class='input'><span class='fl'>0.5</span> <span class='kw'>%&amp;%</span> <span class='fl'>0.75</span></div><div class='output co'>#&gt; [1] 0</div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>tbl2mat</span>(<span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span>(<span class='fl'>1</span>:<span class='fl'>3</span>))</div><div class='output co'>#&gt;     1 2 3
+#&gt; idx 1 2 3
+#&gt; n   1 1 1</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

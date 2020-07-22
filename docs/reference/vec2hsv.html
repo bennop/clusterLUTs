@@ -41,6 +41,8 @@
 
 <meta property="og:title" content="Vector to HSV conversion — vec2hsv" />
 <meta property="og:description" content="Wrapper for hsv that allows using it with a 3-element vector
+[h, s, v].
+Wrapper for hsv that allows using it with a 3-element vector
 [h, s, v]." />
 
 
@@ -112,9 +114,13 @@
     <div class="ref-description">
     <p>Wrapper for <code><a href='https://rdrr.io/r/grDevices/hsv.html'>hsv</a></code> that allows using it with a 3-element vector
 <code>[h, s, v]</code>.</p>
+<p>Wrapper for <code><a href='https://rdrr.io/r/grDevices/hsv.html'>hsv</a></code> that allows using it with a 3-element vector
+<code>[h, s, v]</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>vec2hsv</span>(<span class='no'>v</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>vec2hsv</span>(<span class='no'>v</span>, <span class='no'>...</span>)
+
+<span class='fu'>vec2hsv</span>(<span class='no'>v</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -132,12 +138,15 @@
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>an RGB vector representing the color</p>
+<p>an RGB vector representing the color</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Rather than returning a hex representaion as done in <code><a href='https://rdrr.io/r/grDevices/hsv.html'>hsv</a></code>.</p>
+<p>Rather than returning a hex representaion as done in <code><a href='https://rdrr.io/r/grDevices/hsv.html'>hsv</a></code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># convert RGB colors to HSV and back</span>
+<span class='fu'><a href='show.lut.html'>show.lut</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/apply.html'>apply</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/apply.html'>apply</a></span>(<span class='fu'><a href='https://rdrr.io/r/grDevices/col2rgb.html'>col2rgb</a></span>(<span class='fu'><a href='https://rdrr.io/r/grDevices/palettes.html'>rainbow</a></span>(<span class='fl'>6</span>, <span class='kw'>e</span><span class='kw'>=</span><span class='fl'>5</span>/<span class='fl'>6</span>)), <span class='fl'>2</span>, <span class='no'>rgb2hsv</span>), <span class='fl'>2</span>, <span class='no'>vec2hsv</span>))</div><div class='input'><span class='co'># convert RGB colors to HSV and back</span>
 <span class='fu'><a href='show.lut.html'>show.lut</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/apply.html'>apply</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/apply.html'>apply</a></span>(<span class='fu'><a href='https://rdrr.io/r/grDevices/col2rgb.html'>col2rgb</a></span>(<span class='fu'><a href='https://rdrr.io/r/grDevices/palettes.html'>rainbow</a></span>(<span class='fl'>6</span>, <span class='kw'>e</span><span class='kw'>=</span><span class='fl'>5</span>/<span class='fl'>6</span>)), <span class='fl'>2</span>, <span class='no'>rgb2hsv</span>), <span class='fl'>2</span>, <span class='no'>vec2hsv</span>))</div><div class='img'><img src='vec2hsv-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

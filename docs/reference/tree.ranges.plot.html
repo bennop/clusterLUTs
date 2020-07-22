@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="plot hues for a <code><a href='tree.ranges.html'>tree.ranges</a></code> result — tree.ranges.plot" />
-<meta property="og:description" content="plot hues for a tree.ranges result" />
+<meta property="og:description" content="plot hues for a tree.ranges result
+plot hues for a tree.ranges result" />
 
 
 
@@ -110,9 +111,20 @@
 
     <div class="ref-description">
     <p>plot hues for a <code><a href='tree.ranges.html'>tree.ranges</a></code> result</p>
+<p>plot hues for a <code><a href='tree.ranges.html'>tree.ranges</a></code> result</p>
     </div>
 
     <pre class="usage"><span class='fu'>tree.ranges.plot</span>(
+  <span class='no'>tr</span>,
+  <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>show.tree</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>ts.col</span> <span class='kw'>=</span> <span class='st'>"lightgrey"</span>,
+  <span class='kw'>ts.lty</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>ts.lwd</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='no'>...</span>
+)
+
+<span class='fu'>tree.ranges.plot</span>(
   <span class='no'>tr</span>,
   <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>show.tree</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
@@ -158,10 +170,10 @@
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>none</p>
+<p>none</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>tr</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='tree.ranges.html'>tree.ranges</a></span>(<span class='fu'><a href='dummy.tree.html'>dummy.tree</a></span>())
-<span class='fu'>plot.tree.ranges</span>(<span class='fu'><a href='tree.ranges.html'>tree.ranges</a></span>(<span class='fu'><a href='dummy.tree.html'>dummy.tree</a></span>()), <span class='kw'>show.tree</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='error'>Error in plot.tree.ranges(tree.ranges(dummy.tree()), show.tree = TRUE): could not find function "plot.tree.ranges"</span></div></pre>
+    <pre class="examples"><div class='input'><span class='no'>tr</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='tree.ranges.html'>tree.ranges</a></span>(<span class='fu'><a href='dummy.tree.html'>dummy.tree</a></span>())</div><div class='output co'>#&gt; <span class='error'>Error in sub.tables[[i]]["n", ]: incorrect number of dimensions</span></div><div class='input'><span class='fu'>plot.tree.ranges</span>(<span class='fu'><a href='tree.ranges.html'>tree.ranges</a></span>(<span class='fu'><a href='dummy.tree.html'>dummy.tree</a></span>()), <span class='kw'>show.tree</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='error'>Error in plot.tree.ranges(tree.ranges(dummy.tree()), show.tree = TRUE): could not find function "plot.tree.ranges"</span></div><div class='input'><span class='no'>tr</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='tree.ranges.html'>tree.ranges</a></span>(<span class='fu'><a href='dummy.tree.html'>dummy.tree</a></span>())</div><div class='output co'>#&gt; <span class='error'>Error in sub.tables[[i]]["n", ]: incorrect number of dimensions</span></div><div class='input'><span class='fu'>plot.tree.ranges</span>(<span class='fu'><a href='tree.ranges.html'>tree.ranges</a></span>(<span class='fu'><a href='dummy.tree.html'>dummy.tree</a></span>()), <span class='kw'>show.tree</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='error'>Error in plot.tree.ranges(tree.ranges(dummy.tree()), show.tree = TRUE): could not find function "plot.tree.ranges"</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
