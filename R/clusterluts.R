@@ -601,25 +601,37 @@ between <- function(x,
 concat.tbl.list <- function(tbl.lst,
                             idx = FALSE,
                             ...){
+    el2mat <- lapply(tbl.lst,
+                     function(tbl){
+                         if('table'%in% class(tbl)){
+                             rbind(as.numeric(names(tbl)),
+                                   as.vector(tbl))
+                         } else {
+                             tbl
+                         }
+                     })
+    rows.tbl <- table(sapply(el2mat, nrow))
+    if(length(rows.tbl) > 1){
+        stop("incompatible inputs")
+    }
     tbl.mat <- do.call(cbind,
-                       lapply(tbl.lst,
-                              function(tbl){
-                                  if('table'%in% class(tbl)){
-                                      rbind(as.numeric(names(tbl)),
-                                            as.vector(tbl))
-                                  } else {
-                                      tb
-                                  }
-                              }
-                       )
-    )
-    if(is.null(rownames(tbl.mat))){
+                       el2mat)
+    if(is.null(rownames(tbl.mat)) &&
+       nrow(tbl.mat) == 2){
         rownames(tbl.mat) <- c('downlink',  # index of table on next (i+1) level
                                'n')         # elements in cluster
     }
     if (idx){
         index <- rep(1:length(tbl.lst),
-                     times = sapply(tbl.lst, length))
+                     times = sapply(tbl.lst,
+                                    function(t.o.m){  # <- table or matrix
+                                        if('table'%in% class(t.o.m)){
+                                            length(t.o.m)
+                                        } else {
+                                            ncol(t.o.m)
+                                        }
+                                    } )
+                     )
         tbl.mat <- rbind(index = index,     # automatically assign rowname
                          tbl.mat)
     }

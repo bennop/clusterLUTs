@@ -13,14 +13,32 @@ test_that("vlevels", {
 
 test_that("concat.tbl.list", {
     set.seed(42)
-    tl1 <- list(table(sample(1:2, 10, T)), table(sample(7:9, 10, T)))
-
+    t1 <- table(sample(1:2, 10, T))
+    t2 <- table(sample(7:9, 10, T))
+    m1 <- matrix(c(1:2, 5,5), nrow=2, byrow = TRUE)
+    m2 <- matrix(c(7:9, 3,3,4), nrow=2, byrow = TRUE)
+    m2n <- m2; rownames(m2n) <- c('downlink', 'n')
+    tl1 <- list(t1, t2)
+    tl2 <- list(t1, m2)
+    tl2b <- list(m2, t1)
+    
+    tl3 <- list(t1, m2n)
+    tl4 <- list(m1, m2)
+    tl5 <- list(m1, t(m2))
     res0  <- matrix(c(1,2,7,8,9, 5,5,3,3,4), nr = 2, byrow = T,
                     dimnames = list(c('downlink', 'n'), NULL))
     res1  <- matrix(c(1,1,2,2,2, 1,2,7,8,9, 5,5,3,3,4), nr = 3, byrow = T,
                    dimnames = list(c('index', 'downlink', 'n'), NULL))
+    res1b <- matrix(c(1,1,1,2,2, 7,8,9,1,2, 3,3,4,5,5), nr = 3, byrow = T,
+                    dimnames = list(c('index', 'downlink', 'n'), NULL))
     expect_equal(concat.tbl.list(tl1), res0)
     expect_equal(concat.tbl.list(tl1, idx = TRUE), res1)
+    expect_equal(concat.tbl.list(tl2, idx = TRUE), res1)
+    expect_equal(concat.tbl.list(tl2b, idx = TRUE), res1b)
+    expect_equal(concat.tbl.list(tl3, idx = TRUE), res1)
+    expect_equal(concat.tbl.list(tl4, idx = TRUE), res1)
+    expect_error(concat.tbl.list(tl5, idx = TRUE), "incompatible inputs")
+    
 })
 
 test_that("table 2 matrix",{
@@ -55,15 +73,21 @@ test_that("vec2rgb", {
 v <- matrix(1,3,3); v[1,] <- 0:2/3
 test_that("vec2hsv", {
     expect_equal(apply(v,2,vec2hsv), diag(3)*255)
+    expect_error(apply(2*v,2,vec2hsv), "values > 1 found")
 })
 
 # hue range ----
 test_that("hue range", {
     expect_equal(split.hue.range(c(0,5/6), 4:2), matrix(c(0, 8,9,15,16,20)/24, nr = 2))
+    #
+    hrm1 <- split.hue.range(c(0, 3/6), 4:2)
+    hrm2 <- split.hue.range(c(4/6, 1), 2:3)
     expect_equal(hue.range.colors(matrix(c(0,2)/6, nc = 1)), "#FFFF00")
     expect_equal(hue.range.colors(matrix(c(0,2)/6, nc = 1), only.hues = TRUE), 1/6)
     expect_equal(hue.range.colors(matrix(c(0,2)/6, nc = 1), min, only.hues = TRUE), 0)
     expect_error(hue.range.colors(matrix(c(0,3), nc = 1)), "invalid hsv color")
+    expect_equal(hue.range.colors(list(hrm1, hrm2)), list(c("#FF9900","#33FF00","#00FFB2"), 
+                                                          c("#5C00FF","#FF008A")))
 })
 
 # debug ----
