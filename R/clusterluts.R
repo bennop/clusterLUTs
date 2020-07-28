@@ -4,13 +4,12 @@
 #' Used as default for \code{\link{tree.luts}} and \code{\link{read.tree}},
 #' simply check for existence and return input (or default).
 #'
-#'
 #' ~~~~~~~~~~~~~~~~~~~ C A V E A T ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #'
 #'       Adjust local defaults
 #'
-#'  these settings define DEFAULTS that depend on my directory structure and
-#'  need to be adjusted to work for others
+#' these settings define DEFAULTS that depend on my directory structure and
+#' need to be adjusted to work for others
 #'
 #' @param basedir project directory
 #' @param ... ignored
@@ -34,7 +33,7 @@ projdir <- function(basedir = '~/Work/4philipp/BrainLUTs',
 
 #' local LUT directory
 #'
-#' Used as default output directory for \code{\link{tree.luts}}
+#' Used as default output directory for \code{\link{treeluts}}
 #'
 #'
 #' ~~~~~~~~~~~~~~~~~~~ C A V E A T ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -70,16 +69,14 @@ LUTdir <- function(basedir = projdir(),
 
 
 ## needed packages ----
-require(R.matlab)    # for readMat()
-require(gtools)      # for even()
+#require(R.matlab)    # for readMat()
+#require(gtools)      # for even()
 
 
 
 ##---- Rcpp helper ----------------
-## source / load Rcpp helper function
-## fix path problem later
-# Rcpp::sourceCpp("writelut.cpp")
-
+## load Rcpp helper function
+#Rcpp::loadModule("clusterLUTs", TRUE)
 
 ##---  R functions -----------------
 #' LUT generation for hierachical clustering tree
@@ -88,7 +85,7 @@ require(gtools)      # for even()
 #' \code{clusters} defines the cluster assignments per cut. The number of clusters
 #' is taken from the unique values per column (need not be regular).
 #'
-#' In order to show the substructure of clusters ... (\code{\link{cut.shades}})
+#' In order to show the substructure of clusters ... (\code{\link{cutshades}})
 #'
 #' The LUTs are named \code{sprintf("%s%03d.lut",basename,n)} where \code{n} is
 #' the number of clusters in the cut
@@ -101,6 +98,9 @@ require(gtools)      # for even()
 #'
 #' @return
 #' @export
+#' @importFrom Rcpp evalCpp
+#' @useDynLib clusterLUTs
+#'
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
 #' @examples
@@ -114,7 +114,14 @@ treeluts <- function(clusters   = read.tree(),
     n.clust <- nrow(clusters)
     n.cuts <- ncol(clusters)
 
-    tr <- tree.ranges(clusters)
+    trc <- tree.ranges(clusters)
+
+    ## list of color matrices
+    base.lut  <-  hue.range.colors( lapply(1:n.cuts,
+                                           function(i) {
+                                               col2rgb(hue.range.colors(trc[[i]])[dt[,i]])}
+                                           )
+                                   )
 
     apply(clusters, 2,   # for each cut
           function(v){
@@ -122,7 +129,7 @@ treeluts <- function(clusters   = read.tree(),
 
               #pal <- c(rainbow(n, end = 0.65))
               #fullpal <- pal[v]
-              fullpal <- cut.shades(v, ...)
+              fullpal <- cutshades(v, ...)
               pmat <- c(fullpal,                      # colors
                         rep(col2rgb('#000000'),       # more black
                             lut.length - n.clust - 1),
@@ -205,7 +212,7 @@ readlut <- function(file,
 #'
 #' @return a matrix with just the cluster assignments
 #' @export
-#' @importFrom R.matlab readMat
+#' @#importFrom R.matlab readMat
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
 #' @examples
@@ -276,7 +283,7 @@ ColorShadeRamp <- function(col,
 #'
 #' @return Color matrix with on entry per column
 #' @importFrom grDevices col2rgb
-#' @importFrom gtools even
+#' @#importFrom gtools even
 #' @export
 #'
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
@@ -408,7 +415,7 @@ default.rgb <- function(n = 12, ...){
 #' @param ... passed to rainbow_hcl
 #'
 #' @return rainbow colors
-#' @importFrom colorspace rainbow_hcl
+#' @#importFrom colorspace rainbow_hcl
 #' @export
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
@@ -448,8 +455,8 @@ default.lab <- function(n = 12, ...){
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
 #' @examples
-#' cut.shades(cut = sample(6, 15, T))
-cut.shades <- function(cut,
+#' cutshades(cut = sample(6, 15, T))
+cutshades <- function(cut,
                        col.fun = default.rgb,
                        ...){
     tbl <- table(cut)
@@ -509,8 +516,8 @@ cut.shades <- function(cut,
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
 #' @examples
-#' between(c(1,pi), 0:3,2:5+.5, T)
-#' between(c(1,pi), 0:3,2:5+.5, F)
+#' between(c(1,pi), 0:3,2:5+.5, TRUE)
+#' between(c(1,pi), 0:3,2:5+.5, FALSE)
 between <- function(x,
                     low,
                     high = NULL,
@@ -605,6 +612,7 @@ between <- function(x,
 #' concat.tbl.list(table.list, idx = TRUE)
 concat.tbl.list <- function(tbl.lst,
                             idx = FALSE,
+                            up  = FALSE,
                             ...){
     el2mat <- lapply(tbl.lst,
                      function(tbl){
@@ -662,6 +670,55 @@ concat.tbl.list <- function(tbl.lst,
 vlevels <- function(v){
     return(length(unique(v)))
 }
+
+##' convert table to matrix
+##'
+##' Create a matrix with names and values of the input table forming a row each.
+##'
+##' It is assumed that \code{tbl}'s names are all numeric
+##' @title table to matrix
+##' @param tbl output of \code{\link[base]{table}}
+##' @param extra extra row(s) to be included (see description)
+##' @param vname optional rowname if \code{extra} is a vector
+##' @param ... ignored
+##'
+##' @return a 2-row matrix representing the table.
+##' @export
+##' @author Benno Pütz \email{puetz@@psych.mpg.de}
+##'
+##' @examples
+##' tbl2mat(table(1:3))
+tbl2mat <- function(tbl,
+                    uplink = NULL,
+                    ...){
+    mat <- rbind(as.numeric(names(tbl)),
+                 tbl)
+    rownames(mat) <- c('idx', 'n')
+    colnames(mat) <- mat[1, ]
+
+    if(!is.null(uplink)) {
+        n <- ncol(mat)
+        dex <- dim(uplink)
+        if(is.null(dex)){                             # vector?
+            if(length(uplink) == n){                  # correct length?
+                mat  <- rbind(mat, uplink)
+            } else {
+                warning("incompatible vector 'uplink' - ignored")
+            }
+        } else {
+            if(length(dex) == 2){                     # matrix?
+                if(dim(uplink)[2] == n){              # correct ncol?
+                    mat  <- rbind(mat, uplink)
+                } else {
+                    warning("incompatible matrix 'uplink' - ignored")
+                }
+            } else {
+                warning("incompatible array 'uplink' - ignored")
+            }
+        }
+    }
+    return(mat)
+}                                       # tbl2mat
 
 #' matrix to list
 #'
@@ -810,15 +867,15 @@ rainbow_lab <- function(n,
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
 #' @examples
-#' hm2 <- split.hue.range(c(0,5/6), 4:2) # matrix(c(0, 4,5,11,12,20)/24, nr = 2)
+#' hm2 <- hue.range.split(c(0,5/6), 4:2) # matrix(c(0, 4,5,11,12,20)/24, nr = 2)
 #' ##           [,1]      [,2]      [,3]
 #' ## [1,] 0.0000000 0.2083333 0.5000000
 #' ## [2,] 0.1666667 0.4583333 0.8333333
-#' hm3 <- split.hue.range(hm2, list(c(2,1,1), 3, c(1,1)))
+#' hm3 <- hue.range.split(hm2, list(c(2,1,1), 3, c(1,1)))
 #' ##       [,1]       [,2]      [,3]      [,4] [,5]      [,6]
 #' ## [1,] 0.000 0.08333333 0.1291667 0.2083333 0.50 0.6833333
 #' ## [2,] 0.075 0.12083333 0.1666667 0.4333333 0.65 0.8333333
-split.hue.range <- function(hue.range,
+hue.range.split <- function(hue.range,
                             split.tbl,
                             blank = 0.1) {
 
@@ -868,61 +925,12 @@ split.hue.range <- function(hue.range,
     return(real.ranges)
 }
 
-##' convert table to matrix
-##'
-##' Create a matrix with names and values of the input table forming a row each.
-##'
-##' It is assumed that \code{tbl}'s names are all numeric
-##' @title table to matrix
-##' @param tbl output of \code{\link[base]{table}}
-##' @param extra extra row(s) to be included (see description)
-##' @param vname optional rowname if \code{extra} is a vector
-##' @param ... ignored
-##'
-##' @return a 2-row matrix representing the table.
-##' @export
-##' @author Benno Pütz \email{puetz@@psych.mpg.de}
-##'
-##' @examples
-##' tbl2mat(table(1:3))
-tbl2mat <- function(tbl,
-                    uplink = NULL,
-                    ...){
-    mat <- rbind(as.numeric(names(tbl)),
-                 tbl)
-    rownames(mat) <- c('idx', 'n')
-    colnames(mat) <- mat[1, ]
-
-    if(!is.null(uplink)) {
-        n <- ncol(mat)
-        dex <- dim(uplink)
-        if(is.null(dex)){                             # vector?
-            if(length(uplink) == n){                  # correct length?
-                mat  <- rbind(mat, uplink)
-            } else {
-                warning("incompatible vector 'uplink' - ignored")
-            }
-        } else {
-            if(length(dex) == 2){                     # matrix?
-                if(dim(uplink)[2] == n){              # correct ncol?
-                    mat  <- rbind(mat, uplink)
-                } else {
-                    warning("incompatible matrix 'uplink' - ignored")
-                }
-            } else {
-                warning("incompatible array 'uplink' - ignored")
-            }
-        }
-    }
-    return(mat)
-}
-
 #' full hue range set for cutree
 #'
 #' Create a set of hue ranges related through the levels of \code{cutree}.
 #'
 #' @param cutree result of \code{\link{cutree}}
-#' @param ... passed to \code{\link{split.hue.range}}
+#' @param ... passed to \code{\link{hue.range.split}}
 #'
 #' @return list of related hue ranges corresponding to the cut levels
 #' @export
@@ -970,19 +978,26 @@ tree.ranges <- function(cutree,
         # print(sub.tables[[i]])
         # print(hue.splits[[i-1]])
         #browser()
-        hue.splits[[i]] <- split.hue.range(hue.splits[[i-1]],
+        hue.splits[[i]] <- hue.range.split(hue.splits[[i-1]],
                                            sub.tables[[i]],
                                            blank = blank^(1+.1*(i-1)),
                                            ...)[,order(concat.tbl.list(sub.tables[[i]])[1,])]
     }
+
     if(add.top){
         hue.splits <- hue.splits[-1]
         sub.tables <- sub.tables[-1]
     }
     names(hue.splits) <- ct.levels
+    names(sub.tables) <- ct.levels
     attr(hue.splits, 'sub.tables') <- sub.tables   # may need to be reordered
-    class(hue.splits) <- 'tree.ranges'
+    class(hue.splits) <- c('tree.ranges', 'list')
     return(invisible(if(ordered) hue.splits else hue.splits[rcl]))
+}                                       # tree.ranges
+
+show.tree.ranges <- function(tr,
+                             ...){
+    concat.tbl.list(tr)
 }
 
 ##----  Display functions ----
@@ -999,13 +1014,17 @@ tree.ranges <- function(cutree,
 #'
 #' @examples
 #' show.colmat(rainbow(12, end = 0.8))
-show.colmat <- function(cv){
+show.colmat <- function(cv,
+                        width = NULL){
     if(is.null(dim(cv))){
         cv <- col2rgb(cv)
     }
     lcv <- ncol(cv)
-    n <- ceiling(sqrt(lcv))
-    m <- ifelse(lcv <= n*(n-1), n-1, n)
+
+    n <- ifelse(is.null(width),
+                ceiling(sqrt(lcv)),
+                width)
+    m <- floor(lcv/n)  # ifelse(lcv <= n*(n-1), n-1, n)
     plot(c(0,n)+.5, c(0, m)+.5,
          type = 'n',
          axes = FALSE,
@@ -1078,8 +1097,10 @@ init.blank.plot <- function(...){
 #' range in hue space [0 .. 1]
 #'
 #' @param hr hue range matrix or a list thereof
-#' @param extractfun function to calculate efective hue from hue range
-#' @param ... passed to \code{\link{hsv}}
+#' @param extractfun function to calculate effective hue from hue range
+#' @param only.hues when set, return (scalar) hue, otherwise convert to RGB 
+#'                  vector with \code{link[grDevices]{hsv}}
+#' @param ... passed to \code{\link[grDevices]{hsv}}
 #'
 #' @return color (vector)
 #' @importFrom grDevices hsv
@@ -1090,30 +1111,40 @@ init.blank.plot <- function(...){
 #' hr <- matrix(c(0.0, 0.6,
 #'                0.2, 0.7), nrow = 2, byrow = TRUE)
 #' hue.range.colors(hr)
+#' hue.range.colors(hr, only.hues = TRUE)
+#' show.colmat(col2rgb(hue.range.colors(hr)))
 hue.range.colors <- function(hr,
                              extractfun = mean,
                              only.hues = FALSE,
                              ...){
     if(is.list(hr)){
         return(lapply(hr, hue.range.colors,
-               extractfun,
-               only.hues))
+                      extractfun,
+                      only.hues))
     } else {
         hues <- apply(hr, 2, extractfun)
-        return(if(only.hues) hues else hsv(hues))
+        return(if(only.hues) hues else hsv(hues, ...))
     }
 }
 
 #' Show hue range colors
 #'
-#' Similar to \code{\link{hue.range.plot}} but show the unordered colors
+#' Similar to \code{\link{hue.range.plot}} but show the unordered colors in 
+#' rectangles.
+#' 
+#' @seealso  \code{\link{hue.range.lines}} or \code{\link{treee.range.plot}} for 
+#' ordered display.
 #'
 #' @param hr hue range or list thereof
-#' @param spacing
-#' @param y
-#' @param width
+#' @param extractfun function to assign hue to range (\code{\link[base]{mean}})
+#' @param spacing relative spacing between hue lines
+#' @param y position along y-axis (mainly for single hue range)
+#' @param width effective width of rectangles along axes
 #' @param ... ignored
 #' @param wait for internal use, should not be set by caller
+#' @param v.scale relative vertical scaling to adjust rectangles' height
+#' @param width.x width along x-axis
+#' @param width.y width along y-axis
 #'
 #' @return none
 #' @export
@@ -1142,20 +1173,21 @@ show.hue.range <- function(hr,
                          n)
         }
         if(is.null(width.x)) {
-            width.x <- rep(width, n)
+            width.x <- rep(width, length.out = n)
         } else {
-            width.x <- rep(width.x, n)
+            width.x <- rep(width.x, length.out = n)
         }
         if(is.null(width.y) || width.y == 0){
             width.y <- rep(pmax(pmin(width, 1/n), 1/n),
-                           n)
+                           length.out = n)
         } else {
-            width.y <- rep(width.y, n)
+            width.y <- rep(width.y,
+                           length.out = n)
         }
 
         ys <- 1:n/n - 0.5/n             # equidistant y-levels
 
-        print(rbind(width.x, width.y, ys))
+        ## print(rbind(width.x, width.y, ys))
 
         lapply(1:n,
                function(i){
@@ -1198,10 +1230,13 @@ show.hue.range <- function(hr,
 
 #' plot hue range
 #'
-#'
 #' for now only horizontal
+#'
+#' @seealso \code{\link{hue.range.colors}} for an unordered display.
+#'
 #' @param hue.range hue range or list thereof
 #' @param y y-level at which to plot (scalar or vector of length of \code{hue.range})
+#' @param add when set, add to existing plot, otherwise start a new one
 #' @param ... passed on to \code{\link{segments}}
 #' @param col consume any color that may be provided
 #'
@@ -1234,7 +1269,7 @@ hue.range.lines <- function(hue.range,
 
 #' plot hues for a \code{\link{tree.ranges}} result
 #'
-#'
+#' @seealso \code{\link{hue.range.colors}} for an unordered display
 #'
 #' @param tr output of \code{\link{tree.ranges}}
 #' @param add add to existing plot or start new one
@@ -1301,8 +1336,8 @@ tree.ranges.plot <- function(tr,
 #' First a color band showing the colors is presented, below the RGB components are plotted
 #'
 #' @param lut lookup table
-#' @param colorspace
-#' @param ...
+#' @param colorspace should be either 'RGB' or 'HSV'
+#' @param ... ignored
 #'
 #' @return none
 #' @export
@@ -1477,20 +1512,25 @@ show.sub.tables <- function(st,
     }
 }
 
-#' show brain lookuptable
+#' show brain lookup table
 #'
 #' show one of the lookup tables created through \code{\link{treeluts}}
 #'
 #' The LUT can, alternatively, be given through \code{lut}: either a compatible
 #' matrix (3 rows or columns) or a complete file path
+#' 
+#' @section Testing
+#' When \code{test} is set, specific strings are returned for use with 
+#' \code{\link[testthat]{expect_equal}}.
+#' 
 #' @param n number of cuts the table should have
 #' @param lut alternative LUT, see description
-#' @param clusters
-#' @param verbose
-#' @param test
-#' @param ...
+#' @param clusters matrix with cluster assignments (1 column per cut)
+#' @param verbose provide feedback?
+#' @param test set to give specific return strings for tests
+#' @param ... ignored
 #'
-#' @return
+#' @return 
 #' @export
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
@@ -1580,6 +1620,7 @@ show.brain.lut <- function(n,
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
 #' @examples
+#' show.cut(dummy.tree()[[1]])
 show.cut <- function(cut){
     n <- length(cut)
     raw <- seq_along(cut)
@@ -1641,17 +1682,22 @@ randomize.cutree <- function(cutree, ...){
 #' @param n number of classes [9]
 #' @param cuts vector of cut numbers
 #' @param ... ignored
+#' @param seed seed for randoom numbers to make code reproducible
 #'
 #' @return cutree result
 #' @importFrom stats rnorm hclust dist cutree
 #' @export
 #'
 #' @examples
-dummy.tree <- function(n = 9,
+#' dummy.tree()
+#' dummy.tree(25)
+#' dend.with.cuts(dummy.tree(25))
+dummy.tree <- function(n    = 9,
                        cuts = round(seq(0, n,
                                         length.out = ceiling(sqrt(n+1)))[-1]),
-                       ...){
-    set.seed(1234)                                        # make reproducible
+                       ...,
+                       seed = 1234){
+    set.seed(seed)                                        # make reproducible
     dummy.data <- matrix(rnorm(n*1000),
                          nrow = n)
     hc <- hclust(dist(dummy.data))
@@ -1681,7 +1727,7 @@ dummy.tree <- function(n = 9,
 #'
 #' @examples
 #' dt <- dummy.tree()
-#' dend.with.cuts(dt, cut.col = "#ffa050")
+#' dend.with.cuts(dt)
 dend.with.cuts <- function(dt,
                            cuts = NULL,
                            cut.col =  "#ffa050",
