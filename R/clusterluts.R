@@ -357,10 +357,10 @@ color.shades <- function(col,
 
 #' re-index cut(ree) vector
 #'
-#' internal rank increasing within ties so that after reordering the order of ties
-#' can be preseerved
+#' Internal rank increasing within ties so that after reordering the order of ties
+#' can be preserved
 #'
-#' the output vector is named with 1000 * original level + position with ties for
+#' the output vector is named with (1000 * original level + position) with ties for
 #' that level, see example. this can handles multiplicities of up to 999 which
 #' should suffice for most practical cases.
 #'
@@ -384,8 +384,9 @@ color.shades <- function(col,
 reidx.cut <- function(cut){
     tbl <- table(cut)
     vals <- 1:length(unique(cut))
-    for (i in vals)
-        cut[cut == i] <- 1000*i + 1:tbl[i]
+    vals <- as.numeric(names(tbl))
+    for (i in seq_along(tbl))
+        cut[cut == vals[i]] <- 1000*vals[i] + 1:tbl[i]
     rcut <- rank(cut)
     names(rcut) <- cut
     return(rcut)
