@@ -265,25 +265,27 @@ ColorShadeRamp <- function(col,
 #'
 #' For each color in \code{col} create as many shades as indicated by the value
 #' of \code{reps} at the corresponding index by grading towards 'white' - the
-#' shades are going \code{scale} of the way to white.
+#' shades are going \code{scale} of the way to white/black.
 #'
-#' If \code{reps} is scalar it is recycled, otherwise it is filled with ones should
+#' If \code{reps} is scalar it is recycled to the length of \code{col}, otherwise it is filled with ones should
 #' it be shorter than \code{col}.
 #'
 #' The shades can be constructed either towards white, black, or, symmetrically.
 #' This is determined by setting \code{direction} to 'bright', 'dark', or 'all',
 #' respectively. The latter is the default.
+#' When \code{gscale} is TRUE, all shade steps are the same, independent
+#' of the individual repetitions, otherwise each shade range covers the range
+#' given by \code{scale}.
 #'
-#' @param col color vector; must be a valid argument to \code{\link[grDevices]{col2rgb}}
-#'  or a \eqn{3xN} RGB color matrix (one column per color).
 #' @param reps vector of repetitions
+#' @param col color vector; must be a valid argument to \code{\link[grDevices]{col2rgb}}
+#'  or a \eqn{3\times N}{3xN} RGB color matrix (one column per color).
 #' @param scale how much of the range to black/white should be covered
+#' @param gscale global shade steps?
 #' @param direction which way to build the shades, see Description
 #' @param ... passed to \code{\link{colorShadeRamp}}
 #'
 #' @return Color matrix with on entry per column
-#' @importFrom grDevices col2rgb
-#' @#importFrom gtools even
 #' @export
 #'
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
@@ -291,60 +293,88 @@ ColorShadeRamp <- function(col,
 #' @examples
 #' color.shades(c('red', 'blue'), 3)
 #' show.shades(color.shades(c('red', 'green', 'blue'), 2:4))
-color.shades <- function(col,
-                         reps,
-                         scale = ifelse(direction == 'bright', 0.7, 0.5),
+color.shades <- function(reps,
+                         col       = col.fun(length(reps)),
+                         scale     = ifelse(direction == 'bright', 0.7, 0.5),
+                         gscale    = TRUE,
                          direction = c('all', 'bright', 'dark'),
+                         col.fun   = default.hcl,
                          ...){
-    # handle parameters
+    ## handle parameters
     direction <- match.arg(direction)
     scale <- min(0.9, max(0.1, scale))
 
-    #
+    ##
     if(is.null(dim(col))){
-        col <- col2rgb(col)
+        col <- grDevices::col2rgb(col)
     }
     len.diff <- ncol(col) - length(reps)
     if(len.diff > 0){
-        reps <- if(length(reps == 1)){   # scalar:
-            rep(reps, ncol(col))       #    replicate
-        } else {                         # vector:
-            c(reps, rep(1, len.diff))    #    use 1 for positions not specified
-        }
+        reps <- if(length(reps == 1)){           # scalar:
+                    rep(reps, ncol(col))         #    replicate
+                } else {                         # vector:
+                    c(reps, rep(1, len.diff))    #    use 1 for positions not specified
+                }
     }
+    max.rep <- max(reps)
+    smo <- 2*max.rep %/% 2 + 1          # gives smallest odd integer >= max.rep
 
     col.reps <- list()
 
     for (cidx in 1:ncol(col)){
-        # color function (black - color - white)
+                                        # color function (black - color - white)
         csf <- ColorShadeRamp(vec2rgb(col[,cidx]), ...)
 
-        # the max() contruct is needed to avoid division by
-        # zero when reps[cidx]==1
-        rmp.n <- ifelse(direction == 'all' && even(reps[cidx]),
+                                        # the max() contruct is needed to avoid division by
+                                        # zero when reps[cidx]==1
+        rmp.n <- ifelse(direction == 'all' && gtools::even(reps[cidx]),
                         reps[cidx]+1 ,
                         reps[cidx])
+        ramp.vals <- if(gscale){
+                         if(max.rep == 1){
+                             0.5
+                         } else {
+                             switch(direction,
+                                    all = {
+                                        ## print(c(reps[cidx],
+                                        ## (smo + 1 - reps[cidx]) %/% 2 + 1,
+                                        ## (smo + 1 + reps[cidx]) %/% 2))
+ #browser()
+                                       v <- seq(0.25,
+                                                 0.75,
+                                                 length.out = smo)[((smo + 1 - reps[cidx]) %/% 2 + 1):
+                                                                   ((smo + 1 + reps[cidx]) %/% 2)]
 
-        ramp.vals <- if(rmp.n == 1){
-            0.5
-        } else {
-            switch(direction,
-                   all = {
-                       v <- seq(0.25,
-                                0.75,
-                                length.out = rmp.n)
-                       if(even(reps[cidx])){
-                           v[-1]
-                       } else {
-                           v
-                       }
-                   },
-                   bright = seq(0.5, 1-(1-scale)*0.5,
-                                length.out = rmp.n),
-                   dark =  seq(0.5, (1-scale)*0.5,
-                               length.out = rmp.n)
-            )
-        }
+                                    },
+                                    bright = seq(0.5, 1-(1-scale)*0.5,
+                                                 length.out = max.rep)[1:rmp.n],
+                                    dark =  seq(0.5, (1-scale)*0.5,
+                                                length.out = max.rep)[1:rmp.n]
+                                    )
+                         }
+                     } else {
+                         if(rmp.n == 1){
+                             0.5
+                         } else {
+                             switch(direction,
+                                    all = {
+                                        v <- seq(0.25,
+                                                 0.75,
+                                                 length.out = rmp.n)
+                                        if(gtools::even(reps[cidx])){
+                                            v[-1]
+                                        } else {
+                                            v
+                                        }
+                                    },
+                                    bright = seq(0.5, 1-(1-scale)*0.5,
+                                                 length.out = rmp.n),
+                                    dark =  seq(0.5, (1-scale)*0.5,
+                                                length.out = rmp.n)
+                                    )
+                         }
+                     }
+
         col.reps[[cidx]] <-  t(csf(ramp.vals))
     }
     shades <- matrix(unlist(col.reps), nrow = 3)
