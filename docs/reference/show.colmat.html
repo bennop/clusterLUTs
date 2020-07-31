@@ -40,8 +40,7 @@
 
 
 <meta property="og:title" content="show color matrix — show.colmat" />
-<meta property="og:description" content="show colors represented in color vector cv as matrix of colored boxes.
-show colors represented in color vector cv as matrix of colored boxes." />
+<meta property="og:description" content="Show colors represented in color vector cv as matrix of colored boxes." />
 
 
 
@@ -73,7 +72,7 @@ show colors represented in color vector cv as matrix of colored boxes." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">clusterLUTs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -110,100 +109,46 @@ show colors represented in color vector cv as matrix of colored boxes." />
     </div>
 
     <div class="ref-description">
-    <p>show colors represented in color vector <code>cv</code> as matrix of colored boxes.</p>
-<p>show colors represented in color vector <code>cv</code> as matrix of colored boxes.</p>
+    <p>Show colors represented in color vector <code>cv</code> as matrix of colored boxes.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>show.colmat</span>(<span class='no'>cv</span>)
-
-<span class='fu'>show.colmat</span>(<span class='no'>cv</span>)</pre>
+    <pre class="usage"><span class='fu'>show.colmat</span>(<span class='no'>cv</span>, <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>show.idx</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>cv</th>
-      <td><p>color vector (actually 3xn matrix with one column per color (RGB))</p></td>
+      <td><p>color vector (actually \(3\times n\) matrix with one column per color (RGB))</p></td>
+    </tr>
+    <tr>
+      <th>width</th>
+      <td><p>how many color tiles across (~\(\sqrt{n}\) where \(n\)
+is the length of the color vector)</p></td>
+    </tr>
+    <tr>
+      <th>show.idx</th>
+      <td><p>add index to display</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>passed to <code><a href='https://rdrr.io/r/graphics/rect.html'>rect</a></code></p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>none</p>
-<p>none</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>By setting <code>show.idx</code> to TRUE, the index in the color vector is shown in
+the center of the color tiles. Assigning a vector the same length as <code>cv</code>,
+the elements of that vector will be shown rather than the index.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>show.colmat</span>(<span class='fu'><a href='https://rdrr.io/r/grDevices/palettes.html'>rainbow</a></span>(<span class='fl'>12</span>, <span class='kw'>end</span> <span class='kw'>=</span> <span class='fl'>0.8</span>))</div><div class='output co'>#&gt; 1 
-#&gt;   red green  blue 
-#&gt;   255     0     0 
-#&gt; 2 
-#&gt;   red green  blue 
-#&gt;   255   111     0 
-#&gt; 3 
-#&gt;   red green  blue 
-#&gt;   255   223     0 
-#&gt; 4 
-#&gt;   red green  blue 
-#&gt;   176   255     0 
-#&gt; 5 
-#&gt;   red green  blue 
-#&gt;    65   255     0 
-#&gt; 6 
-#&gt;   red green  blue 
-#&gt;     0   255    46 
-#&gt; 7 
-#&gt;   red green  blue 
-#&gt;     0   255   158 
-#&gt; 8 
-#&gt;   red green  blue 
-#&gt;     0   241   255 
-#&gt; 9 
-#&gt;   red green  blue 
-#&gt;     0   130   255 
-#&gt; 10 
-#&gt;   red green  blue 
-#&gt;     0    19   255 
-#&gt; 11 
-#&gt;   red green  blue 
-#&gt;    93     0   255 
-#&gt; 12 
-#&gt;   red green  blue 
-#&gt;   204     0   255 </div><div class='input'><span class='fu'>show.colmat</span>(<span class='fu'><a href='https://rdrr.io/r/grDevices/palettes.html'>rainbow</a></span>(<span class='fl'>12</span>, <span class='kw'>end</span> <span class='kw'>=</span> <span class='fl'>0.8</span>))</div><div class='img'><img src='show.colmat-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; 1 
-#&gt;   red green  blue 
-#&gt;   255     0     0 
-#&gt; 2 
-#&gt;   red green  blue 
-#&gt;   255   111     0 
-#&gt; 3 
-#&gt;   red green  blue 
-#&gt;   255   223     0 
-#&gt; 4 
-#&gt;   red green  blue 
-#&gt;   176   255     0 
-#&gt; 5 
-#&gt;   red green  blue 
-#&gt;    65   255     0 
-#&gt; 6 
-#&gt;   red green  blue 
-#&gt;     0   255    46 
-#&gt; 7 
-#&gt;   red green  blue 
-#&gt;     0   255   158 
-#&gt; 8 
-#&gt;   red green  blue 
-#&gt;     0   241   255 
-#&gt; 9 
-#&gt;   red green  blue 
-#&gt;     0   130   255 
-#&gt; 10 
-#&gt;   red green  blue 
-#&gt;     0    19   255 
-#&gt; 11 
-#&gt;   red green  blue 
-#&gt;    93     0   255 
-#&gt; 12 
-#&gt;   red green  blue 
-#&gt;   204     0   255 </div></pre>
+    <pre class="examples"><div class='input'><span class='no'>op</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span>(<span class='kw'>mfrow</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2</span>,<span class='fl'>1</span>))
+<span class='fu'>show.colmat</span>(<span class='fu'><a href='https://rdrr.io/r/grDevices/palettes.html'>rainbow</a></span>(<span class='fl'>12</span>, <span class='kw'>end</span> <span class='kw'>=</span> <span class='fl'>0.8</span>))
+<span class='fu'>show.colmat</span>(<span class='fu'><a href='https://rdrr.io/r/grDevices/palettes.html'>rainbow</a></span>(<span class='fl'>12</span>, <span class='kw'>end</span> <span class='kw'>=</span> <span class='fl'>0.8</span>), <span class='kw'>width</span> <span class='kw'>=</span> <span class='fl'>12</span>)</div><div class='img'><img src='show.colmat-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span>(<span class='no'>op</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

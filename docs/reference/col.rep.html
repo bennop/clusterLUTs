@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>plot hues for a <code><a href='tree.ranges.html'>tree.ranges</a></code> result — tree.ranges.plot • clusterLUTs</title>
+<title>color repetition — col.rep • clusterLUTs</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="plot hues for a <code><a href='tree.ranges.html'>tree.ranges</a></code> result — tree.ranges.plot" />
-<meta property="og:description" content="plot hues for a tree.ranges result" />
+<meta property="og:title" content="color repetition — col.rep" />
+<meta property="og:description" content="Repeat color col n times as columns in a \(3\times n\) 
+RGB color matrix. Analog to rep which is used internally." />
 
 
 
@@ -103,68 +104,36 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>plot hues for a <code><a href='tree.ranges.html'>tree.ranges</a></code> result</h1>
+    <h1>color repetition</h1>
     
-    <div class="hidden name"><code>tree.ranges.plot.Rd</code></div>
+    <div class="hidden name"><code>col.rep.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>plot hues for a <code><a href='tree.ranges.html'>tree.ranges</a></code> result</p>
+    <p>Repeat color <code>col</code> <code>n</code> times as columns in a \(3\times n\) 
+RGB color matrix. Analog to <code><a href='https://rdrr.io/r/base/rep.html'>rep</a></code> which is used internally.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>tree.ranges.plot</span>(
-  <span class='no'>tr</span>,
-  <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>show.tree</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>ts.col</span> <span class='kw'>=</span> <span class='st'>"lightgrey"</span>,
-  <span class='kw'>ts.lty</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>ts.lwd</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='no'>...</span>
-)</pre>
+    <pre class="usage"><span class='fu'>col.rep</span>(<span class='no'>col</span>, <span class='no'>n</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>tr</th>
-      <td><p>output of <code><a href='tree.ranges.html'>tree.ranges</a></code></p></td>
-    </tr>
-    <tr>
-      <th>add</th>
-      <td><p>add to existing plot or start new one</p></td>
-    </tr>
-    <tr>
-      <th>show.tree</th>
-      <td><p>show lines indicating the tree structure</p></td>
-    </tr>
-    <tr>
-      <th>ts.col</th>
-      <td><p>tree segment color</p></td>
-    </tr>
-    <tr>
-      <th>ts.lty</th>
-      <td><p>tree segment line type</p></td>
-    </tr>
-    <tr>
-      <th>ts.lwd</th>
-      <td><p>tree segment line width</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>passed to <code><a href='hue.range.lines.html'>hue.range.lines</a></code></p></td>
+      <th>n</th>
+      <td><p>number of repetitions (should be a positive integer value)</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>none</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='hue.range.colors.html'>hue.range.colors</a></code> for an unordered display</p></div>
+    <p>color matrix with <code>n</code> columns of color <code>col</code></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>tr</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='tree.ranges.html'>tree.ranges</a></span>(<span class='fu'><a href='dummy.tree.html'>dummy.tree</a></span>())
-<span class='fu'>plot.tree.ranges</span>(<span class='fu'><a href='tree.ranges.html'>tree.ranges</a></span>(<span class='fu'><a href='dummy.tree.html'>dummy.tree</a></span>()), <span class='kw'>show.tree</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='error'>Error in plot.tree.ranges(tree.ranges(dummy.tree()), show.tree = TRUE): could not find function "plot.tree.ranges"</span></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>col.rep</span>(<span class='st'>'red'</span>, <span class='fl'>3</span>)</div><div class='output co'>#&gt;      [,1] [,2] [,3]
+#&gt; [1,]  255  255  255
+#&gt; [2,]    0    0    0
+#&gt; [3,]    0    0    0</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

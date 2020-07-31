@@ -40,8 +40,8 @@
 
 
 <meta property="og:title" content="Show hue range colors — show.hue.range" />
-<meta property="og:description" content="Similar to hue.range.plot but show the unordered colors
-Similar to hue.range.plot but show the unordered colors" />
+<meta property="og:description" content="Somehere between show.colmat and hue.range.plot,
+shows the unordered colors of one in a single row of rectangles." />
 
 
 
@@ -73,7 +73,7 @@ Similar to hue.range.plot but show the unordered colors" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">clusterLUTs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -110,8 +110,8 @@ Similar to hue.range.plot but show the unordered colors" />
     </div>
 
     <div class="ref-description">
-    <p>Similar to <code>hue.range.plot</code> but show the unordered colors</p>
-<p>Similar to <code>hue.range.plot</code> but show the unordered colors</p>
+    <p>Somehere between <code><a href='show.colmat.html'>show.colmat</a></code> and <code>hue.range.plot</code>,
+shows the unordered colors of one in a single row of rectangles.</p>
     </div>
 
     <pre class="usage"><span class='fu'>show.hue.range</span>(
@@ -120,18 +120,11 @@ Similar to hue.range.plot but show the unordered colors" />
   <span class='kw'>spacing</span> <span class='kw'>=</span> <span class='fl'>0.1</span>,
   <span class='kw'>y</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>v.scale</span> <span class='kw'>=</span> <span class='fl'>1</span>,
   <span class='no'>...</span>,
-  <span class='kw'>wait</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
-)
-
-<span class='fu'>show.hue.range</span>(
-  <span class='no'>hr</span>,
-  <span class='kw'>extractfun</span> <span class='kw'>=</span> <span class='no'>mean</span>,
-  <span class='kw'>spacing</span> <span class='kw'>=</span> <span class='fl'>0.1</span>,
-  <span class='kw'>y</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>...</span>,
-  <span class='kw'>wait</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+  <span class='kw'>wait</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>width.x</span> <span class='kw'>=</span> <span class='no'>width</span>,
+  <span class='kw'>width.y</span> <span class='kw'>=</span> <span class='no'>width</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -142,6 +135,26 @@ Similar to hue.range.plot but show the unordered colors" />
       <td><p>hue range or list thereof</p></td>
     </tr>
     <tr>
+      <th>extractfun</th>
+      <td><p>function to assign hue to range (<code><a href='https://rdrr.io/r/base/mean.html'>mean</a></code>)</p></td>
+    </tr>
+    <tr>
+      <th>spacing</th>
+      <td><p>relative spacing between hue lines</p></td>
+    </tr>
+    <tr>
+      <th>y</th>
+      <td><p>position along y-axis (mainly for single hue range)</p></td>
+    </tr>
+    <tr>
+      <th>width</th>
+      <td><p>effective width of rectangles along axes</p></td>
+    </tr>
+    <tr>
+      <th>v.scale</th>
+      <td><p>relative vertical scaling to adjust rectangles' height</p></td>
+    </tr>
+    <tr>
       <th>...</th>
       <td><p>ignored</p></td>
     </tr>
@@ -149,13 +162,30 @@ Similar to hue.range.plot but show the unordered colors" />
       <th>wait</th>
       <td><p>for internal use, should not be set by caller</p></td>
     </tr>
+    <tr>
+      <th>width.x</th>
+      <td><p>width along x-axis</p></td>
+    </tr>
+    <tr>
+      <th>width.y</th>
+      <td><p>width along y-axis</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>none</p>
-<p>none</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
+    <p>When given a list of hue ranges, those lines are stacked on top of one
+another.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='hue.range.lines.html'>hue.range.lines</a></code> or <code>tree.range.plot</code> for
+ordered display.</p></div>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>show.hue.range</span>(<span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fl'>0</span>:<span class='fl'>5</span>/<span class='fl'>6</span>, <span class='kw'>nr</span> <span class='kw'>=</span> <span class='fl'>2</span>))</div><div class='img'><img src='show.hue.range-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

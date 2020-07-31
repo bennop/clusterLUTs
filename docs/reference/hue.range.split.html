@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>plot hues for a <code><a href='tree.ranges.html'>tree.ranges</a></code> result — tree.ranges.plot • clusterLUTs</title>
+<title>Split a hue range according to <code>split.tbl</code> — hue.range.split • clusterLUTs</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="plot hues for a <code><a href='tree.ranges.html'>tree.ranges</a></code> result — tree.ranges.plot" />
-<meta property="og:description" content="plot hues for a tree.ranges result" />
+<meta property="og:title" content="Split a hue range according to <code>split.tbl</code> — hue.range.split" />
+<meta property="og:description" content="A hue range is defined by a lower and an upper hue bound, given either as
+2-element vector or a \(2xN\) matrix where each column defines such a range." />
 
 
 
@@ -103,68 +104,62 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>plot hues for a <code><a href='tree.ranges.html'>tree.ranges</a></code> result</h1>
+    <h1>Split a hue range according to <code>split.tbl</code></h1>
     
-    <div class="hidden name"><code>tree.ranges.plot.Rd</code></div>
+    <div class="hidden name"><code>hue.range.split.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>plot hues for a <code><a href='tree.ranges.html'>tree.ranges</a></code> result</p>
+    <p>A hue range is defined by a lower and an upper hue bound, given either as
+2-element vector or a \(2xN\) matrix where each column defines such a range.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>tree.ranges.plot</span>(
-  <span class='no'>tr</span>,
-  <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>show.tree</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>ts.col</span> <span class='kw'>=</span> <span class='st'>"lightgrey"</span>,
-  <span class='kw'>ts.lty</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>ts.lwd</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='no'>...</span>
-)</pre>
+    <pre class="usage"><span class='fu'>hue.range.split</span>(<span class='no'>hue.range</span>, <span class='no'>split.tbl</span>, <span class='kw'>blank</span> <span class='kw'>=</span> <span class='fl'>0.1</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>tr</th>
-      <td><p>output of <code><a href='tree.ranges.html'>tree.ranges</a></code></p></td>
+      <th>hue.range</th>
+      <td><p>hue range vector or matrix</p></td>
     </tr>
     <tr>
-      <th>add</th>
-      <td><p>add to existing plot or start new one</p></td>
+      <th>split.tbl</th>
+      <td><p>vector (possibly result of <code><a href='https://rdrr.io/r/base/table.html'>table</a></code>) giving the
+weights of the splits (or list of such
+vectors applied to corresponding matrix colunm)</p></td>
     </tr>
     <tr>
-      <th>show.tree</th>
-      <td><p>show lines indicating the tree structure</p></td>
-    </tr>
-    <tr>
-      <th>ts.col</th>
-      <td><p>tree segment color</p></td>
-    </tr>
-    <tr>
-      <th>ts.lty</th>
-      <td><p>tree segment line type</p></td>
-    </tr>
-    <tr>
-      <th>ts.lwd</th>
-      <td><p>tree segment line width</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>passed to <code><a href='hue.range.lines.html'>hue.range.lines</a></code></p></td>
+      <th>blank</th>
+      <td><p>which fraction of the range should be left blank</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>none</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+    <p>a hue range vector (only one split) or matrix</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <div class='dont-index'><p><code><a href='hue.range.colors.html'>hue.range.colors</a></code> for an unordered display</p></div>
+    <p>The splits are defined by <code>split.tbl</code>, a vector giving the the relative
+weights (corresponding to "width" in colorspace) to be given to the individual
+splits.</p>
+<p>The spacing between split ranges is defined by <code>blank</code> where a fraction
+of <code>blank</code> of the original range is divided among the splits. Thus, for
+an \(n\)-element vector <code>split.tbl</code>, each split covers \(blank/(n-1)\)
+of the range and the remaining "area" is dived among the \(n\) splits
+according to their weights speecified in <code>split.tbl</code>. See the examples.</p>
+<p>In either case, <code>blank</code> is assumed to be a "global" parameter across all
+hue ranges.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>tr</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='tree.ranges.html'>tree.ranges</a></span>(<span class='fu'><a href='dummy.tree.html'>dummy.tree</a></span>())
-<span class='fu'>plot.tree.ranges</span>(<span class='fu'><a href='tree.ranges.html'>tree.ranges</a></span>(<span class='fu'><a href='dummy.tree.html'>dummy.tree</a></span>()), <span class='kw'>show.tree</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='error'>Error in plot.tree.ranges(tree.ranges(dummy.tree()), show.tree = TRUE): could not find function "plot.tree.ranges"</span></div></pre>
+    <pre class="examples"><div class='input'><span class='no'>hm2</span> <span class='kw'>&lt;-</span> <span class='fu'>hue.range.split</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>,<span class='fl'>5</span>/<span class='fl'>6</span>), <span class='fl'>4</span>:<span class='fl'>2</span>) <span class='co'># matrix(c(0, 4,5,11,12,20)/24, nr = 2)</span>
+<span class='co'>##           [,1]      [,2]      [,3]</span>
+<span class='co'>## [1,] 0.0000000 0.2083333 0.5000000</span>
+<span class='co'>## [2,] 0.1666667 0.4583333 0.8333333</span>
+<span class='no'>hm3</span> <span class='kw'>&lt;-</span> <span class='fu'>hue.range.split</span>(<span class='no'>hm2</span>, <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2</span>,<span class='fl'>1</span>,<span class='fl'>1</span>), <span class='fl'>3</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>1</span>)))
+<span class='co'>##       [,1]       [,2]      [,3]      [,4] [,5]      [,6]</span>
+<span class='co'>## [1,] 0.000 0.08333333 0.1291667 0.2083333 0.50 0.6833333</span>
+<span class='co'>## [2,] 0.075 0.12083333 0.1666667 0.4333333 0.65 0.8333333</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

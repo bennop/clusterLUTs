@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>plot hues for a <code><a href='tree.ranges.html'>tree.ranges</a></code> result — tree.ranges.plot • clusterLUTs</title>
+<title>prepare shades and reorder to match cut — cutshades • clusterLUTs</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,10 @@
 
 
 
-<meta property="og:title" content="plot hues for a <code><a href='tree.ranges.html'>tree.ranges</a></code> result — tree.ranges.plot" />
-<meta property="og:description" content="plot hues for a tree.ranges result" />
+<meta property="og:title" content="prepare shades and reorder to match cut — cutshades" />
+<meta property="og:description" content="For the given cut cut analyze the internal structure of each cluster
+and use that as basis for a shading through color.shades. Then
+reorder the shading to arrange according to cluster members." />
 
 
 
@@ -103,68 +105,60 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>plot hues for a <code><a href='tree.ranges.html'>tree.ranges</a></code> result</h1>
+    <h1>prepare shades and reorder to match cut</h1>
     
-    <div class="hidden name"><code>tree.ranges.plot.Rd</code></div>
+    <div class="hidden name"><code>cutshades.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>plot hues for a <code><a href='tree.ranges.html'>tree.ranges</a></code> result</p>
+    <p>For the given cut <code>cut</code> analyze the internal structure of each cluster
+and use that as basis for a shading through <code><a href='color.shades.html'>color.shades</a></code>. Then
+reorder the shading to arrange according to cluster members.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>tree.ranges.plot</span>(
-  <span class='no'>tr</span>,
-  <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>show.tree</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>ts.col</span> <span class='kw'>=</span> <span class='st'>"lightgrey"</span>,
-  <span class='kw'>ts.lty</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>ts.lwd</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='no'>...</span>
-)</pre>
+    <pre class="usage"><span class='fu'>cutshades</span>(<span class='no'>cut</span>, <span class='kw'>col.fun</span> <span class='kw'>=</span> <span class='no'>default.rgb</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>tr</th>
-      <td><p>output of <code><a href='tree.ranges.html'>tree.ranges</a></code></p></td>
+      <th>cut</th>
+      <td><p>vector of cluster assignments</p></td>
     </tr>
     <tr>
-      <th>add</th>
-      <td><p>add to existing plot or start new one</p></td>
-    </tr>
-    <tr>
-      <th>show.tree</th>
-      <td><p>show lines indicating the tree structure</p></td>
-    </tr>
-    <tr>
-      <th>ts.col</th>
-      <td><p>tree segment color</p></td>
-    </tr>
-    <tr>
-      <th>ts.lty</th>
-      <td><p>tree segment line type</p></td>
-    </tr>
-    <tr>
-      <th>ts.lwd</th>
-      <td><p>tree segment line width</p></td>
+      <th>col.fun</th>
+      <td><p>function mapping a number to that many colors from a palette</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>passed to <code><a href='hue.range.lines.html'>hue.range.lines</a></code></p></td>
+      <td><p>passed to <code><a href='color.shades.html'>color.shades</a></code></p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>none</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='hue.range.colors.html'>hue.range.colors</a></code> for an unordered display</p></div>
+    <p>color shades reordered (see details)</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>tr</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='tree.ranges.html'>tree.ranges</a></span>(<span class='fu'><a href='dummy.tree.html'>dummy.tree</a></span>())
-<span class='fu'>plot.tree.ranges</span>(<span class='fu'><a href='tree.ranges.html'>tree.ranges</a></span>(<span class='fu'><a href='dummy.tree.html'>dummy.tree</a></span>()), <span class='kw'>show.tree</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='error'>Error in plot.tree.ranges(tree.ranges(dummy.tree()), show.tree = TRUE): could not find function "plot.tree.ranges"</span></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>42</span>);
+(<span class='no'>cs</span> <span class='kw'>&lt;-</span> <span class='fu'>cutshades</span>(<span class='no'>ct</span> <span class='kw'>&lt;-</span>  <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fl'>6</span>, <span class='fl'>15</span>, <span class='fl'>TRUE</span>)))</div><div class='output co'>#&gt;           [,1]     [,2]      [,3] [,4]     [,5]     [,6]     [,7]     [,8]
+#&gt; [1,] 122.21130   0.0000 186.48405  255 140.3316  32.5686 191.0001 212.3436
+#&gt; [2,]  26.90505  63.9999  24.80640    0 184.6506 184.8903 255.0000 255.0000
+#&gt; [3,]  12.18135 255.0000   9.02955    0  23.9241  95.1201   0.0000 101.6991
+#&gt;           [,9]    [,10]    [,11]    [,12] [,13]    [,14]    [,15]
+#&gt; [1,] 255.00000   0.0000 255.0000 122.2266   255 120.7170 229.9488
+#&gt; [2,] 103.76205 255.0000 158.1102 109.1043     0 255.0000 255.0000
+#&gt; [3,]  70.32135 127.9998 129.3845 255.0000   255 160.4486 156.1722
+#&gt; attr(,"reps")
+#&gt; cut
+#&gt; 1 2 4 5 6 
+#&gt; 5 4 3 2 1 
+#&gt; attr(,"cut")
+#&gt;  [1] 1 5 1 1 2 4 2 2 1 4 1 5 6 4 2
+#&gt; attr(,"dir")
+#&gt; [1] "all"</div><div class='input'><span class='no'>op</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span>(<span class='kw'>mfrow</span><span class='kw'>=</span><span class='fl'>2</span>:<span class='fl'>1</span>)
+<span class='fu'><a href='show.colmat.html'>show.colmat</a></span>(<span class='no'>cs</span>, <span class='kw'>width</span><span class='kw'>=</span><span class='fl'>15</span>)
+<span class='fu'><a href='show.shades.html'>show.shades</a></span>(<span class='no'>cs</span>)</div><div class='img'><img src='cutshades-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span>(<span class='no'>op</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

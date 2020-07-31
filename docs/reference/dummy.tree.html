@@ -40,8 +40,7 @@
 
 
 <meta property="og:title" content="dummy tree data for examples — dummy.tree" />
-<meta property="og:description" content="The number shoud be reasonably small to keep the example results clear.
-The number shoud be reasonably small to keep the example results clear." />
+<meta property="og:description" content="The number shoud be reasonably small to keep the example results clear." />
 
 
 
@@ -73,7 +72,7 @@ The number shoud be reasonably small to keep the example results clear." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">clusterLUTs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -111,19 +110,13 @@ The number shoud be reasonably small to keep the example results clear." />
 
     <div class="ref-description">
     <p>The number shoud be reasonably small to keep the example results clear.</p>
-<p>The number shoud be reasonably small to keep the example results clear.</p>
     </div>
 
     <pre class="usage"><span class='fu'>dummy.tree</span>(
   <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>9</span>,
   <span class='kw'>cuts</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>round</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span>(<span class='fl'>0</span>, <span class='no'>n</span>, <span class='kw'>length.out</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>ceiling</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span>(<span class='no'>n</span> + <span class='fl'>1</span>)))[-<span class='fl'>1</span>]),
-  <span class='no'>...</span>
-)
-
-<span class='fu'>dummy.tree</span>(
-  <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>9</span>,
-  <span class='kw'>cuts</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>round</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span>(<span class='fl'>0</span>, <span class='no'>n</span>, <span class='kw'>length.out</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>ceiling</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span>(<span class='no'>n</span> + <span class='fl'>1</span>)))[-<span class='fl'>1</span>]),
-  <span class='no'>...</span>
+  <span class='no'>...</span>,
+  <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>1234</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -141,19 +134,74 @@ The number shoud be reasonably small to keep the example results clear." />
       <th>...</th>
       <td><p>ignored</p></td>
     </tr>
+    <tr>
+      <th>seed</th>
+      <td><p>seed for randoom numbers to make code reproducible</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>cutree result</p>
-<p>cutree result</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>The <code>cut</code> vector specifies the number of branches in the dendrogram at
 which the cuts should be made.</p>
-<p>The <code>cut</code> vector specifies the number of branches in the dendrogram at
-which the cuts should be made.</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>dummy.tree</span>()</div><div class='output co'>#&gt;       3 6 9
+#&gt;  [1,] 1 1 1
+#&gt;  [2,] 2 2 2
+#&gt;  [3,] 3 3 3
+#&gt;  [4,] 1 1 4
+#&gt;  [5,] 3 4 5
+#&gt;  [6,] 1 1 6
+#&gt;  [7,] 3 5 7
+#&gt;  [8,] 1 6 8
+#&gt;  [9,] 3 4 9
+#&gt; attr(,"hc")
+#&gt; 
+#&gt; Call:
+#&gt; hclust(d = dist(dummy.data))
+#&gt; 
+#&gt; Cluster method   : complete 
+#&gt; Distance         : euclidean 
+#&gt; Number of objects: 9 
+#&gt; </div><div class='input'><span class='fu'>dummy.tree</span>(<span class='fl'>25</span>)</div><div class='output co'>#&gt;       5 10 15 20 25
+#&gt;  [1,] 1  1  1  1  1
+#&gt;  [2,] 2  2  2  2  2
+#&gt;  [3,] 3  3  3  3  3
+#&gt;  [4,] 1  4  4  4  4
+#&gt;  [5,] 4  5  5  5  5
+#&gt;  [6,] 5  6  6  6  6
+#&gt;  [7,] 1  1  7  7  7
+#&gt;  [8,] 4  7  8  8  8
+#&gt;  [9,] 3  8  9  9  9
+#&gt; [10,] 3  3  3  3 10
+#&gt; [11,] 3  3  3 10 11
+#&gt; [12,] 3  8 10 11 12
+#&gt; [13,] 4  5  5  5 13
+#&gt; [14,] 2  2  2  2 14
+#&gt; [15,] 1  1 11 12 15
+#&gt; [16,] 3  9 12 13 16
+#&gt; [17,] 5  6  6 14 17
+#&gt; [18,] 1  1 11 12 18
+#&gt; [19,] 5 10 13 15 19
+#&gt; [20,] 3  8 14 16 20
+#&gt; [21,] 1  4  4 17 21
+#&gt; [22,] 2  2  2 18 22
+#&gt; [23,] 4  7  8 19 23
+#&gt; [24,] 1  4 15 20 24
+#&gt; [25,] 1  1  1  1 25
+#&gt; attr(,"hc")
+#&gt; 
+#&gt; Call:
+#&gt; hclust(d = dist(dummy.data))
+#&gt; 
+#&gt; Cluster method   : complete 
+#&gt; Distance         : euclidean 
+#&gt; Number of objects: 25 
+#&gt; </div><div class='input'><span class='fu'><a href='dend.with.cuts.html'>dend.with.cuts</a></span>(<span class='fu'>dummy.tree</span>(<span class='fl'>25</span>))</div><div class='img'><img src='dummy.tree-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

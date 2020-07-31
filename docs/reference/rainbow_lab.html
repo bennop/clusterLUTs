@@ -40,8 +40,7 @@
 
 
 <meta property="og:title" content="rainbow via Lab-based colorRamp — rainbow_lab" />
-<meta property="og:description" content="rainbow via Lab-based colorRamp
-rainbow via Lab-based colorRamp" />
+<meta property="og:description" content="Create a Lab-based rainbow color matrix." />
 
 
 
@@ -73,7 +72,7 @@ rainbow via Lab-based colorRamp" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">clusterLUTs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -110,13 +109,10 @@ rainbow via Lab-based colorRamp" />
     </div>
 
     <div class="ref-description">
-    <p>rainbow via Lab-based colorRamp</p>
-<p>rainbow via Lab-based colorRamp</p>
+    <p>Create a Lab-based rainbow color matrix.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>rainbow_lab</span>(<span class='no'>n</span>, <span class='kw'>full</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>rlf</span> <span class='kw'>=</span> <span class='no'>rainbow_lab_ramp</span>, <span class='no'>...</span>)
-
-<span class='fu'>rainbow_lab</span>(<span class='no'>n</span>, <span class='kw'>full</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>rlf</span> <span class='kw'>=</span> <span class='no'>rainbow_lab_ramp</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>rainbow_lab</span>(<span class='no'>n</span>, <span class='kw'>rlf</span> <span class='kw'>=</span> <span class='fu'><a href='rainbow_lab_ramp.html'>rainbow_lab_ramp</a></span>(), <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -126,25 +122,28 @@ rainbow via Lab-based colorRamp" />
       <td><p>number of colors to return</p></td>
     </tr>
     <tr>
-      <th>full</th>
-      <td><p>if set, go from red to red, otherwise red to purple</p></td>
+      <th>rlf</th>
+      <td><p>rainbow Lab function (<code><a href='rainbow_lab_ramp.html'>rainbow_lab_ramp</a></code>)</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>ignored</p></td>
+      <td><p>passed to <code>rlf</code></p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    
-
-
-
-
+    <p>color matrix</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>rainbow_lab</span>(<span class='fl'>12</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: the condition has length &gt; 1 and only the first element will be used</span></div><div class='output co'>#&gt; <span class='error'>Error in t.default(rlf(seq(0, 1, length.out = n))): argument is not a matrix</span></div><div class='input'><span class='fu'>rainbow_lab</span>(<span class='fl'>12</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: the condition has length &gt; 1 and only the first element will be used</span></div><div class='output co'>#&gt; <span class='error'>Error in t.default(rlf(seq(0, 1, length.out = n))): argument is not a matrix</span></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>rainbow_lab</span>(<span class='fl'>12</span>)</div><div class='output co'>#&gt;      [,1]     [,2]     [,3]     [,4]  [,5]      [,6]     [,7]      [,8]
+#&gt; [1,]  255 255.0000 255.0000 197.7755 103.4  59.43795  63.6174  71.19345
+#&gt; [2,]    0 152.5257 238.5423 255.0000 255.0 254.86740 254.8139 215.26590
+#&gt; [3,]    0   0.0000   0.0000   0.0000   0.0 106.50840 201.2817 255.00000
+#&gt;          [,9]     [,10]   [,11] [,12]
+#&gt; [1,]  81.2940  70.14285 179.214   255
+#&gt; [2,] 116.1398   0.00000   0.000     0
+#&gt; [3,] 255.0000 255.00000 255.000   255</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
