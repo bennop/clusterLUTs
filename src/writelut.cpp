@@ -17,12 +17,13 @@ using namespace Rcpp;
 
 //' write LUT
 //' 
-//' Write RGB color lookup table (LUT) of 3\eqn{\times}{x}256 bytes.
+//' Write RGB color lookup table (LUT) of 3\eqn{\times}{x}256 bytes. 
+//' Implemented with Rcpp to allow writing bytes.
 //' 
 //' @param x vector of 768 bytes (treated as unsigned integer)
-//' @param filename
+//' @param filename name for output file
 //' 
-//' @return 0 on s
+//' @return 0 on success
 //' @export
 // [[Rcpp::export]]
 int writelut(IntegerVector x, std::string filename) {
@@ -30,7 +31,7 @@ int writelut(IntegerVector x, std::string filename) {
     //Rcout << filename << std::endl;
     std::ofstream out(filename, 
                       std::ofstream::out | std::ofstream::binary);
-    int count = 0;
+    // int count = 0;
     for(int i:x){
         if(i > 255){
             Rcerr << "element > 255 encountered: "<< i << std::endl;
@@ -38,15 +39,15 @@ int writelut(IntegerVector x, std::string filename) {
             return 99;
         }   
         //if(count++ < 6){
-            Rcout << i << ' ';
-            if(++count%3 == 0)
-                Rcout << "  ";
+            // Rcout << i << ' ';
+            // if(++count%3 == 0)
+            //     Rcout << "  ";
         //}
         out << (unsigned char)i;
             
     }
     out.close();
-    Rcout << std::endl;
+    // Rcout << std::endl;
     return 0;
 }
 
@@ -59,3 +60,4 @@ int writelut(IntegerVector x, std::string filename) {
 /*** R
 writelut(as.integer(sample(0:255, 18)), 'min.lut')
 */
+
