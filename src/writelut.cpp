@@ -15,6 +15,15 @@ using namespace Rcpp;
 //   http://gallery.rcpp.org/
 //
 
+//' write LUT
+//' 
+//' Write RGB color lookup table (LUT) of 3\eqn{\times}{x}256 bytes.
+//' 
+//' @param x vector of 768 bytes (treated as unsigned integer)
+//' @param filename
+//' 
+//' @return 0 on s
+//' @export
 // [[Rcpp::export]]
 int writelut(IntegerVector x, std::string filename) {
    
@@ -27,7 +36,7 @@ int writelut(IntegerVector x, std::string filename) {
             Rcerr << "element > 255 encountered: "<< i << std::endl;
             out.close();
             return 99;
-        }
+        }   
         //if(count++ < 6){
             Rcout << i << ' ';
             if(++count%3 == 0)

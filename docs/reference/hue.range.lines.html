@@ -40,8 +40,7 @@
 
 
 <meta property="og:title" content="plot hue range — hue.range.lines" />
-<meta property="og:description" content="for now only horizontal
-for now only horizontal" />
+<meta property="og:description" content="for now only horizontal" />
 
 
 
@@ -73,7 +72,7 @@ for now only horizontal" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">clusterLUTs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -111,12 +110,9 @@ for now only horizontal" />
 
     <div class="ref-description">
     <p>for now only horizontal</p>
-<p>for now only horizontal</p>
     </div>
 
-    <pre class="usage"><span class='fu'>hue.range.lines</span>(<span class='no'>hue.range</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"red"</span>)
-
-<span class='fu'>hue.range.lines</span>(<span class='no'>hue.range</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"red"</span>)</pre>
+    <pre class="usage"><span class='fu'>hue.range.lines</span>(<span class='no'>hue.range</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"red"</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -128,6 +124,10 @@ for now only horizontal" />
     <tr>
       <th>y</th>
       <td><p>y-level at which to plot (scalar or vector of length of <code>hue.range</code>)</p></td>
+    </tr>
+    <tr>
+      <th>add</th>
+      <td><p>when set, add to existing plot, otherwise start a new one</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -142,10 +142,12 @@ for now only horizontal" />
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>none</p>
-<p>none</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='hue.range.colors.html'>hue.range.colors</a></code> for an unordered display.</p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>hue.range.lines</span>(<span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fl'>0</span>:<span class='fl'>5</span>/<span class='fl'>6</span>, <span class='kw'>nr</span> <span class='kw'>=</span> <span class='fl'>2</span>))</div><div class='input'><span class='fu'>hue.range.lines</span>(<span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fl'>0</span>:<span class='fl'>5</span>/<span class='fl'>6</span>, <span class='kw'>nr</span> <span class='kw'>=</span> <span class='fl'>2</span>))</div><div class='img'><img src='hue.range.lines-1.png' alt='' width='700' height='433' /></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>hue.range.lines</span>(<span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fl'>0</span>:<span class='fl'>5</span>/<span class='fl'>6</span>, <span class='kw'>nr</span> <span class='kw'>=</span> <span class='fl'>2</span>))</div><div class='img'><img src='hue.range.lines-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

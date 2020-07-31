@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>show brain lookuptable — show.brain.lut • clusterLUTs</title>
+<title>show brain lookup table — show.brain.lut • clusterLUTs</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,8 @@
 
 
 
-<meta property="og:title" content="show brain lookuptable — show.brain.lut" />
-<meta property="og:description" content="show one of the lookup tables created through treeluts
-show one of the lookup tables created through treeluts" />
+<meta property="og:title" content="show brain lookup table — show.brain.lut" />
+<meta property="og:description" content="show one of the lookup tables created through treeluts" />
 
 
 
@@ -73,7 +72,7 @@ show one of the lookup tables created through treeluts" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">clusterLUTs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -104,26 +103,16 @@ show one of the lookup tables created through treeluts" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>show brain lookuptable</h1>
+    <h1>show brain lookup table</h1>
     
     <div class="hidden name"><code>show.brain.lut.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>show one of the lookup tables created through <code><a href='treeluts.html'>treeluts</a></code></p>
-<p>show one of the lookup tables created through <code><a href='treeluts.html'>treeluts</a></code></p>
     </div>
 
     <pre class="usage"><span class='fu'>show.brain.lut</span>(
-  <span class='no'>n</span>,
-  <span class='kw'>lut</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>clusters</span> <span class='kw'>=</span> <span class='fu'><a href='read.tree.html'>read.tree</a></span>(),
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"verbose"</span>),
-  <span class='kw'>test</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='no'>...</span>
-)
-
-<span class='fu'>show.brain.lut</span>(
   <span class='no'>n</span>,
   <span class='kw'>lut</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>clusters</span> <span class='kw'>=</span> <span class='fu'><a href='read.tree.html'>read.tree</a></span>(),
@@ -144,30 +133,39 @@ show one of the lookup tables created through treeluts" />
       <td><p>alternative LUT, see description</p></td>
     </tr>
     <tr>
+      <th>clusters</th>
+      <td><p>matrix with cluster assignments (1 column per cut)</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>provide feedback?</p></td>
+    </tr>
+    <tr>
+      <th>test</th>
+      <td><p>set to give specific return strings for tests</p></td>
+    </tr>
+    <tr>
       <th>...</th>
-      <td></td>
+      <td><p>ignored</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    
-
-
-
-
+    <p>LUT used (invisibly)</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>The LUT can, alternatively, be given through <code>lut</code>: either a compatible
 matrix (3 rows or columns) or a complete file path</p>
-<p>The LUT can, alternatively, be given through <code>lut</code>: either a compatible
-matrix (3 rows or columns) or a complete file path</p>
+    <h2 class="hasAnchor" id="testing"><a class="anchor" href="#testing"></a>Testing</h2>
+
+    
+
+<p>When <code>test</code> is set, specific strings are returned for use with
+<code><a href='https://testthat.r-lib.org/reference/equality-expectations.html'>expect_equal</a></code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-  <span class='fu'>show.brain.lut</span>(<span class='fl'>10</span>)
-}
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
   <span class='fu'>show.brain.lut</span>(<span class='fl'>10</span>)
 }</div></pre>
   </div>

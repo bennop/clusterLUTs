@@ -43,10 +43,6 @@
 <meta property="og:description" content="In R's implementation of cutree the first element is
 always assigned to cluster 1, unlike what Matlab produces. This function
 attemps to make a cutree result more similar to it's
-Matlab counterpart (or what read.tree produces of it).
-In R's implementation of cutree the first element is
-always assigned to cluster 1, unlike what Matlab produces. This function
-attemps to make a cutree result more similar to it's
 Matlab counterpart (or what read.tree produces of it)." />
 
 
@@ -79,7 +75,7 @@ Matlab counterpart (or what read.tree produces of it)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">clusterLUTs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -120,15 +116,9 @@ Matlab counterpart (or what read.tree produces of it)." />
 always assigned to cluster 1, unlike what Matlab produces. This function
 attemps to make a <code><a href='https://rdrr.io/r/stats/cutree.html'>cutree</a></code> result more similar to it's
 Matlab counterpart (or what <code><a href='read.tree.html'>read.tree</a></code> produces of it).</p>
-<p>In R's implementation of <code><a href='https://rdrr.io/r/stats/cutree.html'>cutree</a></code> the first element is
-always assigned to cluster 1, unlike what Matlab produces. This function
-attemps to make a <code><a href='https://rdrr.io/r/stats/cutree.html'>cutree</a></code> result more similar to it's
-Matlab counterpart (or what <code><a href='read.tree.html'>read.tree</a></code> produces of it).</p>
     </div>
 
-    <pre class="usage"><span class='fu'>randomize.cutree</span>(<span class='no'>cutree</span>, <span class='no'>...</span>)
-
-<span class='fu'>randomize.cutree</span>(<span class='no'>cutree</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>randomize.cutree</span>(<span class='no'>cutree</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -146,28 +136,14 @@ Matlab counterpart (or what <code><a href='read.tree.html'>read.tree</a></code> 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>reordered matrix</p>
-<p>reordered matrix</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>All the columns where the number of levels does not equal the number of rows
 (elements) is reordered (and it is considered a problem if no full column is
 found).</p>
-<p>All the columns where the number of levels does not equal the number of rows
-(elements) is reordered (and it is considered a problem if no full column is
-found).</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>ct</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='dummy.tree.html'>dummy.tree</a></span>()
-<span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='no'>ct</span>,<span class='fu'>randomize.cutree</span>(<span class='no'>ct</span>))</div><div class='output co'>#&gt;       3 6 9 3 6 9
-#&gt;  [1,] 1 1 1 2 2 1
-#&gt;  [2,] 2 2 2 3 5 2
-#&gt;  [3,] 3 3 3 1 4 3
-#&gt;  [4,] 1 1 4 2 2 4
-#&gt;  [5,] 3 4 5 1 6 5
-#&gt;  [6,] 1 1 6 2 2 6
-#&gt;  [7,] 3 5 7 1 1 7
-#&gt;  [8,] 1 6 8 2 3 8
-#&gt;  [9,] 3 4 9 1 6 9</div><div class='input'><span class='no'>ct</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='dummy.tree.html'>dummy.tree</a></span>()
 <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='no'>ct</span>,<span class='fu'>randomize.cutree</span>(<span class='no'>ct</span>))</div><div class='output co'>#&gt;       3 6 9 3 6 9
 #&gt;  [1,] 1 1 1 2 2 1
 #&gt;  [2,] 2 2 2 3 5 2

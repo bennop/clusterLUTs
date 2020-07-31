@@ -41,8 +41,6 @@
 
 <meta property="og:title" content="Split a hue range according to <code>split.tbl</code> — split.hue.range" />
 <meta property="og:description" content="A hue range is defined by a lower and an upper hue bound, given either as
-2-element vector or a \(2xN\) matrix where each column defines such a range.
-A hue range is defined by a lower and an upper hue bound, given either as
 2-element vector or a \(2xN\) matrix where each column defines such a range." />
 
 
@@ -114,15 +112,9 @@ A hue range is defined by a lower and an upper hue bound, given either as
     <div class="ref-description">
     <p>A hue range is defined by a lower and an upper hue bound, given either as
 2-element vector or a \(2xN\) matrix where each column defines such a range.</p>
-<p>A hue range is defined by a lower and an upper hue bound, given either as
-2-element vector or a \(2xN\) matrix where each column defines such a range.</p>
     </div>
 
-    <pre class="usage"><span class='co'># S3 method for hue.range</span>
-<span class='fu'><a href='https://rdrr.io/r/base/split.html'>split</a></span>(<span class='no'>hue.range</span>, <span class='no'>split.tbl</span>, <span class='kw'>blank</span> <span class='kw'>=</span> <span class='fl'>0.1</span>)
-
-<span class='co'># S3 method for hue.range</span>
-<span class='fu'><a href='https://rdrr.io/r/base/split.html'>split</a></span>(<span class='no'>hue.range</span>, <span class='no'>split.tbl</span>, <span class='kw'>blank</span> <span class='kw'>=</span> <span class='fl'>0.1</span>)</pre>
+    <pre class="usage"><span class='fu'>split.hue.range</span>(<span class='no'>hue.range</span>, <span class='no'>split.tbl</span>, <span class='kw'>blank</span> <span class='kw'>=</span> <span class='fl'>0.1</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -146,7 +138,6 @@ vectors applied to corresponding matrix colunm)</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>a hue range vector (only one split) or matrix</p>
-<p>a hue range vector (only one split) or matrix</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>The splits are defined by <code>split.tbl</code>, a vector giving the the relative
@@ -159,31 +150,16 @@ of the range and the remaining "area" is dived among the \(n\) splits
 according to their weights speecified in <code>split.tbl</code>. See the examples.</p>
 <p>In either case, <code>blank</code> is assumed to be a "global" parameter across all
 hue ranges.</p>
-<p>The splits are defined by <code>split.tbl</code>, a vector giving the the relative
-weights (corresponding to "width" in colorspace) to be given to the individual
-splits.</p>
-<p>The spacing between split ranges is defined by <code>blank</code> where a fraction
-of <code>blank</code> of the original range is divided among the splits. Thus, for
-an \(n\)-element vector <code>split.tbl</code>, each split covers \(blank/(n-1)\)
-of the range and the remaining "area" is dived among the \(n\) splits
-according to their weights speecified in <code>split.tbl</code>. See the examples.</p>
-<p>In either case, <code>blank</code> is assumed to be a "global" parameter across all
-hue ranges.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>hm2</span> <span class='kw'>&lt;-</span> <span class='fu'>split.hue.range</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>,<span class='fl'>5</span>/<span class='fl'>6</span>), <span class='fl'>4</span>:<span class='fl'>2</span>) <span class='co'># matrix(c(0, 4,5,11,12,20)/24, nr = 2)</span></div><div class='output co'>#&gt; <span class='error'>Error in split.hue.range(c(0, 5/6), 4:2): could not find function "split.hue.range"</span></div><div class='input'><span class='co'>##           [,1]      [,2]      [,3]</span>
+    <pre class="examples"><div class='input'><span class='no'>hm2</span> <span class='kw'>&lt;-</span> <span class='fu'>split.hue.range</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>,<span class='fl'>5</span>/<span class='fl'>6</span>), <span class='fl'>4</span>:<span class='fl'>2</span>) <span class='co'># matrix(c(0, 4,5,11,12,20)/24, nr = 2)</span>
+<span class='co'>##           [,1]      [,2]      [,3]</span>
 <span class='co'>## [1,] 0.0000000 0.2083333 0.5000000</span>
 <span class='co'>## [2,] 0.1666667 0.4583333 0.8333333</span>
-<span class='no'>hm3</span> <span class='kw'>&lt;-</span> <span class='fu'>split.hue.range</span>(<span class='no'>hm2</span>, <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2</span>,<span class='fl'>1</span>,<span class='fl'>1</span>), <span class='fl'>3</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>1</span>)))</div><div class='output co'>#&gt; <span class='error'>Error in split.hue.range(hm2, list(c(2, 1, 1), 3, c(1, 1))): could not find function "split.hue.range"</span></div><div class='input'><span class='co'>##       [,1]       [,2]      [,3]      [,4] [,5]      [,6]</span>
+<span class='no'>hm3</span> <span class='kw'>&lt;-</span> <span class='fu'>split.hue.range</span>(<span class='no'>hm2</span>, <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2</span>,<span class='fl'>1</span>,<span class='fl'>1</span>), <span class='fl'>3</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>1</span>)))
+<span class='co'>##       [,1]       [,2]      [,3]      [,4] [,5]      [,6]</span>
 <span class='co'>## [1,] 0.000 0.08333333 0.1291667 0.2083333 0.50 0.6833333</span>
-<span class='co'>## [2,] 0.075 0.12083333 0.1666667 0.4333333 0.65 0.8333333</span>
-<span class='no'>hm2</span> <span class='kw'>&lt;-</span> <span class='fu'>split.hue.range</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>,<span class='fl'>5</span>/<span class='fl'>6</span>), <span class='fl'>4</span>:<span class='fl'>2</span>) <span class='co'># matrix(c(0, 4,5,11,12,20)/24, nr = 2)</span></div><div class='output co'>#&gt; <span class='error'>Error in split.hue.range(c(0, 5/6), 4:2): could not find function "split.hue.range"</span></div><div class='input'><span class='co'>##           [,1]      [,2]      [,3]</span>
-<span class='co'>## [1,] 0.0000000 0.2083333 0.5000000</span>
-<span class='co'>## [2,] 0.1666667 0.4583333 0.8333333</span>
-<span class='no'>hm3</span> <span class='kw'>&lt;-</span> <span class='fu'>split.hue.range</span>(<span class='no'>hm2</span>, <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2</span>,<span class='fl'>1</span>,<span class='fl'>1</span>), <span class='fl'>3</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>1</span>)))</div><div class='output co'>#&gt; <span class='error'>Error in split.hue.range(hm2, list(c(2, 1, 1), 3, c(1, 1))): could not find function "split.hue.range"</span></div><div class='input'>##       [,1]       [,2]      [,3]      [,4] [,5]      [,6]
-## [1,] 0.000 0.08333333 0.1291667 0.2083333 0.50 0.6833333
-## [2,] 0.075 0.12083333 0.1666667 0.4333333 0.65 0.8333333
-</div></pre>
+<span class='co'>## [2,] 0.075 0.12083333 0.1666667 0.4333333 0.65 0.8333333</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -40,8 +40,7 @@
 
 
 <meta property="og:title" content="show dendrogram with cut levels overlaid — dend.with.cuts" />
-<meta property="og:description" content="Mainly for debugging
-Mainly for debugging" />
+<meta property="og:description" content="Mainly for debugging" />
 
 
 
@@ -73,7 +72,7 @@ Mainly for debugging" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">clusterLUTs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -111,64 +110,43 @@ Mainly for debugging" />
 
     <div class="ref-description">
     <p>Mainly for debugging</p>
-<p>Mainly for debugging</p>
     </div>
 
-    <pre class="usage"><span class='fu'>dend.with.cuts</span>(<span class='no'>dt</span>, <span class='kw'>cuts</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>cut.col</span> <span class='kw'>=</span> <span class='st'>"#ffa050"</span>, <span class='no'>...</span>)
-
-<span class='fu'>dend.with.cuts</span>(<span class='no'>dt</span>, <span class='kw'>cuts</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>cut.col</span> <span class='kw'>=</span> <span class='st'>"#ffa050"</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>dend.with.cuts</span>(<span class='no'>dt</span>, <span class='kw'>cuts</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>cut.col</span> <span class='kw'>=</span> <span class='st'>"#ffa050"</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>dt</th>
+      <td><p>output of <code><a href='dummy.tree.html'>dummy.tree</a></code></p></td>
+    </tr>
+    <tr>
       <th>cuts</th>
-      <td><p>cut levels to show (cluster numbers)</p></td>
+      <td><p>cut levels to show (cluster numbers) (optional, see description)</p></td>
+    </tr>
+    <tr>
+      <th>cut.col</th>
+      <td><p>color to use for cut lines ("#ffa050" which is a light orange)</p></td>
     </tr>
     <tr>
       <th>...</th>
       <td><p>passed to <code><a href='https://rdrr.io/r/graphics/abline.html'>abline</a></code> (<code>col</code>, <code>lty</code>, ...)</p></td>
-    </tr>
-    <tr>
-      <th>hc</th>
-      <td><p>output of <code><a href='dummy.tree.html'>dummy.tree</a></code></p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>invisible the cut levels corresponding to <code>cuts</code></p>
-<p>invisible the cut levels corresponding to <code>cuts</code></p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>This needs a "real" <code><a href='https://rdrr.io/r/stats/hclust.html'>hclust</a></code> object, the output of
-<code><a href='https://rdrr.io/r/stats/cutree.html'>cutree</a></code> will, unfortunately,  not work.</p>
-<p>The cut levels that are shown are set halfway between the heights of the
-merging levels.</p>
-<p>This needs a "real" <code><a href='https://rdrr.io/r/stats/hclust.html'>hclust</a></code> object, the output of
-<code><a href='https://rdrr.io/r/stats/cutree.html'>cutree</a></code> will, unfortunately,  not work.</p>
-<p>The cut levels that are shown are set halfway between the heights of the
-merging levels.</p>
+    
+
+
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>dt</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='dummy.tree.html'>dummy.tree</a></span>()
-<span class='fu'>dend.with.cuts</span>(<span class='no'>dt</span>, <span class='kw'>cut.col</span> <span class='kw'>=</span> <span class='st'>"#ffa050"</span>)</div><div class='output co'>#&gt; <span class='message'>Loading required package: dendextend</span></div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>---------------------</span>
-#&gt; <span class='message'>Welcome to dendextend version 1.13.4</span>
-#&gt; <span class='message'>Type citation('dendextend') for how to cite the package.</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>Type browseVignettes(package = 'dendextend') for the package vignette.</span>
-#&gt; <span class='message'>The github page is: https://github.com/talgalili/dendextend/</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>Suggestions and bug-reports can be submitted at: https://github.com/talgalili/dendextend/issues</span>
-#&gt; <span class='message'>Or contact: &lt;tal.galili@gmail.com&gt;</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>	To suppress this message use:  suppressPackageStartupMessages(library(dendextend))</span>
-#&gt; <span class='message'>---------------------</span></div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: ‘dendextend’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:stats’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    cutree</span></div><div class='input'><span class='no'>dt</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='dummy.tree.html'>dummy.tree</a></span>()
-<span class='fu'>dend.with.cuts</span>(<span class='no'>dt</span>, <span class='kw'>cut.col</span> <span class='kw'>=</span> <span class='st'>"#ffa050"</span>)</div><div class='img'><img src='dend.with.cuts-1.png' alt='' width='700' height='433' /></div></pre>
+<span class='fu'>dend.with.cuts</span>(<span class='no'>dt</span>)</div><div class='output co'>#&gt; <span class='message'>Loading required namespace: dendextend</span></div><div class='img'><img src='dend.with.cuts-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

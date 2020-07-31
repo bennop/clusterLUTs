@@ -42,10 +42,7 @@
 <meta property="og:title" content="create color shades — color.shades" />
 <meta property="og:description" content="For each color in col create as many shades as indicated by the value
 of reps at the corresponding index by grading towards 'white' - the
-shades are going scale of the way to white.
-For each color in col create as many shades as indicated by the value
-of reps at the corresponding index by grading towards 'white' - the
-shades are going scale of the way to white." />
+shades are going scale of the way to white/black." />
 
 
 
@@ -77,7 +74,7 @@ shades are going scale of the way to white." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">clusterLUTs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -116,25 +113,16 @@ shades are going scale of the way to white." />
     <div class="ref-description">
     <p>For each color in <code>col</code> create as many shades as indicated by the value
 of <code>reps</code> at the corresponding index by grading towards 'white' - the
-shades are going <code>scale</code> of the way to white.</p>
-<p>For each color in <code>col</code> create as many shades as indicated by the value
-of <code>reps</code> at the corresponding index by grading towards 'white' - the
-shades are going <code>scale</code> of the way to white.</p>
+shades are going <code>scale</code> of the way to white/black.</p>
     </div>
 
     <pre class="usage"><span class='fu'>color.shades</span>(
-  <span class='no'>col</span>,
   <span class='no'>reps</span>,
+  <span class='kw'>col</span> <span class='kw'>=</span> <span class='fu'>col.fun</span>(<span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span>(<span class='no'>reps</span>)),
   <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span>(<span class='no'>direction</span> <span class='kw'>==</span> <span class='st'>"bright"</span>, <span class='fl'>0.7</span>, <span class='fl'>0.5</span>),
+  <span class='kw'>gscale</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>direction</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"all"</span>, <span class='st'>"bright"</span>, <span class='st'>"dark"</span>),
-  <span class='no'>...</span>
-)
-
-<span class='fu'>color.shades</span>(
-  <span class='no'>col</span>,
-  <span class='no'>reps</span>,
-  <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span>(<span class='no'>direction</span> <span class='kw'>==</span> <span class='st'>"bright"</span>, <span class='fl'>0.7</span>, <span class='fl'>0.5</span>),
-  <span class='kw'>direction</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"all"</span>, <span class='st'>"bright"</span>, <span class='st'>"dark"</span>),
+  <span class='kw'>col.fun</span> <span class='kw'>=</span> <span class='no'>default.hcl</span>,
   <span class='no'>...</span>
 )</pre>
 
@@ -142,17 +130,21 @@ shades are going <code>scale</code> of the way to white.</p>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>col</th>
-      <td><p>color vector; must be a valid argument to <code><a href='https://rdrr.io/r/grDevices/col2rgb.html'>col2rgb</a></code>
-or a \(3xN\) RGB color matrix (one column per color).</p></td>
-    </tr>
-    <tr>
       <th>reps</th>
       <td><p>vector of repetitions</p></td>
     </tr>
     <tr>
+      <th>col</th>
+      <td><p>color vector; must be a valid argument to <code><a href='https://rdrr.io/r/grDevices/col2rgb.html'>col2rgb</a></code>
+or a \(3\times N\) RGB color matrix (one column per color).</p></td>
+    </tr>
+    <tr>
       <th>scale</th>
       <td><p>how much of the range to black/white should be covered</p></td>
+    </tr>
+    <tr>
+      <th>gscale</th>
+      <td><p>global shade steps?</p></td>
     </tr>
     <tr>
       <th>direction</th>
@@ -167,36 +159,19 @@ or a \(3xN\) RGB color matrix (one column per color).</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Color matrix with on entry per column</p>
-<p>Color matrix with on entry per column</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>If <code>reps</code> is scalar it is recycled, otherwise it is filled with ones should
+    <p>If <code>reps</code> is scalar it is recycled to the length of <code>col</code>, otherwise it is filled with ones should
 it be shorter than <code>col</code>.</p>
 <p>The shades can be constructed either towards white, black, or, symmetrically.
 This is determined by setting <code>direction</code> to 'bright', 'dark', or 'all',
-respectively. The latter is the default.</p>
-<p>If <code>reps</code> is scalar it is recycled, otherwise it is filled with ones should
-it be shorter than <code>col</code>.</p>
-<p>The shades can be constructed either towards white, black, or, symmetrically.
-This is determined by setting <code>direction</code> to 'bright', 'dark', or 'all',
-respectively. The latter is the default.</p>
+respectively. The latter is the default.
+When <code>gscale</code> is TRUE, all shade steps are the same, independent
+of the individual repetitions, otherwise each shade range covers the range
+given by <code>scale</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>color.shades</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>'red'</span>, <span class='st'>'blue'</span>), <span class='fl'>3</span>)</div><div class='output co'>#&gt;           [,1] [,2]     [,3]      [,4] [,5]     [,6]
-#&gt; [1,] 122.21130  255 255.0000  36.15900    0 178.5536
-#&gt; [2,]  26.90505    0 158.1102  17.05695    0 139.0923
-#&gt; [3,]  12.18135    0 129.3845 119.53125  255 255.0000
-#&gt; attr(,"reps")
-#&gt; [1] 3 3
-#&gt; attr(,"dir")
-#&gt; [1] "all"</div><div class='input'><span class='fu'><a href='show.shades.html'>show.shades</a></span>(<span class='fu'>color.shades</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>'red'</span>, <span class='st'>'green'</span>, <span class='st'>'blue'</span>), <span class='fl'>2</span>:<span class='fl'>4</span>))</div><div class='input'><span class='fu'>color.shades</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>'red'</span>, <span class='st'>'blue'</span>), <span class='fl'>3</span>)</div><div class='output co'>#&gt;           [,1] [,2]     [,3]      [,4] [,5]     [,6]
-#&gt; [1,] 122.21130  255 255.0000  36.15900    0 178.5536
-#&gt; [2,]  26.90505    0 158.1102  17.05695    0 139.0923
-#&gt; [3,]  12.18135    0 129.3845 119.53125  255 255.0000
-#&gt; attr(,"reps")
-#&gt; [1] 3 3
-#&gt; attr(,"dir")
-#&gt; [1] "all"</div><div class='input'><span class='fu'><a href='show.shades.html'>show.shades</a></span>(<span class='fu'>color.shades</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>'red'</span>, <span class='st'>'green'</span>, <span class='st'>'blue'</span>), <span class='fl'>2</span>:<span class='fl'>4</span>))</div><div class='img'><img src='color.shades-1.png' alt='' width='700' height='433' /></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>color.shades</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>'red'</span>, <span class='st'>'blue'</span>), <span class='fl'>3</span>)</div><div class='output co'>#&gt; <span class='error'>Error in max.rep%/%2: non-numeric argument to binary operator</span></div><div class='input'><span class='fu'><a href='show.shades.html'>show.shades</a></span>(<span class='fu'>color.shades</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>'red'</span>, <span class='st'>'green'</span>, <span class='st'>'blue'</span>), <span class='fl'>2</span>:<span class='fl'>4</span>))</div><div class='output co'>#&gt; <span class='error'>Error in max.rep%/%2: non-numeric argument to binary operator</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -41,8 +41,6 @@
 
 <meta property="og:title" content="convert hue range matrix to corresponding colors — hue.range.colors" />
 <meta property="og:description" content="A hue range matrix is a \(2\times N\) matrix where each column defines a
-range in hue space [0 .. 1]
-A hue range matrix is a \(2\times N\) matrix where each column defines a
 range in hue space [0 .. 1]" />
 
 
@@ -75,7 +73,7 @@ range in hue space [0 .. 1]" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">clusterLUTs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -114,13 +112,9 @@ range in hue space [0 .. 1]" />
     <div class="ref-description">
     <p>A hue range matrix is a \(2\times N\) matrix where each column defines a
 range in hue space [0 .. 1]</p>
-<p>A hue range matrix is a \(2\times N\) matrix where each column defines a
-range in hue space [0 .. 1]</p>
     </div>
 
-    <pre class="usage"><span class='fu'>hue.range.colors</span>(<span class='no'>hr</span>, <span class='kw'>extractfun</span> <span class='kw'>=</span> <span class='no'>mean</span>, <span class='kw'>only.hues</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
-
-<span class='fu'>hue.range.colors</span>(<span class='no'>hr</span>, <span class='kw'>extractfun</span> <span class='kw'>=</span> <span class='no'>mean</span>, <span class='kw'>only.hues</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>hue.range.colors</span>(<span class='no'>hr</span>, <span class='kw'>extractfun</span> <span class='kw'>=</span> <span class='no'>mean</span>, <span class='kw'>only.hues</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -131,7 +125,12 @@ range in hue space [0 .. 1]</p>
     </tr>
     <tr>
       <th>extractfun</th>
-      <td><p>function to calculate efective hue from hue range</p></td>
+      <td><p>function to calculate effective hue from hue range</p></td>
+    </tr>
+    <tr>
+      <th>only.hues</th>
+      <td><p>when set, return (scalar) hue, otherwise convert to RGB
+vector with <code>link[grDevices]{hsv}</code></p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -142,14 +141,11 @@ range in hue space [0 .. 1]</p>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>color (vector)</p>
-<p>color (vector)</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>hr</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.0</span>, <span class='fl'>0.6</span>,
                <span class='fl'>0.2</span>, <span class='fl'>0.7</span>), <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-<span class='fu'>hue.range.colors</span>(<span class='no'>hr</span>)</div><div class='output co'>#&gt; [1] "#FF9900" "#001AFF"</div><div class='input'><span class='no'>hr</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.0</span>, <span class='fl'>0.6</span>,
-               <span class='fl'>0.2</span>, <span class='fl'>0.7</span>), <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-<span class='fu'>hue.range.colors</span>(<span class='no'>hr</span>)</div><div class='output co'>#&gt; [1] "#FF9900" "#001AFF"</div></pre>
+<span class='fu'>hue.range.colors</span>(<span class='no'>hr</span>)</div><div class='output co'>#&gt; [1] "#FF9900" "#001AFF"</div><div class='input'><span class='fu'>hue.range.colors</span>(<span class='no'>hr</span>, <span class='kw'>only.hues</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; [1] 0.10 0.65</div><div class='input'><span class='fu'><a href='show.colmat.html'>show.colmat</a></span>(<span class='fu'><a href='https://rdrr.io/r/grDevices/col2rgb.html'>col2rgb</a></span>(<span class='fu'>hue.range.colors</span>(<span class='no'>hr</span>)))</div><div class='img'><img src='hue.range.colors-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
