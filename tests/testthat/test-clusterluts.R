@@ -62,6 +62,12 @@ test_that("table 2 matrix",{
 
 })
 
+test_that("re-index",{
+    ct <- c(4, 1, 2, 3, 1, 1, 1, 1, 4, 1, 1, 3, 1, 3)
+    res  <- c(13, 1, 9,10, 2, 3, 4, 5,14, 6, 7,11, 8,12)
+    names(res) <- c(4001,1001,2001,3001,1002,1003,1004,1005,4002,1006,1007,3002,1008,3003)
+    expect_equal(reidx.cut(ct), res)
+})
 
 # debug ----
 context("debug")
