@@ -23,7 +23,7 @@
 projdir <- function(basedir = '~/Work/4philipp/BrainLUTs',
                     ...){
     dir.not.found <- function(dir){
-        sprintf("%d dir not found - please specify explicitely", dir)
+        sprintf("%d dir not found - please specify explicitly", dir)
     }
     if(!dir.exists(basedir)) stop(dir.not.found('base'))
 
@@ -66,7 +66,7 @@ LUTdir <- function(basedir = '.',
     }
     LUTdir <- file.path(basedir, subdir)
     if(!dir.exists(LUTdir)) {
-        
+
         success <- dir.create(LUTdir)
         ifelse(success,
                warning,
@@ -124,10 +124,10 @@ LUTdir <- function(basedir = '.',
 treeluts <- function(clusters   = read.tree(),
                      outdir     = LUTdir(),
                      basename   = 'lut',
-                     lut.length = 256,     # required by MRIcron
+                     lut.length = 256,                    # as required by MRIcron
                      verbose    = getOption('verbose'),
                      ...){
-    browser()
+    ## browser()
 
     n.leaf <- nrow(clusters)
     n.cuts <- ncol(clusters)
@@ -238,11 +238,13 @@ readlut <- function(file,
 #' \dontrun{
 #'    tree <- read.tree(treefile, path_to_treefile)
 #' }
-read.tree <- function(file = system.file('extdata/sbm_1_145_0_atlas.mat', 
+read.tree <- function(file = system.file('extdata/sbm_1_145_0_atlas.mat',
                                          package = 'clusterLUTs'),
                       path = '.',
                       ...){
-    file <- file.path(path, file)
+    if(!grepl("^/", file)){      # path not absolute?
+        file <- file.path(path, file)
+    }
     if(!file.exists(file)){
         stop(sprintf("tree file not found\n\t'%s'",
                      file))
@@ -461,7 +463,7 @@ reidx.cut <- function(cut){
 #' @examples
 #' default.rgb()
 default.rgb <- function(n = 12, ...){
-    grDevices::rainbow(n, end = 5/6)
+    grDevices::rainbow(n, end = 5/6, alpha = 1)
 }
 
 #' HCL-based rainbow
@@ -673,8 +675,9 @@ between <- function(x,
 #' concat.tbl.list(table.list)
 #' concat.tbl.list(table.list, idx = TRUE)
 concat.tbl.list <- function(tbl.lst,
-                            idx = FALSE,
+                            idx  =  FALSE,
                             ...){
+    ## list with one matrix per tbl.lst level (cut)
     el2mat <- lapply(tbl.lst,
                      function(tbl){
                          if('table'%in% class(tbl)){
@@ -739,7 +742,7 @@ vlevels <- function(v){
 ##' It is assumed that \code{tbl}'s names are all numeric
 ##'
 ##' Parameter \code{uplink} allows inclusion of additional rows below the
-##' defaults rows 'idx' and 'n'. It provided as matrix, \code{uplink}
+##' defaults rows 'idx' and 'n'. If provided as matrix, \code{uplink}
 ##' should have rownames.
 ##' @title table to matrix
 ##' @param tbl output of \code{\link[base]{table}}
@@ -817,7 +820,7 @@ mat2list <- function(mat, which = 2, ...){
 #' the values of \code{v}. If any is larger than 1, 255 is assumed. In most cases
 #' that should be fine.
 #'
-#' @param v 3-element RGB-vector
+#' @param v 3- or 4-element RGB-vector
 #' @param maxColorValue passed on to \code{\link{rgb}}
 #' @param ... ignored
 #'
@@ -831,8 +834,33 @@ vec2rgb <- function(v,
                     maxColorValue = ifelse(any(v>1),255,1),
                     ...){
     if (any(v>1)) v <- v/255
-    return(grDevices::rgb(v[1], v[2], v[3],
-                          maxColorValue = maxColorValue))
+    if (is.null(dim(v))){     # vector
+        if (!(length(v) %in% 3:4)){
+            stop("wrong vector length")
+        } else {
+            return(if(length(v) == 3){
+                       grDevices::rgb(v[1], v[2], v[3],
+                                      maxColorValue = maxColorValue)
+                   } else {
+                       grDevices::rgb(v[1], v[2], v[3], v[4],
+                                      maxColorValue = maxColorValue)
+                   }
+                   )
+        }
+    } else {
+        if  (!(nrow(v) %in% 3:4)){
+            stop("wrong matrix dimension ([3 or 4]xN)")
+        } else {
+            return(if(nrow(v) == 3){
+                       grDevices::rgb(v[1,], v[2,], v[3,],
+                                      maxColorValue = maxColorValue)
+                   } else {
+                       grDevices::rgb(v[1,], v[2,], v[3,], v[4,],
+                                      maxColorValue = maxColorValue)
+                   }
+                   )
+        }
+    }
 }
 
 #' Vector to HSV conversion
@@ -860,7 +888,7 @@ vec2hsv <- function(v,
 #'
 #' Repeat color \code{col} \code{n} times as columns in a \eqn{3\times n}{3xn}
 #' RGB color matrix. Analog to \code{\link[base]{rep}} which is used internally.
-#' 
+#'
 #' @param col color (valid input to \code{\link[grDevices]{col2rgb}}
 #' @param n number of repetitions (should be a positive integer value)
 #'
@@ -1020,6 +1048,7 @@ hue.range.split <- function(hue.range,
 #'
 #' @param cuts cluster assignment result of \code{\link[stats]{cutree}} (or equivalent)
 #' @param blank "spacing" between hues ranges when splitting (see description)
+#' @param init provide initial hues - not yet implemented
 #' @param ... passed to \code{\link{hue.range.split}}
 #'
 #' @return list of related hue ranges corresponding to the cut levels
@@ -1030,27 +1059,35 @@ hue.range.split <- function(hue.range,
 #' tree.ranges(dummy.tree())
 tree.ranges <- function(cuts,
                         blank = 0.1,
+                        init  = NULL,
                         ...){
+
+    if (!is.null(init)){
+        warning("hue initialization not yet supported - value ignored\n")
+    }
     ct.levels <- apply(cuts, 2, vlevels)
-                                        #browser()
+
+    ## browser()
+
     ocl <- order(ct.levels)         # to order cuts by levels (if needed)
-    ordered <- TRUE
-    if (!identical(ocl, 1:ncol(cuts))){
+    ordered <- identical(ocl, 1:ncol(cuts)) # cuts in increasing order?
+    if (!ordered){
         ordered <- FALSE
         rcl <- rank(ct.levels)      # to return to original order afterwards
-        cuts <- cuts[, ocl]     # order columns
+        cuts <- cuts[, ocl]         # order columns
         ct.levels <- ct.levels[ocl]
     }
-    add.top <- !any(ct.levels==1)   # no top-level cut -> add one
-    if(add.top){
+
+    add.top <- !any(ct.levels==1)
+    if(add.top){                    # no top-level cut -> add one
         cuts <- cbind(rep(1, nrow(cuts)), cuts)
     }
-    
+
     ## initialize with full range
     hue.splits <- list(`1`=  matrix(c( 0, 5/6),
                                     nrow = 2))
     sub.tables <- list(`1` = table(1))
-    
+
     ## iteratively finer
     for (i in 2:ncol(cuts)){
         ## browser(text = 'level 15',
@@ -1066,9 +1103,9 @@ tree.ranges <- function(cuts,
         ##         - the level names for each sub-table refer to the corresponding
         ##           cluster indices on the current level
 
-                                        # print(sub.tables[[i]])
-                                        # print(hue.splits[[i-1]])
-                                        #browser()
+        ## print(sub.tables[[i]])
+        ## print(hue.splits[[i-1]])
+        ## browser()
         hue.splits[[i]] <- hue.range.split(hue.splits[[i-1]],
                                            sub.tables[[i]],
                                            blank = blank^(1+.1*(i-1)), # shrink at ervery step
@@ -1081,7 +1118,7 @@ tree.ranges <- function(cuts,
     }
     names(hue.splits) <- ct.levels
     names(sub.tables) <- ct.levels
-    attr(hue.splits, 'sub.tables') <- sub.tables   # may need to be reordered
+    attr(hue.splits, 'sub.tables') <- sub.tables
     class(hue.splits) <- c('tree.ranges', 'list')
     return(invisible(if(ordered) hue.splits else hue.splits[rcl]))
 }                                       # tree.ranges
@@ -1264,7 +1301,7 @@ hue.range.colors <- function(hr,
             }
         }
         hues <- apply(hr, 2, extractfun)
-        return(if(only.hues) hues else hsv(hues, ...))
+        return(if(only.hues) hues else hsv(hues))
     }
 }
 
@@ -1302,6 +1339,7 @@ show.hue.range <- function(hr,
                            y          = NULL,
                            width      = NULL,
                            v.scale    = 1,
+                           show.idx   = FALSE,
                            ...,
                            wait       = FALSE,
                            width.x    = width,
@@ -1610,6 +1648,7 @@ show.shades <- function(shades,
 #' to be infered from the labels
 #'
 #' @param st subtables or list thereof (or result of  \code{\link{tree.ranges}})
+#' @param which optional subset of the subtables
 #' @param ... ignored
 #' @param wait for internal use, should not be set by caller
 #'
@@ -1620,6 +1659,7 @@ show.shades <- function(shades,
 #' @examples
 #' show.sub.tables(attr(tree.ranges(dummy.tree()), "sub.tables"))
 show.sub.tables <- function(st,
+                            which = NULL,
                             ...,
                             wait = FALSE) {
     if('sub.tables' %in% names(attributes(st))){
@@ -1627,9 +1667,11 @@ show.sub.tables <- function(st,
        st <- attr(st, 'sub.tables')
     }
 
-    if(is.list(st[[1]])){
+    if(is.list(st[[1]])){     # nested list of subtables
+        if(is.null(which))
+            which <- 1:length(st)
         # iterate over levels
-        full.rep <- lapply(st, show.sub.tables, wait = TRUE)
+        full.rep <- lapply(st[which], show.sub.tables, wait = TRUE)
         ret <-  lapply(full.rep, function(sv)paste(sv, collapse = "\n"))
         lens <- (sapply(ret, nchar)-1 ) %/% 4
         addspc <- max(lens) - lens
