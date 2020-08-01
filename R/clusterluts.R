@@ -120,7 +120,7 @@ LUTdir <- function(basedir = '.',
 #'
 #' @examples
 #' set.seed(42)
-#' treeluts(cbind(sample(1:5, 20, TRUE), 1:20), '.', "example")
+#' treeluts(cbind(sample(1:5,20,TRUE),1:20), tempdir(), "exmpl", verbose=TRUE)
 treeluts <- function(clusters   = read.tree(),
                      outdir     = LUTdir(),
                      basename   = 'lut',
@@ -861,7 +861,7 @@ vec2hsv <- function(v,
 #' Repeat color \code{col} \code{n} times as columns in a \eqn{3\times n}{3xn}
 #' RGB color matrix. Analog to \code{\link[base]{rep}} which is used internally.
 #' 
-#' @param col color (valid input to \code{\link[grDevices]{col2rgb})
+#' @param col color (valid input to \code{\link[grDevices]{col2rgb}}
 #' @param n number of repetitions (should be a positive integer value)
 #'
 #' @return color matrix with \code{n} columns of color \code{col}
