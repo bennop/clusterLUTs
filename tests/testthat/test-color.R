@@ -66,6 +66,14 @@ test_that("hue range", {
                                                           c("#5C00FF","#FF008A")))
 })
 
+context("defaults")
+test_that("defaults", {
+    expect_known_hash(default.rgb(), "9a5206a981")
+    expect_equal(default.rgb(3), c("#FF0000", "#00FF80", "#FF00FF"))
+    expect_known_hash(default.hcl(), "4df6a73d55")
+    expect_known_hash(default.lab(), "e7b79d9168")
+})
+
 context("rainbows")
 ## rainbows ----
 test_that("rainbows", {
@@ -98,7 +106,7 @@ test_that("LUT file handling", {
     expect_warning(readlut(tf, length = 4), "LUT file longer than expected, ignoring trailing 6 bytes")
     ##
     rl6[1,1] <- 256
-    expect_equal(writelut(rl6, tf), 99)
+    suppressWarnings( expect_equal(writelut(rl6, tf), 99) )
     expect_equal(file.exists(tf), FALSE)   # file should have been deleted
     ##
     ## not multiple of 3 bytes

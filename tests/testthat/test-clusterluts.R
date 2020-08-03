@@ -69,8 +69,7 @@ test_that("re-index",{
     expect_equal(reidx.cut(ct), res)
 })
 
-
-context("read tree")
+context("tree")
 test_that("read tree", {
     expect_known_hash(read.tree(), hash = "23ef87605d")
     expect_known_hash(read.tree('sbm_1_145_0_atlas.mat',
@@ -78,6 +77,15 @@ test_that("read tree", {
                                             package = 'clusterLUTs')), hash = "23ef87605d")
     tf <- tempfile()
     expect_error(read.tree(tf), "^tree file not found")
+})
+
+test_that("tree.ranges", {
+    expect_known_hash(tree.ranges(dummy.tree()), "80d848e629")
+})
+
+context("%&%")
+test_that("&", {
+    expect_equal(7 %&% 5, 5)
 })
 
 # debug ----

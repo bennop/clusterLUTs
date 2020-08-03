@@ -464,8 +464,9 @@ reidx.cut <- function(cut){
 #'
 #' @examples
 #' default.rgb()
+## checked
 default.rgb <- function(n = 12, ...){
-    grDevices::rainbow(n, end = 5/6, alpha = 1)
+    grDevices::rainbow(n, end = 5/6)
 }
 
 #' HCL-based rainbow
@@ -479,6 +480,7 @@ default.rgb <- function(n = 12, ...){
 #'
 #' @examples
 #' default.hcl()
+## checked
 default.hcl <- function(n = 12, ...){
     colorspace::rainbow_hcl(n, end = 5/6 * 360)
 }
@@ -494,6 +496,7 @@ default.hcl <- function(n = 12, ...){
 #'
 #' @examples
 #' default.lab()
+## checked
 default.lab <- function(n = 12, ...){
     rainbow_lab(n, ...)
 }
@@ -555,6 +558,7 @@ cutshades <- function(cut,
 #' 1 %&% 3
 #' pi %&% 2
 #' 0.5 %&% 0.75
+## checked
 `%&%` <- function(a,b){
     bitwAnd(a,b)
 }
