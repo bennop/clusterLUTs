@@ -101,7 +101,8 @@ test_that("LUT file handling", {
     expect_equal(writelut(rl6, tf), 99)
     expect_equal(file.exists(tf), FALSE)   # file should have been deleted
     ##
+    ## not multiple of 3 bytes
     writeBin(pi, tf)
-    suppressWarnings( expect_known_hash(readlut(tf)))#, "1c87963047") )
+    suppressWarnings( expect_known_hash(readlut(tf), "7878c28d1e") )
     expect_error(readlut(tf, 3), "^LUT.*LUT$")
  })
