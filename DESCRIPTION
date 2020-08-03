@@ -1,7 +1,7 @@
 Package: clusterLUTs
 Type: Package
 Title: Color lookup ables for use with hierarchical clustering
-Version: 0.3.0
+Version: 0.3.5
 Date: 2020-07-14
 Authors@R: person("Benno", "Pütz",
                   email = "puetz@psych.mpg.de",
