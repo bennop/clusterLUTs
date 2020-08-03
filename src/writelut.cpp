@@ -36,6 +36,11 @@ int writelut(IntegerVector x, std::string filename) {
         if(i > 255){
             Rcerr << "element > 255 encountered: "<< i << std::endl;
             out.close();
+            // remove corrupt LUT file
+            std::string cmd("rm ");
+            cmd.append(filename);
+            const char *command = cmd.c_str(); 
+            std::system(command);
             return 99;
         }   
         //if(count++ < 6){
