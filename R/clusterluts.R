@@ -1,94 +1,89 @@
-
-#' local project directory
-#'
-#' Used as default for \code{\link{treeluts}} and \code{\link{read.tree}},
-#' simply check for existence and return input (or default).
-#'
-#' ~~~~~~~~~~~~~~~~~~~ C A V E A T ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#'
-#'       Adjust local defaults
-#'
-#' these settings define DEFAULTS that depend on my directory structure and
-#' need to be adjusted to work for others
-#'
-#' @param basedir project directory
-#' @param ... ignored
-#'
-#' @return path to project directory
-#' @export
-#' @author Benno Pütz \email{puetz@@psych.mpg.de}
-#'
-#' @examples
-#' projdir()
-projdir <- function(basedir = '~/Work/4philipp/BrainLUTs',
-                    ...){
-    dir.not.found <- function(dir){
-        sprintf("%d dir not found - please specify explicitly", dir)
-    }
-    if(!dir.exists(basedir)) stop(dir.not.found('base'))
-
-    return(basedir)
-
-}
-
-#' local LUT directory
-#'
-#' Used as default output directory for \code{\link{treeluts}}
-#'
-#'
-#' ~~~~~~~~~~~~~~~~~~~ C A V E A T ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#'
-#'       Adjust local defaults
-#'
-#' these settings define DEFAULTS that depend on my directory structure and
-#' need to be adjusted to work for others
-#'
-#' @param basedir parent directory, usually project
-#' @param subdir LUT directory
-#' @param ... ignored
-#'
-#' @return path to LUT dirctory
-#' @export
-#' @author Benno Pütz \email{puetz@@psych.mpg.de}
-#'
-#' @examples
-#' \dontrun{
-#'     LUTdir()
-#' }
-LUTdir <- function(basedir = '.',
-                   subdir = 'luts',
-                   ...){
-    dir.not.found <- function(dir){
-        sprintf("%d dir not found - please specify explicitely", dir)
-    }
-    if(!dir.exists(basedir)) {
-        stop(dir.not.found('base'))
-    }
-    LUTdir <- file.path(basedir, subdir)
-    if(!dir.exists(LUTdir)) {
-
-        success <- dir.create(LUTdir)
-        ifelse(success,
-               warning,
-               stop)("LUT subdir not found - ",
-                     ifelse(success,
-                            "created",
-                            "attempt to create failed"))
-    }
-    return(LUTdir)
-
-}
+##
+## #' local project directory
+## #'
+## #' Used as default for \code{\link{treeluts}} and \code{\link{read.tree}},
+## #' simply check for existence and return input (or default).
+## #'
+## #' ~~~~~~~~~~~~~~~~~~~ C A V E A T ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## #'
+## #'       Adjust local defaults
+## #'
+## #' these settings define DEFAULTS that depend on my directory structure and
+## #' need to be adjusted to work for others
+## #'
+## #' @param basedir project directory
+## #' @param ... ignored
+## #'
+## #' @return path to project directory
+## #' @export
+## #' @author Benno Pütz \email{puetz@@psych.mpg.de}
+## #'
+## #' @examples
+## #' projdir()
+## projdir <- function(basedir = '~/Work/4philipp/BrainLUTs',
+##                     ...){
+##     dir.not.found <- function(dir){
+##         sprintf("%d dir not found - please specify explicitly", dir)
+##     }
+##     if(!dir.exists(basedir)) stop(dir.not.found('base'))
+##
+##     return(basedir)
+##
+## }
+##
+## #' local LUT directory
+## #'
+## #' Used as default output directory for \code{\link{treeluts}}
+## #'
+## #'
+## #' ~~~~~~~~~~~~~~~~~~~ C A V E A T ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## #'
+## #'       Adjust local defaults
+## #'
+## #' these settings define DEFAULTS that depend on my directory structure and
+## #' need to be adjusted to work for others
+## #'
+## #' @param basedir parent directory, usually project
+## #' @param subdir LUT directory
+## #' @param ... ignored
+## #'
+## #' @return path to LUT directory
+## #' @export
+## #' @author Benno Pütz \email{puetz@@psych.mpg.de}
+## #'
+## #' @examples
+## #' \dontrun{
+## #'     LUTdir()
+## #' }
+## LUTdir <- function(basedir = '.',
+##                    subdir = 'luts',
+##                    ...){
+##     dir.not.found <- function(dir){
+##         sprintf("%d dir not found - please specify explicitly", dir)
+##     }
+##     if(!dir.exists(basedir)) {
+##         stop(dir.not.found('base'))
+##     }
+##     LUTdir <- file.path(basedir, subdir)
+##     if(!dir.exists(LUTdir)) {
+##
+##         success <- dir.create(LUTdir)
+##         ifelse(success,
+##                warning,
+##                stop)("LUT subdir not found - ",
+##                      ifelse(success,
+##                             "created",
+##                             "attempt to create failed"))
+##     }
+##     return(LUTdir)
+##
+## }
 
 
 ## needed packages ----
 ## require(R.matlab)    # for readMat()
 ## require(gtools)      # for even()
 
-
-
-##---- Rcpp helper ----------------
-## load Rcpp helper function
-                                        #Rcpp::loadModule("clusterLUTs", TRUE)
 
 ##---  R functions -----------------
 
@@ -193,8 +188,9 @@ treeluts <- function(clusters   = read.tree(),
 #' \dontrun{
 #'    lut <-  readlut('test.lut')
 #' }
+## checked
 readlut <- function(file,
-                    length = file.size(file)/3,
+                    length = file.size(file) %/% 3,
                     ...){
     fsize <- file.size(file)
     if(fsize < 3 * length){
@@ -204,6 +200,9 @@ readlut <- function(file,
         } else {
             stop("LUT file size (", fsize, ") not multiple of 3, thus likely not a LUT")
         }
+    }
+    if(fsize > 3 * length){
+        warning("LUT file longer than expected, ignoring trailing ", fsize - 3*length, " bytes")
     }
     l <- readBin(file,
                  "integer",
@@ -235,9 +234,8 @@ readlut <- function(file,
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
 #' @examples
-#' \dontrun{
-#'    tree <- read.tree(treefile, path_to_treefile)
-#' }
+#'    tree <- read.tree()
+## checked
 read.tree <- function(file = system.file('extdata/sbm_1_145_0_atlas.mat',
                                          package = 'clusterLUTs'),
                       path = '.',
@@ -249,7 +247,8 @@ read.tree <- function(file = system.file('extdata/sbm_1_145_0_atlas.mat',
         stop(sprintf("tree file not found\n\t'%s'",
                      file))
     }
-    ci <- R.matlab::readMat(file)$cluster.info
+
+    suppressWarnings( ci <- R.matlab::readMat(file)$cluster.info )
     tree <- sapply(ci, function(l)l[[1]])
     cuts <- apply(tree, 2, vlevels)
     colnames(tree) <- cuts
@@ -320,6 +319,7 @@ ColorShadeRamp <- function(col,
 #' @examples
 #' color.shades(3, c('red', 'blue'))
 #' show.shades(color.shades(2:4, c('red', 'green', 'blue')))
+## checked
 color.shades <- function(reps,
                          col       = col.fun(length(reps)),
                          scale     = ifelse(direction == 'bright', 0.7, 0.5),
@@ -337,7 +337,7 @@ color.shades <- function(reps,
     }
     len.diff <- ncol(col) - length(reps)
     if(len.diff > 0){
-        reps <- if(length(reps == 1)){           # scalar:
+        reps <- if(length(reps) == 1){           # scalar:
                     rep(reps, ncol(col))         #    replicate
                 } else {                         # vector:
                     c(reps, rep(1, len.diff))    #    use 1 for positions not specified
@@ -517,6 +517,7 @@ default.lab <- function(n = 12, ...){
 #' show.colmat(cs, width=15)
 #' show.shades(cs)
 #' par(op)
+## checked
 cutshades <- function(cut,
                       col.fun = default.rgb,
                       ...){
