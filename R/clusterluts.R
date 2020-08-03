@@ -273,6 +273,7 @@ read.tree <- function(file = system.file('extdata/sbm_1_145_0_atlas.mat',
 #' @examples
 #' csr_red <- ColorShadeRamp('red')
 #' show.colmat(t(csr_red(0:6/6)), width = 7)
+## checked
 ColorShadeRamp <- function(col,
                            space = c('Lab', 'rgb'),
                            ...){
@@ -417,7 +418,7 @@ color.shades <- function(reps,
 #' Internal rank increasing within ties so that after reordering the order of ties
 #' can be preserved
 #'
-#' the output vector is named with (1000 * original level + position) with ties for
+#' the output vector is named with (original level + position as decimal fraction) with ties for
 #' that level, see example. this can handles multiplicities of up to 999 which
 #' should suffice for most practical cases.
 #'
@@ -433,17 +434,18 @@ color.shades <- function(reps,
 #' @examples
 #' ct <- c(4, 1, 2, 3, 1, 1, 1, 1, 4, 1, 1, 3, 1, 3)
 #' reidx.cut(ct)
-#' ## 4001 1001 2001 3001 1002 1003 1004 1005 4002 1006 1007 3002 1008 3003
-#' ##   13    1    9   10    2    3    4    5   14    6    7   11    8   12
+#' ## 4.1 1.1 2.1 3.1 1.2 1.3 1.4 1.5 4.2 1.6 1.7 3.2 1.8 3.3
+#' ##  13   1   9  10   2   3   4   5  14   6   7  11   8  12
 #' ## the first occurence of level 1 is named 1001 (see details)
 #' cs <- color.shades(table(ct))
 #' rocs <- cs[, reidx.cut(ct)]
 reidx.cut <- function(cut){
     tbl <- table(cut)
+    max.rep <- max(tbl)
     vals <- 1:length(unique(cut))
     vals <- as.numeric(names(tbl))
     for (i in seq_along(tbl))
-        cut[cut == vals[i]] <- 1000*vals[i] + 1:tbl[i]
+        cut[cut == vals[i]] <- vals[i] + 10^-ceiling(log10(max.rep+1)) * 1:tbl[i]
     rcut <- rank(cut)
     names(rcut) <- cut
     return(rcut)
