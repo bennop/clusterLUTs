@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="write LUT — writelut" />
-<meta property="og:description" content="Write RGB color lookup table (LUT) of 3\(\times\)256 bytes." />
+<meta property="og:description" content="Write RGB color lookup table (LUT) of 3\(\times\)256 bytes. 
+Implemented with Rcpp to allow writing bytes." />
 
 
 
@@ -72,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">clusterLUTs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.5</span>
       </span>
     </div>
 
@@ -109,7 +110,8 @@
     </div>
 
     <div class="ref-description">
-    <p>Write RGB color lookup table (LUT) of 3\(\times\)256 bytes.</p>
+    <p>Write RGB color lookup table (LUT) of 3\(\times\)256 bytes. 
+Implemented with Rcpp to allow writing bytes.</p>
     </div>
 
     <pre class="usage"><span class='fu'>writelut</span>(<span class='no'>x</span>, <span class='no'>filename</span>)</pre>
@@ -129,7 +131,7 @@
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>0 on s</p>
+    <p>0 on success</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

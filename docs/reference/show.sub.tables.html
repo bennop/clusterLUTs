@@ -74,7 +74,7 @@ They are used to trace clustering trees." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">clusterLUTs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.5</span>
       </span>
     </div>
 
@@ -116,7 +116,7 @@ list of tables which represents chunks of a higher level table (thus subtable).
 They are used to trace clustering trees.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>show.sub.tables</span>(<span class='no'>st</span>, <span class='no'>...</span>, <span class='kw'>wait</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>show.sub.tables</span>(<span class='no'>st</span>, <span class='kw'>which</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>, <span class='kw'>wait</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -124,6 +124,10 @@ They are used to trace clustering trees.</p>
     <tr>
       <th>st</th>
       <td><p>subtables or list thereof (or result of  <code><a href='tree.ranges.html'>tree.ranges</a></code>)</p></td>
+    </tr>
+    <tr>
+      <th>which</th>
+      <td><p>optional subset of the subtables</p></td>
     </tr>
     <tr>
       <th>...</th>

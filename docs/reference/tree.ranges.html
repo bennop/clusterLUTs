@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="full hue range set for cutree — tree.ranges" />
-<meta property="og:description" content="Create a set of hue ranges related through the levels of cutree." />
+<meta property="og:description" content="Create a set of hue ranges related through the levels of cuts." />
 
 
 
@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">clusterLUTs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.5</span>
       </span>
     </div>
 
@@ -109,21 +109,25 @@
     </div>
 
     <div class="ref-description">
-    <p>Create a set of hue ranges related through the levels of <code>cutree</code>.</p>
+    <p>Create a set of hue ranges related through the levels of <code>cuts</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>tree.ranges</span>(<span class='no'>cutree</span>, <span class='kw'>blank</span> <span class='kw'>=</span> <span class='fl'>0.1</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>tree.ranges</span>(<span class='no'>cuts</span>, <span class='kw'>blank</span> <span class='kw'>=</span> <span class='fl'>0.1</span>, <span class='kw'>init</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>cutree</th>
-      <td><p>result of <code><a href='https://rdrr.io/r/stats/cutree.html'>cutree</a></code></p></td>
+      <th>cuts</th>
+      <td><p>cluster assignment result of <code><a href='https://rdrr.io/r/stats/cutree.html'>cutree</a></code> (or equivalent)</p></td>
     </tr>
     <tr>
       <th>blank</th>
       <td><p>"spacing" between hues ranges when splitting (see description)</p></td>
+    </tr>
+    <tr>
+      <th>init</th>
+      <td><p>provide initial hues - not yet implemented</p></td>
     </tr>
     <tr>
       <th>...</th>

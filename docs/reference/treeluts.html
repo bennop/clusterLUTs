@@ -74,7 +74,7 @@ is taken from the unique values per column (need not be regular)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">clusterLUTs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.5</span>
       </span>
     </div>
 
@@ -118,7 +118,7 @@ is taken from the unique values per column (need not be regular).</p>
 
     <pre class="usage"><span class='fu'>treeluts</span>(
   <span class='kw'>clusters</span> <span class='kw'>=</span> <span class='fu'><a href='read.tree.html'>read.tree</a></span>(),
-  <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='fu'><a href='LUTdir.html'>LUTdir</a></span>(),
+  <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='fu'>LUTdir</span>(),
   <span class='kw'>basename</span> <span class='kw'>=</span> <span class='st'>"lut"</span>,
   <span class='kw'>lut.length</span> <span class='kw'>=</span> <span class='fl'>256</span>,
   <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"verbose"</span>),
@@ -164,7 +164,9 @@ is taken from the unique values per column (need not be regular).</p>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>treeluts</span>(<span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fl'>1</span>:<span class='fl'>10</span>,<span class='fl'>20</span>,<span class='fl'>TRUE</span>), <span class='fl'>1</span>:<span class='fl'>20</span>), <span class='st'>'.'</span>, <span class='st'>"example"</span>)</div><div class='output co'>#&gt; <span class='error'>Error in (function (..., deparse.level = 1) .Internal(cbind(deparse.level, ...)))(structure(0, .Dim = c(1L, 1L)), structure(c(0.0466312181336934, 0.0849881838223422), .Dim = 2:1),     structure(c(0.0932624362673868, 0.246690299021982), .Dim = 2:1),     structure(c(0.254964551467027, 0.27293295385069, 0.274546394464905,     0.292514796848568, 0.294128237462783, 0.312096639846446,     0.313710080460661, 0.331678482844324), .Dim = c(2L, 4L)),     structure(c(0.339952735289369, 0.375889540056695, 0.380729861899341,     0.416666666666667), .Dim = c(2L, 2L)), structure(c(0.424940919111711,     0.4788461262627, 0.486106609026669, 0.540011816177658), .Dim = c(2L,     2L)), structure(c(0.548286068622702, 0.584222873390028, 0.587853114772012,     0.623789919539338, 0.627420160921323, 0.663356965688649), .Dim = 2:3),     structure(c(0.671631218133693, 0.683610153056135, 0.684820233516797,     0.696799168439239, 0.6980092488999, 0.709988183822342), .Dim = 2:3),     structure(c(0.718262436267387, 0.833333333333333), .Dim = 2:1)): number of rows of matrices must match (see arg 2)</span></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>42</span>)
+<span class='fu'>treeluts</span>(<span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fl'>1</span>:<span class='fl'>5</span>,<span class='fl'>20</span>,<span class='fl'>TRUE</span>),<span class='fl'>1</span>:<span class='fl'>20</span>), <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>(), <span class='st'>"exmpl"</span>, <span class='kw'>verbose</span><span class='kw'>=</span><span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; /var/folders/n9/yqnj10ts5yxb142bkvkym168n7typ4/T//Rtmpiqcrxm/exmpl005.lut 
+#&gt; /var/folders/n9/yqnj10ts5yxb142bkvkym168n7typ4/T//Rtmpiqcrxm/exmpl020.lut </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
