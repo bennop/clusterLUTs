@@ -9,6 +9,10 @@ test_that("vec2rgb", {
     expect_equal(vec2rgb(1:4*63/255, m = 255), "#00000000")
     expect_equal(vec2rgb(matrix(1:6*30, nrow=3)), c("#1E3C5A","#7896B4"))
     expect_equal(vec2rgb(matrix(1:8*30, nrow=4)), c("#1E3C5A78","#96B4D2F0"))
+    expect_error(vec2rgb(1:2), "wrong vector length")
+    expect_error(vec2rgb(1:5), "wrong vector length")
+    expect_error(vec2rgb(matrix(1, nrow = 2, ncol = 2)), "wrong matrix dimension")
+    expect_error(vec2rgb(matrix(1, nrow = 5, ncol = 2)), "wrong matrix dimension")
 })
 
 test_that("vec2hsv", {
@@ -66,6 +70,24 @@ test_that("hue range", {
                                                           c("#5C00FF","#FF008A")))
 })
 
+test_that("hue range init", {
+    m2 <- function(x) matrix(x, nr = 2)
+    # no hues -> default
+    expect_equal(hue.range.init(), m2(c(0, 5/6)))
+    expect_equal(hue.range.init(symm = TRUE), m2(c(0, 5/6)))
+    expect_equal(hue.range.init(limits = c(.3, .8)), m2(c(.3, .8)))
+    expect_equal(hue.range.init(limits = c(.3, .8), symm = TRUE), m2(c(.3, 5/6-.3)))
+    ## specify hues
+    hues  <- c(.2, .4, .7, 5/6)
+    expect_known_hash(hue.range.init(hues), "26fc89cc09")
+    expect_known_hash(hue.range.init(hues, symm = TRUE), "23ce5b42ba")
+    expect_known_hash(hue.range.init(hues, limits = c(.3, .8)), "7953168a57")
+    expect_known_hash(hue.range.init(hues, limits = c(.3, .8), symm = TRUE), "96106ffcfd")
+    #expect_known_hash(hue.range.init(hues, limits = c(.4, .8), symm = TRUE), "74bcf61d98")
+    expect_warning(hue.range.init(hues, limits = c(.4, .8), symm = TRUE), "dropped hues due to limit settings: 2")
+
+})
+
 context("defaults")
 test_that("defaults", {
     expect_known_hash(default.rgb(), "9a5206a981")
@@ -100,17 +122,18 @@ test_that("LUT file handling", {
     writelut(rl6, tf)
     ##
     expect_equal(testthat:::safe_digest(tf), "30138132728d6414666d038b0275260c")
-    expect_known_hash(readlut(tf), hash = "d57ea18284")
+    #expect_known_hash(readlut(tf), hash = "d57ea18284")
+    expect_equal(readlut(tf), rl6)
     ##
     expect_warning(readlut(tf, length = 9), "LUT file shorter than expected: 18 bytes \\[<27\\]")
     expect_warning(readlut(tf, length = 4), "LUT file longer than expected, ignoring trailing 6 bytes")
     ##
     rl6[1,1] <- 256
-    suppressWarnings( expect_equal(writelut(rl6, tf), 99) )
+    expect_equal(writelut(rl6, tf), 99)
     expect_equal(file.exists(tf), FALSE)   # file should have been deleted
     ##
-    ## not multiple of 3 bytes
+    ## not multiple of 3 bytes (8 bytes)
     writeBin(pi, tf)
-    suppressWarnings( expect_known_hash(readlut(tf), "7878c28d1e") )
+    suppressWarnings( expect_known_hash(readlut(tf), "92f211b9b8") )
     expect_error(readlut(tf, 3), "^LUT.*LUT$")
  })

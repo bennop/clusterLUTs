@@ -69,6 +69,7 @@ test_that("re-index",{
     expect_equal(reidx.cut(ct), res)
 })
 
+# tree ----
 context("tree")
 test_that("read tree", {
     expect_known_hash(read.tree(), hash = "23ef87605d")
@@ -83,6 +84,13 @@ test_that("tree.ranges", {
     expect_known_hash(tree.ranges(dummy.tree()), "80d848e629")
 })
 
+test_that("treeluts", {
+    cat("   preliminary\n")
+    expect_known_hash(treeluts(dummy.tree()), "f9dbbf2483")
+})
+
+
+# %&% ----
 context("%&%")
 test_that("&", {
     expect_equal(7 %&% 5, 5)
