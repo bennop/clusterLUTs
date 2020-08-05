@@ -21,6 +21,32 @@ test_that("vec2hsv", {
     expect_error(apply(2*v,2,vec2hsv), "values > 1 found")
 })
 
+test_that("color repeat", {
+    rb <- matrix(0, 3, 3); rb[c(1,7)] <- 255
+    expect_equal(col.rep('#000000'  , 0      ), col2rgb(NULL))
+    expect_equal(col.rep('#000000'  , 1      ), matrix(0, 3, 1))
+    expect_equal(col.rep('#000000'  , 2      ), matrix(0, 3, 2))
+    expect_equal(col.rep('#00000080', 2      ), matrix(0, 3, 2))
+    expect_equal(col.rep('#000000'  , 2, TRUE), matrix(c(0, 0, 0, 255), 4, 2))
+    expect_equal(col.rep('#00000080', 2, TRUE), matrix(c(0, 0, 0, 128), 4, 2))
+    expect_equal(col.rep(col2rgb('black'), 2 ), matrix(0, 3, 2))
+    expect_equal(col.rep(col2rgb(c('red','black')), 1 ), rb[,1, drop = FALSE])
+    expect_equal(col.rep(col2rgb(c('red','black')), 2 ), rb[,1:2])
+    expect_equal(col.rep(col2rgb(c('red','black')), 3 ), rb[,1:3])
+})
+
+test_that("expand color matrix", {
+    r <- matrix(0, nr=3, nc=256); r[1] <- 255; rownames(r) <- c('red','green','blue')
+    ra <- col2rgb(c('red','white'), T)
+    rgb.mat <- col2rgb(c('red','green','blue'))
+    expect_equal(expand.colmat('red'), r)
+    expect_equal(expand.colmat('red', 3), r[,1:3])
+    r[4:6] <- 255
+    expect_equal(expand.colmat('red', 2, 'white'), r[,1:2])
+    expect_equal(expand.colmat(col2rgb('red', T), 2, 'white'), ra)
+    expect_warning(expand.colmat(rgb.mat, 2), "more colors than specified output length - unchanged")
+})
+
 test_that("ColorShadeRamp works",{
     expect_known_hash(ColorShadeRamp('red'), hash = "24ab5b5e67")
     expect_known_hash(ColorShadeRamp('red', space = 'rgb'), hash = "7565b58ab3")
@@ -82,8 +108,12 @@ test_that("hue range init", {
     expect_known_hash(hue.range.init(hues), "26fc89cc09")
     expect_known_hash(hue.range.init(hues, symm = TRUE), "23ce5b42ba")
     expect_known_hash(hue.range.init(hues, limits = c(.3, .8)), "7953168a57")
-    expect_known_hash(hue.range.init(hues, limits = c(.3, .8), symm = TRUE), "96106ffcfd")
+    expect_warning(hue.range.init(hues, blank = 0.5), "'blank' too large")
+    op <- options(verbose = TRUE)
+    expect_message(hue.range.init(hues), "auto limits")
+    options(op)
     #expect_known_hash(hue.range.init(hues, limits = c(.4, .8), symm = TRUE), "74bcf61d98")
+    expect_known_hash(hue.range.init(hues, limits = c(.3, .8), symm = TRUE), "96106ffcfd")
     expect_warning(hue.range.init(hues, limits = c(.4, .8), symm = TRUE), "dropped hues due to limit settings: 2")
 
 })
@@ -111,6 +141,8 @@ test_that("rainbows", {
 
     expect_equal(hue.range.colors(list(hrm1, hrm2)), list(c("#FF9900","#33FF00","#00FFB2"),
                                                           c("#5C00FF","#FF008A")))
+    expect_known_hash(rainbow_lab_ramp(), "de1a6480c1")
+    expect_known_hash(rainbow_lab_ramp(TRUE), "1ee4a3b0aa")
 })
 
 
@@ -119,21 +151,46 @@ context("LUT file handling")
 test_that("LUT file handling", {
     tf <- tempfile()
     rl6 <- rainbow_lab(6)
+    rl3 <- rl6[,1:3]
     writelut(rl6, tf)
     ##
+    expect_equal(readlut(tf), matrix(rl6, nr=3, by=T))    # wrong order
     expect_equal(testthat:::safe_digest(tf), "30138132728d6414666d038b0275260c")
     #expect_known_hash(readlut(tf), hash = "d57ea18284")
-    expect_equal(readlut(tf), rl6)
+    expect_equal(readlut(tf), matrix(rl6, nr=3, by=T))    # wrong order
     ##
     expect_warning(readlut(tf, length = 9), "LUT file shorter than expected: 18 bytes \\[<27\\]")
     expect_warning(readlut(tf, length = 4), "LUT file longer than expected, ignoring trailing 6 bytes")
     ##
+    #expect_known_hash(readlut(tf), hash = "d57ea18284")
+
+    ##
+    expect_warning(readlut(tf, length = 9), "LUT file shorter than expected: 18 bytes \\[<27\\]")
+    expect_warning(readlut(tf, length = 4), "LUT file longer than expected, ignoring trailing 6 bytes")
+    ##
+    expect_equal(colmat2lutfile(rl6, tf), rl6)
+    expect_equal(testthat:::safe_digest(tf), "56db3b781f0c6c5703bc2b9925205b5c")
+    expect_equal(readlut(tf), rl6)                        # right order
+    expect_known_hash(colmat2lutfile(rl3, tf, fill = TRUE   ), "4e9f7c64c8")
+    expect_known_hash(colmat2lutfile(rl3, tf, fill = TRUE, 2), "9b5c898cf1")
+    expect_known_hash(colmat2lutfile(rl3, tf, fill = TRUE, 3), "9b5c898cf1") # same!
+    expect_known_hash(colmat2lutfile(rl3, tf, fill = TRUE, 4), "6f3116d02b")
+    expect_known_hash(colmat2lutfile(rl3, tf, fill = TRUE, 5), "1435cc0c9c")
+    expect_known_hash(colmat2lutfile(rl3, tf, fill = TRUE, 8), "4063b58304")
+    expect_known_hash(colmat2lutfile(rl3, tf, fill = TRUE, 2, bw=FALSE), "9b5c898cf1")
+    expect_known_hash(colmat2lutfile(rl3, tf, fill = TRUE, 3, bw=FALSE), "9b5c898cf1")
+    expect_known_hash(colmat2lutfile(rl3, tf, fill = TRUE, 4, bw=FALSE), "c3d1e4e3a7")
+    expect_known_hash(colmat2lutfile(rl3, tf, fill = TRUE, 8, bw=FALSE), "348d49c33a")
+
+
+    ##
     rl6[1,1] <- 256
     expect_equal(writelut(rl6, tf), 99)
     expect_equal(file.exists(tf), FALSE)   # file should have been deleted
+    expect_error(colmat2lutfile(rl6, tf), "error writing LUT")
     ##
     ## not multiple of 3 bytes (8 bytes)
     writeBin(pi, tf)
-    suppressWarnings( expect_known_hash(readlut(tf), "92f211b9b8") )
+    suppressWarnings( expect_known_hash(readlut(tf), "7878c28d1e") )
     expect_error(readlut(tf, 3), "^LUT.*LUT$")
  })

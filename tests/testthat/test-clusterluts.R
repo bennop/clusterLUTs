@@ -104,3 +104,19 @@ test_that("dummy tree", {
     expect_equal(dend.with.cuts(dt, cut.col = "#ffa050"),
                   c(44.89947, 43.97886, 42.27916), tolerance = .00002)
 })
+
+test_that("randomize dt", {
+    set.seed(42)
+    expect_known_hash(randomize.cutree(dummy.tree()), "469fc7b26c")
+})
+
+test_that("dend.with.cuts", {
+    set.seed(42)
+    expect_known_hash(dend.with.cuts(dummy.tree()), "1b04029414")
+    expect_known_hash(dend.with.cuts(dummy.tree(), cuts = 4:6), "5c77f90029")
+    expect_error(dend.with.cuts(matrix(0,1,1)), "not recognized as dummy.tree output")
+})
+
+test_that("hri.plot", {
+    expect_known_hash(clusterLUTs:::hri.plot(1:5/6), "d5a90bb13d")
+})

@@ -1,83 +1,3 @@
-##
-## #' local project directory
-## #'
-## #' Used as default for \code{\link{treeluts}} and \code{\link{read.tree}},
-## #' simply check for existence and return input (or default).
-## #'
-## #' ~~~~~~~~~~~~~~~~~~~ C A V E A T ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## #'
-## #'       Adjust local defaults
-## #'
-## #' these settings define DEFAULTS that depend on my directory structure and
-## #' need to be adjusted to work for others
-## #'
-## #' @param basedir project directory
-## #' @param ... ignored
-## #'
-## #' @return path to project directory
-## #' @export
-## #' @author Benno Pütz \email{puetz@@psych.mpg.de}
-## #'
-## #' @examples
-## #' projdir()
-## projdir <- function(basedir = '~/Work/4philipp/BrainLUTs',
-##                     ...){
-##     dir.not.found <- function(dir){
-##         sprintf("%d dir not found - please specify explicitly", dir)
-##     }
-##     if(!dir.exists(basedir)) stop(dir.not.found('base'))
-##
-##     return(basedir)
-##
-## }
-##
-## #' local LUT directory
-## #'
-## #' Used as default output directory for \code{\link{treeluts}}
-## #'
-## #'
-## #' ~~~~~~~~~~~~~~~~~~~ C A V E A T ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## #'
-## #'       Adjust local defaults
-## #'
-## #' these settings define DEFAULTS that depend on my directory structure and
-## #' need to be adjusted to work for others
-## #'
-## #' @param basedir parent directory, usually project
-## #' @param subdir LUT directory
-## #' @param ... ignored
-## #'
-## #' @return path to LUT directory
-## #' @export
-## #' @author Benno Pütz \email{puetz@@psych.mpg.de}
-## #'
-## #' @examples
-## #' \dontrun{
-## #'     LUTdir()
-## #' }
-## LUTdir <- function(basedir = '.',
-##                    subdir = 'luts',
-##                    ...){
-##     dir.not.found <- function(dir){
-##         sprintf("%d dir not found - please specify explicitly", dir)
-##     }
-##     if(!dir.exists(basedir)) {
-##         stop(dir.not.found('base'))
-##     }
-##     LUTdir <- file.path(basedir, subdir)
-##     if(!dir.exists(LUTdir)) {
-##
-##         success <- dir.create(LUTdir)
-##         ifelse(success,
-##                warning,
-##                stop)("LUT subdir not found - ",
-##                      ifelse(success,
-##                             "created",
-##                             "attempt to create failed"))
-##     }
-##     return(LUTdir)
-##
-## }
 
 
 ## needed packages ----
@@ -106,7 +26,7 @@
 #' @param verbose set to TRUE to see the LUT filenames
 #' @param ... ignored
 #'
-#' @return a vector with the number of color entries per LUT generated
+#' @return a vector with the number of color entries per LUT generated (invisibly)
 #' @export
 #' @importFrom Rcpp evalCpp
 #' @useDynLib clusterLUTs
@@ -117,54 +37,156 @@
 #' set.seed(42)
 #' treeluts(cbind(sample(1:5,20,TRUE),1:20), tempdir(), "exmpl", verbose=TRUE)
 treeluts <- function(clusters   = read.tree(),
-                     outdir     = LUTdir(),
+                     outdir     = 'luts',
                      basename   = 'lut',
                      lut.length = 256,                    # as required by MRIcron
                      verbose    = getOption('verbose'),
                      ...){
     ## browser()
 
+    if(!dir.exists(outdir)){
+        dir.create(outdir)
+    }
     n.leaf <- nrow(clusters)
     n.cuts <- ncol(clusters)
 
     trc <- tree.ranges(clusters)
 
     ## list of color matrices
-    base.lut  <-  hue.range.colors( lapply(1:n.cuts,
-                                           function(i) {
-                                               grDevices::col2rgb(hue.range.colors(trc[[i]])[clusters[,i]])}
-                                           )
-                                   )
+    base.lut  <-  hue.range.colors(lapply(1:n.cuts,
+                                          function(i) {
+                                              grDevices::col2rgb(hue.range.colors(trc[[i]])[clusters[,i]])}
+    ))
 
     lut.list <- apply(clusters, 2,   # for each cut
-          function(v){
-              n <- vlevels(v)
+                      function(v){
+                          n <- vlevels(v)
 
-                                        #pal <- c(rainbow(n, end = 0.65))
-                                        #fullpal <- pal[v]
-              fullpal <- cutshades(v, ...)
-              pmat <- cbind(grDevices::col2rgb('#000000'),                    # initial black
-                            fullpal,                                          # colors
-                            col.rep('#000000',                # more black
-                                    lut.length - n.leaf - 2),
-                            grDevices::col2rgb(ifelse(n.leaf < lut.length-1,  # extra slot?
-                                                      '#FFFFFF',              # end with white
-                                                      NULL)                   # don't
-                            )
-              )
+                          ## pal <- c(rainbow(n, end = 0.65))
+                          ## fullpal <- pal[v]
+                          fullpal <- cutshades(v, ...)
 
-              imat <- as.integer(as.vector(t(pmat)))
-              imat[imat>128] <- imat[imat>128] - 256
-              file <- path.expand(file.path(outdir,
-                                            sprintf("%s%03d.lut",
-                                                    basename,
-                                                    n)))
-              if(verbose) cat(file,"\n")
-              writelut(t(imat),
-                       file)
-              return(imat)
-          }
-          )
+                          file <- path.expand(file.path(outdir,
+                                  sprintf("%s%03d.lut",
+                                          basename,
+                                          n)))
+                          if(verbose) cat(file,"\n")
+
+                          return(colmat2lutfile(fullpal,
+                                                file,
+                                                fill = TRUE,
+                                                length = 256))
+                          ## pmat <- cbind(grDevices::col2rgb('#000000'),                    # initial black
+                          ##               fullpal,                                          # colors
+                          ##               col.rep('#000000',                                # more black
+                          ##                       lut.length - n.leaf - 2),
+                          ##               grDevices::col2rgb(ifelse(n.leaf < lut.length-1,  # extra slot?
+                          ##                                         '#FFFFFF',              # end with white
+                          ##                                         NULL)                   # don't
+                          ##                                  )
+                          ##               )
+                          ## ## serialize in correct order
+                          ## imat <- as.integer(as.vector(t(pmat)))
+                          ## ## adjust to unsigned
+                          ## #imat[imat>128] <- imat[imat>128] - 256
+                          ## file <- path.expand(file.path(outdir,
+                          ##                               sprintf("%s%03d.lut",
+                          ##                                       basename,
+                          ##                                       n)))
+                          ## writelut(imat,
+                          ##          file)
+                          ## return(pmat)
+                      }
+                      )
+    return(invisible(lut.list))
+}
+##' Add entries with \code{fill.col} to reach \code{length} colors in
+##' color matrix.
+##'
+##' Should \code{cm} have more entries than specified by \code{length},
+##' the input martix is returned unchanged
+##' @title expand color matrix
+##' @param cm color matrix (or valid input to \code{\link[grDevices]{col2rgb}})
+##' @param length desired number of color entries
+##' @param fill.col color to fill matrix with ('black')
+##' @param ... ignored
+##' @return expanded color matrix
+##' @export
+##'
+##' @author Benno Pütz \email{puetz@@psych.mpg.de}
+expand.colmat <- function(cm,
+                          length   = 256,
+                          fill.col = "#000000",
+                          ...){
+
+    if(!is.matrix(cm)){
+        cm <- grDevices::col2rgb(cm)
+    }
+    fc <- grDevices::col2rgb(fill.col, alpha = nrow(cm)==4)
+    if(ncol(cm)>length){
+        warning("more colors than specified output length - unchanged")
+    }
+    return(cbind(cm,
+                 col.rep(fc,
+                         length - ncol(cm))
+                 )
+           )
+
+}
+
+#' Write color matrix to LUT file
+#'
+#' @param colmat color matrix
+#' @param file file to write to
+#' @param fill whether to fill
+#' @param length desired length (only when \code{fill} is TRUE)
+#' @param bw add 'black' as first and 'white' as last entry?
+#' @param ... ignored
+#'
+#' @return color matrix that was written (possibly filled)
+#' @export
+#' @author Benno Pütz \email{puetz@@psych.mpg.de}
+#'
+#' @examples
+colmat2lutfile <- function(colmat,
+                           file,
+                           fill   = FALSE,
+                           length = 256,
+                           bw     = TRUE,
+                           ...) {
+    if(fill){
+        n.in <- ncol(colmat)
+        n.bl <- length - n.in - ifelse(bw, 2, 0)              # negative OK
+        pmat <- cbind(if((n.in < length) &&                   # space for entry?
+                         bw){
+                          grDevices::col2rgb('black')         # initial black
+
+                      } else {
+                          NULL
+                      },
+                      colmat,                                 # colors
+                      col.rep('black',                        # more black
+                              n.bl),
+                      if((n.in < length-1) &&
+                         bw){                # extra slot?
+                          grDevices::col2rgb('white')         # end with white
+                      } else {
+                          NULL
+                      }              # don't
+                      )
+
+    } else {
+        pmat  <- colmat
+    }
+
+    ## serialize in correct order
+    imat <- as.integer(as.vector(t(pmat)))
+
+    if(writelut(imat,
+                file) != 0){
+        stop("error writing LUT")
+    }
+    return(invisible(pmat))
 
 }
 
@@ -875,11 +897,12 @@ vec2rgb <- function(v,
 #' Wrapper for \code{\link[grDevices]{hsv}} that allows using it with a 3-element vector
 #' \code{[h, s, v]}.
 #'
-#' Rather than returning a hex representaion as done in \code{\link[grDevices]{hsv}}.
+#' Rather than returning a hex representation as done in \code{\link[grDevices]{hsv}}, a
+#' conversion to RGB is performed before returning.
 #' @param v a 3-element vector with the values for \code{h}, \code{s}, and \code{v}
 #' @param ... ignored
 #'
-#' @return an RGB vector representing the color
+#' @return an RGB vector (1-column color matrix) representing the color
 #' @export
 #'
 #' @examples
@@ -896,6 +919,13 @@ vec2hsv <- function(v,
 #' Repeat color \code{col} \code{n} times as columns in a \eqn{3\times n}{3xn}
 #' RGB color matrix. Analog to \code{\link[base]{rep}} which is used internally.
 #'
+#' If \code{col} consists of more than one color, those colors are recycl
+#' the usual rules to reach \code{n} colors. In the special case where \code{n}
+#' is smaller than thenumber of colors in \code{col}, only the first \code{n}
+#' colors will be returned.
+#'
+#' For \code{n}<1 an empty matrix is returned.
+#'
 #' @param col color (valid input to \code{\link[grDevices]{col2rgb}}
 #' @param n number of repetitions (should be a positive integer value)
 #'
@@ -905,11 +935,17 @@ vec2hsv <- function(v,
 #'
 #' @examples
 #' col.rep('red', 3)
-col.rep <- function(col, n) {
-    return(matrix(rep(grDevices::col2rgb(col),                # more black
-                      n),
-                  nrow = 3))
+col.rep <- function(col, n, alpha = FALSE) {
+    if(!is.matrix(col)) col <- grDevices::col2rgb(col, alpha)
+    if(n>0){
+        return(matrix(rep(col,
+                          n),
+                      nrow = nrow(col))[,1:n, drop = FALSE])
+    } else {
+        return(grDevices::col2rgb(NULL))
+    }
 }
+
 
 #' LAB-based Rainbow colorramp function
 #'
@@ -981,7 +1017,7 @@ rainbow_lab <- function(n,
 #'                  weights of the splits (or list of such
 #'                  vectors applied to corresponding matrix colunm)
 #' @param blank which fraction of the range should be left blank
-#'
+#' @param ... ignored
 #' @return a hue range vector (only one split) or matrix
 #' @export
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
@@ -997,7 +1033,8 @@ rainbow_lab <- function(n,
 #' ## [2,] 0.075 0.12083333 0.1666667 0.4333333 0.65 0.8333333
 hue.range.split <- function(hue.range,
                             split.tbl,
-                            blank = 0.1) {
+                            blank = 0.1,
+                            ...) {
 
     if(is.null(dim(hue.range))) hue.range <- matrix(hue.range, nrow = 2)
     if(!is.list(split.tbl)) split.tbl <- list(split.tbl)
@@ -1007,9 +1044,9 @@ hue.range.split <- function(hue.range,
     relative.widths <- lapply(split.tbl,                    # list
                               function(n) n/sum(n))
     diffs <- apply(hue.range, 2, diff)                      # original width
-                                        # scalar or vector
+                                                            # scalar or vector
     new.ranges <- diffs * ifelse(lens==1,1,(1-blank))       # new width (- blank)
-                                        # scalar or vector
+                                                            # scalar or vector
     widths <- mapply(`*`,
                      as.list(new.ranges),
                      relative.widths,
@@ -1017,7 +1054,7 @@ hue.range.split <- function(hue.range,
     blanks <- mapply(function(d,n) d*blank/(length(n)-1),
                      diffs,
                      split.tbl)
-                                        #browser()
+    ## browser()
 
     offsets <- mapply(function(w,b,l) c(0, cumsum(w+b))[1:l],
                       as.list(widths),
@@ -1043,6 +1080,131 @@ hue.range.split <- function(hue.range,
         real.ranges <- real.ranges[[1]]
     }
     return(real.ranges)
+}
+
+##' Initialize a hue range "seeded" by \code{hues}. It is attempted to
+##' allocate the range given by \code{limits} sparing a fraction of
+##' \code{blank} for the breaks. If \code{symmetric} is set, the hue
+##' ranges are centered around the seed values (except when at the
+##' limits) leaving more of the hue space unallocated.
+##'
+##' The values in \code{hues} are trimmed to [0..1] and duplicates are removed.
+##' @title hue range initialization
+##' @param hues initial "centers"
+##' @param blank fraction of full range (given by \code{limits}) not to assign
+##' @param limits define full range of available hues
+##' @param symmetric range symmetric around \code{hues} (where possible)
+##' @param ... ignored
+##' @return new hue range
+##' @export
+##' @author Puetz
+hue.range.init <- function(hues      = 5/12,
+                           blank     = 0.1,
+                           limits    = NULL,
+                           symmetric = FALSE,
+                           ...){
+    #browser()
+
+    if(is.null(limits)){
+        if(getOption('verbose')) message("auto limits")
+        limits  <- c(max(min(min(hues),  0), 0),
+                     min(max(max(hues),5/6), 1))
+    }
+    n <- length(hues)
+    hues <- pmin(pmax(hues, limits[1], 0), limits[2], 1)
+    names(hues) <- 1:n
+
+    dups <- duplicated(hues)
+    if(any(dups)){
+        warning("dropped hues due to limit settings: ",
+                paste0(names(hues)[dups], collapse = ','))
+        hues <- hues[!dups]
+        n <- sum(!dups)
+    }
+
+    if(n>1){
+        rh <- rank(hues)
+        sh <- sort(hues)                # need sorted to calculate breaks
+        dsh <- diff(sh)
+        breaks <- apply(rbind(sh[-1], sh[-length(sh)]), 2, mean)
+        offset <- diff(limits)*blank * dsh/sum(dsh)
+        if (any(offset > dsh/2)){
+            warning("'blank' too large")
+        }
+
+        # rbind(c(limits[1], breaks+offset),
+        #       c(limits[1], pmin(sh[-1],breaks+offset)),
+        #       sh,
+        #       c(pmax(sh[-n],breaks-offset), limits[2]),
+        #       c(breaks-offset, limits[2])
+        # )
+        raw <- rbind(c(limits[1],  pmin(sh[-1],breaks+offset)),
+                     c(pmax(sh[-n],breaks-offset),  limits[2]))
+        if(symmetric){
+            ## differences of raw limits to corresponding initial value
+            ds <- apply(raw,1, function(x)abs(x - sh))
+            ## smaller (if positive)
+            sds <- apply(ds, 1, function(x)min(x[x>0]))
+            raw <- rbind(pmax(limits[1], sh - sds),
+                         pmin(limits[2], sh + sds))
+        }
+        return(raw[,rh])
+    } else {
+        return(if(symmetric){
+                   matrix(hues + c(-1,1)*min(abs(hues - limits)),
+                          nrow = 2)
+               } else {
+                   matrix(limits, nrow = 2)
+               }
+               )
+    }
+}
+
+
+#' for internal testing
+#'
+#' @title hue range init plot
+#' @param hues hue seeds, passed to \code{\link{hue.range.init}
+#' @param y y-level to show hue range line on (0..1)
+#' @param yoff y-offset for start/end markers
+#' @param ...  passed to \code{\link{hue.range.init}
+#'
+#' @return new hue range (invisibly)
+#'
+#' @examples
+#' clusterLUTs:::hri.plot(1:5/6)
+#' hues  <- c(.2, .4, .7, 5/6)
+#' clusterLUTs:::hri.plot(hues,                                  yo = 0.05, y = 0.1)
+#' clusterLUTs:::hri.plot(hues,                     symm = TRUE, yo = 0.05, y = 0.3, add = TRUE)
+#' clusterLUTs:::hri.plot(hues, limits = c(.3, .8),              yo = 0.05, y = 0.5, add = TRUE)
+#' clusterLUTs:::hri.plot(hues, limits = c(.3, .8), symm = TRUE, yo = 0.05, y = 0.7, add = TRUE)
+hri.plot <- function(hues,
+                     y      = 0.5,
+                     yoff   = 0.1,
+                     add    = FALSE,
+                     limits = NULL,
+                     ...){
+    #browser()
+
+    n = length(hues)
+    if (!add) {
+        plot(0:1, 0:1, type = 'n', las = 1, xlab = 'hue', ylab = '')
+    }
+    hr <- hue.range.init(hues, limits = limits, ...)
+
+    if (is.null(limits)){                        # mimic auto-limits from hue.range.init()
+        limits <- c(max(min(hues), 0),
+                    min(max(max(hues),5/6), 1))
+    }
+    hue.range.lines(hr, y, add = TRUE)
+    segments(limits, y-yoff, y1 = y+yoff, col = 'red', lty = 2)
+    segments(hues  , y-yoff, y1 = y+yoff, col = 'grey')
+    segments(hr[1,], y-yoff, y1 = y     , col = 'lightgrey')
+    segments(hr[2,], y     , y1 = y+yoff, col = 'lightgrey')
+    text(hues, rep(y, n), 1:n)
+    text(hr[1,], y-yoff, 1:n, cex = 0.7, col = 'grey')
+    text(hr[2,], y+yoff, 1:n, cex = 0.7, col = 'grey')
+    return(invisible(hr))
 }
 
 #' full hue range set for cutree
@@ -1130,7 +1292,7 @@ tree.ranges <- function(cuts,
     return(invisible(if(ordered) hue.splits else hue.splits[rcl]))
 }                                       # tree.ranges
 
-
+# not quite working yet
 show.tree.ranges <- function(tr,
                              ...){
     concat.tbl.list(tr)
@@ -1937,9 +2099,9 @@ dend.with.cuts <- function(dt,
                            cuts = NULL,
                            cut.col =  "#ffa050",
                            ...){
-    # simple dendrogram plot
+    ## simple dendrogram plot
     if('hc' %in% names(attributes(dt))){
-        # interpret as output of dummy.tree and extract underlying hclust object
+        ## interpret as output of dummy.tree and extract underlying hclust object
         hc <- attr(dt, 'hc')
     } else {
         stop("not recognized as dummy.tree output")
@@ -1950,8 +2112,8 @@ dend.with.cuts <- function(dt,
     hrx <- diff(hr)/(2*n)
     h.low <- min(hr) - 3*hrx
     dg <- stats::as.dendrogram(hc)
-    #browser()
-    op <- par(mar=c(4,5,4,5)+.1)
+
+    op <- par(mar = c(4,5,4,5)+.1)
     DEX <- FALSE
     if(!requireNamespace("dendextend")){       # standard plot
         plot(hc,
@@ -1971,14 +2133,14 @@ dend.with.cuts <- function(dt,
         cuts <- as.numeric(colnames(dt))
     }
 
-    # determine appropriate cur levels
+    ## determine appropriate cur levels
     hgt <- rev(c(min(hc$height)-hrx,    # add pseudo levels at top ...
                  hc$height,
                  max(hc$height)+hrx))   # ... and bottom
     cuts <- cuts[cuts > 0 & cuts <= n+1]
     raise <-  ifelse(DEX, h.low, 0)
     cutlvl <- (hgt[cuts+1] + hgt[cuts])/2 - raise
-    # show them
+    ## show them
     abline(h = cutlvl, col = cut.col, ...)
     axis(4,
          at = cutlvl,
