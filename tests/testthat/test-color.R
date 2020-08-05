@@ -36,7 +36,7 @@ test_that("color repeat", {
 })
 
 test_that("expand color matrix", {
-    r <- matrix(0, nr=3, nc=256); r[1] <- 255; rownames(r) <- c('red','green','blue')
+    r <- matrix(0, nrow = 3, ncol = 256); r[1] <- 255; rownames(r) <- c('red','green','blue')
     ra <- col2rgb(c('red','white'), T)
     rgb.mat <- col2rgb(c('red','green','blue'))
     expect_equal(expand.colmat('red'), r)
@@ -82,22 +82,31 @@ test_that("cutshades",{
 
 
 ## hue range ----
+
 test_that("hue range", {
-    expect_equal(hue.range.split(c(0,5/6), 4:2), matrix(c(0, 8,9,15,16,20)/24, nr = 2))
+    hr1 <- hue.range.split(c(0,5/6), 4:2)
+    r1 <- matrix(c(0, 8,9,15,16,20)/24, nrow = 2)
+    hr2 <- hue.range.split(hr1, list(c(2,1,1), 3, c(1,1)))
+    r2 <- matrix(c(0.00,0.1666667,0.2583333,0.375,0.6666667,0.7583333,
+                   0.15,0.2416667,0.3333333,0.625,0.7416667,0.8333333),
+                 nrow = 2, byrow = TRUE)
+
+    expect_equal(hr1, r1)
+    expect_equal(hr2, r2, tolerance = 1e-7)
     #
     hrm1 <- hue.range.split(c(0, 3/6), 4:2)
     hrm2 <- hue.range.split(c(4/6, 1), 2:3)
-    expect_equal(hue.range.colors(matrix(c(0,2)/6, nc = 1)), "#FFFF00")
-    expect_equal(hue.range.colors(matrix(c(0,2)/6, nc = 1), only.hues = TRUE), 1/6)
-    expect_equal(hue.range.colors(matrix(c(0,2)/6, nc = 1), min, only.hues = TRUE), 0)
-    expect_equal(hue.range.colors(matrix(c(0,3), nc = 1)), "#FF0900")
-    expect_error(hue.range.colors(matrix(c(0,300), nc = 1)), "invalid hue value")
+    expect_equal(hue.range.colors(matrix(c(0,2)/6, ncol = 1)), "#FFFF00")
+    expect_equal(hue.range.colors(matrix(c(0,2)/6, ncol = 1), only.hues = TRUE), 1/6)
+    expect_equal(hue.range.colors(matrix(c(0,2)/6, ncol = 1), min, only.hues = TRUE), 0)
+    expect_equal(hue.range.colors(matrix(c(0,3)  , ncol = 1)), "#FF0900")
+    expect_error(hue.range.colors(matrix(c(0,300), ncol = 1)), "invalid hue value")
     expect_equal(hue.range.colors(list(hrm1, hrm2)), list(c("#FF9900","#33FF00","#00FFB2"),
                                                           c("#5C00FF","#FF008A")))
 })
 
 test_that("hue range init", {
-    m2 <- function(x) matrix(x, nr = 2)
+    m2 <- function(x) matrix(x, nrow = 2)
     # no hues -> default
     expect_equal(hue.range.init(), m2(c(0, 5/6)))
     expect_equal(hue.range.init(symm = TRUE), m2(c(0, 5/6)))
@@ -129,15 +138,15 @@ test_that("defaults", {
 context("rainbows")
 ## rainbows ----
 test_that("rainbows", {
-    expect_equal(hue.range.split(c(0,5/6), 4:2), matrix(c(0, 8,9,15,16,20)/24, nr = 2))
+    expect_equal(hue.range.split(c(0,5/6), 4:2), matrix(c(0, 8,9,15,16,20)/24, nrow = 2))
     #
     hrm1 <- hue.range.split(c(0, 3/6), 4:2)
     hrm2 <- hue.range.split(c(4/6, 1), 2:3)
-    expect_equal(hue.range.colors(matrix(c(0,2)/6, nc = 1)), "#FFFF00")
-    expect_equal(hue.range.colors(matrix(c(0,2)/6, nc = 1), only.hues = TRUE), 1/6)
-    expect_equal(hue.range.colors(matrix(c(0,2)/6, nc = 1), min, only.hues = TRUE), 0)
-    expect_equal(hue.range.colors(matrix(c(0,3), nc = 1)), "#FF0900")
-    expect_error(hue.range.colors(matrix(c(0,300), nc = 1)), "invalid hue value")
+    expect_equal(hue.range.colors(matrix(c(0,2)/6, ncol = 1)), "#FFFF00")
+    expect_equal(hue.range.colors(matrix(c(0,2)/6, ncol = 1), only.hues = TRUE), 1/6)
+    expect_equal(hue.range.colors(matrix(c(0,2)/6, ncol = 1), min, only.hues = TRUE), 0)
+    expect_equal(hue.range.colors(matrix(c(0,3)  , ncol = 1)), "#FF0900")
+    expect_error(hue.range.colors(matrix(c(0,300), ncol = 1)), "invalid hue value")
 
     expect_equal(hue.range.colors(list(hrm1, hrm2)), list(c("#FF9900","#33FF00","#00FFB2"),
                                                           c("#5C00FF","#FF008A")))
@@ -154,10 +163,10 @@ test_that("LUT file handling", {
     rl3 <- rl6[,1:3]
     writelut(rl6, tf)
     ##
-    expect_equal(readlut(tf), matrix(rl6, nr=3, by=T))    # wrong order
+    expect_equal(readlut(tf), matrix(rl6, nrow = 3, byrow=T))    # wrong order
     expect_equal(testthat:::safe_digest(tf), "30138132728d6414666d038b0275260c")
     #expect_known_hash(readlut(tf), hash = "d57ea18284")
-    expect_equal(readlut(tf), matrix(rl6, nr=3, by=T))    # wrong order
+    expect_equal(readlut(tf), matrix(rl6, nrow = 3, byrow = T))    # wrong order
     ##
     expect_warning(readlut(tf, length = 9), "LUT file shorter than expected: 18 bytes \\[<27\\]")
     expect_warning(readlut(tf, length = 4), "LUT file longer than expected, ignoring trailing 6 bytes")

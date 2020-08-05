@@ -1277,7 +1277,7 @@ tree.ranges <- function(cuts,
         ## browser()
         hue.splits[[i]] <- hue.range.split(hue.splits[[i-1]],
                                            sub.tables[[i]],
-                                           blank = blank^(1+.1*(i-1)), # shrink at ervery step
+                                           blank = blank^(1+.1*(i-1)), # shrink at every step
                                            ...)[,order(concat.tbl.list(sub.tables[[i]])[1,])]
     }
 
