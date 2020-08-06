@@ -84,9 +84,15 @@ test_that("tree.ranges", {
     expect_known_hash(tree.ranges(dummy.tree()), "80d848e629")
 })
 
+test_that('subtables', {
+    expect_known_hash(subtables(tree.ranges(dummy.tree())), "16945ffa45")
+    expect_error(subtables(letters), "no sub.tables found in ")
+
+})
+
 test_that("treeluts", {
     cat("   preliminary\n")
-    expect_known_hash(treeluts(dummy.tree()), "f9dbbf2483")
+    expect_known_hash(treeluts(dummy.tree()), "e89e26de0c")
 })
 
 
@@ -99,10 +105,8 @@ test_that("&", {
 # debug ----
 context("debug")
 test_that("dummy tree", {
-    dt <- dummy.tree()
-    expect_known_hash(dt, hash = "d4032aea3f")
-    expect_equal(dend.with.cuts(dt, cut.col = "#ffa050"),
-                  c(44.89947, 43.97886, 42.27916), tolerance = .00002)
+    expect_known_hash(dummy.tree(  ), hash = "d4032aea3f")
+    expect_known_hash(dummy.tree(25), hash = "f863368944")
 })
 
 test_that("randomize dt", {
@@ -111,10 +115,13 @@ test_that("randomize dt", {
 })
 
 test_that("dend.with.cuts", {
-    set.seed(42)
-    expect_known_hash(dend.with.cuts(dummy.tree()), "1b04029414")
-    expect_known_hash(dend.with.cuts(dummy.tree(), cuts = 4:6), "5c77f90029")
-    expect_error(dend.with.cuts(matrix(0,1,1)), "not recognized as dummy.tree output")
+    dt <- dummy.tree()
+    expect_equal(dend.with.cuts(dt),
+                 c(44.89947, 43.97886, 42.27916), tolerance = .00002)
+    expect_known_hash(dend.with.cuts(dt), "1b04029414")
+    expect_known_hash(dend.with.cuts(dt, cuts = 4:6), "5c77f90029")
+    expect_error(dend.with.cuts(matrix(0,1,1)),
+                 "not recognized as either hclust or dummy.tree output")
 })
 
 test_that("hri.plot", {

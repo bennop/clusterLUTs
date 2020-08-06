@@ -160,13 +160,13 @@ context("LUT file handling")
 test_that("LUT file handling", {
     tf <- tempfile()
     rl6 <- rainbow_lab(6)
+    rl6wo <- matrix(rl6, nrow = 3, byrow=T)  # fix wrong order from direct call to writelut
     rl3 <- rl6[,1:3]
     writelut(rl6, tf)
     ##
-    expect_equal(readlut(tf), matrix(rl6, nrow = 3, byrow=T))    # wrong order
+    expect_equal(readlut(tf), rl6wo)    # wrong order
     expect_equal(testthat:::safe_digest(tf), "30138132728d6414666d038b0275260c")
     #expect_known_hash(readlut(tf), hash = "d57ea18284")
-    expect_equal(readlut(tf), matrix(rl6, nrow = 3, byrow = T))    # wrong order
     ##
     expect_warning(readlut(tf, length = 9), "LUT file shorter than expected: 18 bytes \\[<27\\]")
     expect_warning(readlut(tf, length = 4), "LUT file longer than expected, ignoring trailing 6 bytes")
@@ -177,22 +177,29 @@ test_that("LUT file handling", {
     expect_warning(readlut(tf, length = 9), "LUT file shorter than expected: 18 bytes \\[<27\\]")
     expect_warning(readlut(tf, length = 4), "LUT file longer than expected, ignoring trailing 6 bytes")
     ##
-    expect_equal(colmat2lutfile(rl6, tf), rl6)
+    expect_equal(colmat2lutfile(rl6, tf, fill = FALSE), rl6)
     expect_equal(testthat:::safe_digest(tf), "56db3b781f0c6c5703bc2b9925205b5c")
     expect_equal(readlut(tf), rl6)                        # right order
     expect_known_hash(colmat2lutfile(rl3, tf, fill = TRUE   ), "4e9f7c64c8")
-    expect_known_hash(colmat2lutfile(rl3, tf, fill = TRUE, 2), "9b5c898cf1")
+    expect_error(colmat2lutfile(rl3, tf, fill = TRUE, 2), "longer than specified")
+
+    ## check warning first ...
+    expect_warning(res <- colmat2lutfile(rl3, tf, fill = TRUE, 2, tr=T), "truncate to 2, dropping 1")
+    ## ... then value
+    expect_known_hash(res, "b6e787c61e")
+
     expect_known_hash(colmat2lutfile(rl3, tf, fill = TRUE, 3), "9b5c898cf1") # same!
     expect_known_hash(colmat2lutfile(rl3, tf, fill = TRUE, 4), "6f3116d02b")
     expect_known_hash(colmat2lutfile(rl3, tf, fill = TRUE, 5), "1435cc0c9c")
     expect_known_hash(colmat2lutfile(rl3, tf, fill = TRUE, 8), "4063b58304")
-    expect_known_hash(colmat2lutfile(rl3, tf, fill = TRUE, 2, bw=FALSE), "9b5c898cf1")
+    expect_error(colmat2lutfile(rl3, tf, fill = TRUE, 2, bw=FALSE), "longer than specified")
+    expect_warning(colmat2lutfile(rl3, tf, fill = TRUE, 2, bw=FALSE, tr = T), "truncate to 2, dropping 1")
     expect_known_hash(colmat2lutfile(rl3, tf, fill = TRUE, 3, bw=FALSE), "9b5c898cf1")
     expect_known_hash(colmat2lutfile(rl3, tf, fill = TRUE, 4, bw=FALSE), "c3d1e4e3a7")
     expect_known_hash(colmat2lutfile(rl3, tf, fill = TRUE, 8, bw=FALSE), "348d49c33a")
 
 
-    ##
+    ## force error: value too large
     rl6[1,1] <- 256
     expect_equal(writelut(rl6, tf), 99)
     expect_equal(file.exists(tf), FALSE)   # file should have been deleted
@@ -202,4 +209,18 @@ test_that("LUT file handling", {
     writeBin(pi, tf)
     suppressWarnings( expect_known_hash(readlut(tf), "7878c28d1e") )
     expect_error(readlut(tf, 3), "^LUT.*LUT$")
+
+    ## force fail on open
+    expect_equal(writelut(rl6, '/mylut.lut'), 1)
+
+    ## too long
+    b257 <- col.rep('blue', 257)
+    expect_warning(colmat2lutfile(b257, tf, l = 257), "longer than regular LUT: 257")
+    #expect_error  (colmat2lutfile(b257, tf), "longer than specified")
+    #expect_warning(colmat2lutfile(b257, tf), "longer than regular LUT: 257")
+    #expect_error  (colmat2lutfile(b257, tf), "longer than (specified|regular LUT: 257)")
+    expect_error(expect_warning(colmat2lutfile(b257, tf),
+                                "longer than regular LUT: 257"),
+                 "longer than (specified|regular LUT: 257)")
+    #expect_warning(colmat2lutfile(b257, tf), "longer than regular LUT: 257")
  })
