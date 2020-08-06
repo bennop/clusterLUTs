@@ -31,6 +31,11 @@ int writelut(IntegerVector x, std::string filename) {
     //Rcout << filename << std::endl;
     std::ofstream out(filename, 
                       std::ofstream::out | std::ofstream::binary);
+    if(out.fail())    //bad() function will check for badbit
+      {
+        //Rcerr << "Opening file " << filename << " failed" << std::endl;
+        return 1;
+      }
     // int count = 0;
     for(int i:x){
         if(i > 255){
@@ -52,6 +57,11 @@ int writelut(IntegerVector x, std::string filename) {
             
     }
     out.close();
+    if(out.bad())    //bad() function will check for badbit
+    {
+        //Rcerr << "Error writing to " << filename << std::endl;
+        return 2;
+    }
     // Rcout << std::endl;
     return 0;
 }
