@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">clusterLUTs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -112,12 +112,7 @@
     <p>The number shoud be reasonably small to keep the example results clear.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>dummy.tree</span>(
-  <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>9</span>,
-  <span class='kw'>cuts</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>round</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span>(<span class='fl'>0</span>, <span class='no'>n</span>, <span class='kw'>length.out</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>ceiling</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span>(<span class='no'>n</span> + <span class='fl'>1</span>)))[-<span class='fl'>1</span>]),
-  <span class='no'>...</span>,
-  <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>1234</span>
-)</pre>
+    <pre class="usage"><span class='fu'>dummy.tree</span>(<span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>9</span>, <span class='kw'>cuts</span> <span class='kw'>=</span> <span class='fu'><a href='default.cuts.html'>default.cuts</a></span>(<span class='no'>n</span>), <span class='no'>...</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>1234</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

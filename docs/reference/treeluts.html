@@ -40,8 +40,8 @@
 
 
 <meta property="og:title" content="LUT generation for hierarchical clustering tree — treeluts" />
-<meta property="og:description" content="Main function of this package.
-clusters defines the cluster assignments per cut. The number of clusters
+<meta property="og:description" content="Main function of this package: clusters defines the cluster assignments
+per cut. The number of clusters
 is taken from the unique values per column (need not be regular)." />
 
 
@@ -74,7 +74,7 @@ is taken from the unique values per column (need not be regular)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">clusterLUTs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -111,14 +111,14 @@ is taken from the unique values per column (need not be regular)." />
     </div>
 
     <div class="ref-description">
-    <p>Main function of this package.
-<code>clusters</code> defines the cluster assignments per cut. The number of clusters
+    <p>Main function of this package: <code>clusters</code> defines the cluster assignments
+per cut. The number of clusters
 is taken from the unique values per column (need not be regular).</p>
     </div>
 
     <pre class="usage"><span class='fu'>treeluts</span>(
   <span class='kw'>clusters</span> <span class='kw'>=</span> <span class='fu'><a href='read.tree.html'>read.tree</a></span>(),
-  <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='fu'>LUTdir</span>(),
+  <span class='kw'>outdir</span> <span class='kw'>=</span> <span class='st'>"luts"</span>,
   <span class='kw'>basename</span> <span class='kw'>=</span> <span class='st'>"lut"</span>,
   <span class='kw'>lut.length</span> <span class='kw'>=</span> <span class='fl'>256</span>,
   <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"verbose"</span>),
@@ -156,7 +156,7 @@ is taken from the unique values per column (need not be regular).</p>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a vector with the number of color entries per LUT generated</p>
+    <p>a vector with the number of color entries per LUT generated (invisibly)</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     
@@ -165,8 +165,10 @@ is taken from the unique values per column (need not be regular).</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>42</span>)
-<span class='fu'>treeluts</span>(<span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fl'>1</span>:<span class='fl'>5</span>,<span class='fl'>20</span>,<span class='fl'>TRUE</span>),<span class='fl'>1</span>:<span class='fl'>20</span>), <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>(), <span class='st'>"exmpl"</span>, <span class='kw'>verbose</span><span class='kw'>=</span><span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; /var/folders/n9/yqnj10ts5yxb142bkvkym168n7typ4/T//Rtmpiqcrxm/exmpl005.lut 
-#&gt; /var/folders/n9/yqnj10ts5yxb142bkvkym168n7typ4/T//Rtmpiqcrxm/exmpl020.lut </div></pre>
+<span class='fu'>treeluts</span>(<span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fl'>1</span>:<span class='fl'>5</span>,<span class='fl'>20</span>,<span class='fl'>TRUE</span>),<span class='fl'>1</span>:<span class='fl'>20</span>), <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>(), <span class='st'>"exmpl"</span>, <span class='kw'>verbose</span><span class='kw'>=</span><span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; /var/folders/n9/yqnj10ts5yxb142bkvkym168n7typ4/T//RtmpThyQeo/exmpl005.lut 
+#&gt; /var/folders/n9/yqnj10ts5yxb142bkvkym168n7typ4/T//RtmpThyQeo/exmpl020.lut </div><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+ <span class='fu'>treeluts</span>(<span class='kw'>outdir</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/path.expand.html'>path.expand</a></span>(<span class='st'>"~/Work/4philipp/BrainLUTs/luts"</span>),  <span class='kw'>verbose</span><span class='kw'>=</span><span class='fl'>TRUE</span>)
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

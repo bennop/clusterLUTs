@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">clusterLUTs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -112,15 +112,11 @@
     <p>Mainly for debugging</p>
     </div>
 
-    <pre class="usage"><span class='fu'>dend.with.cuts</span>(<span class='no'>dt</span>, <span class='kw'>cuts</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>cut.col</span> <span class='kw'>=</span> <span class='st'>"#ffa050"</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>dend.with.cuts</span>(<span class='no'>hc.or.dt</span>, <span class='kw'>cuts</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>cut.col</span> <span class='kw'>=</span> <span class='st'>"#ffa050"</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>dt</th>
-      <td><p>output of <code><a href='dummy.tree.html'>dummy.tree</a></code></p></td>
-    </tr>
     <tr>
       <th>cuts</th>
       <td><p>cut levels to show (cluster numbers) (optional, see description)</p></td>
@@ -132,6 +128,10 @@
     <tr>
       <th>...</th>
       <td><p>passed to <code><a href='https://rdrr.io/r/graphics/abline.html'>abline</a></code> (<code>col</code>, <code>lty</code>, ...)</p></td>
+    </tr>
+    <tr>
+      <th>dt</th>
+      <td><p>output of <code><a href='dummy.tree.html'>dummy.tree</a></code></p></td>
     </tr>
     </table>
 
