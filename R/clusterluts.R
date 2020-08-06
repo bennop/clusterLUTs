@@ -9,16 +9,15 @@
 
 #' LUT generation for hierarchical clustering tree
 #'
-#' Main function of this package.
-#' \code{clusters} defines the cluster assignments per cut. The number of clusters
+#' Main function of this package: \code{clusters} defines the cluster assignments
+#' per cut. The number of clusters
 #' is taken from the unique values per column (need not be regular).
 #'
-#' @details{
 #' In order to show the substructure of clusters ... (\code{\link{cutshades}})
 #'
 #' The LUTs are named \code{sprintf("%s%03d.lut",basename,n)} where \code{n} is
-#' the number of clusters in the cut
-#' }
+#' the number of clusters in the cut.
+#'
 #' @param clusters matrix with cluster assignments, one column per cut
 #' @param outdir where to write the LUTs to
 #' @param basename prefix for LUT names ['lut']
@@ -36,16 +35,25 @@
 #' @examples
 #' set.seed(42)
 #' treeluts(cbind(sample(1:5,20,TRUE),1:20), tempdir(), "exmpl", verbose=TRUE)
+#' \dontrun{
+#'  treeluts(outdir = path.expand("~/Work/4philipp/BrainLUTs/luts"),  verbose=TRUE)
+#' }
 treeluts <- function(clusters   = read.tree(),
                      outdir     = 'luts',
                      basename   = 'lut',
                      lut.length = 256,                    # as required by MRIcron
                      verbose    = getOption('verbose'),
                      ...){
-    ## browser()
+    browser(expr=verbose==99)
 
     if(!dir.exists(outdir)){
-        dir.create(outdir)
+        ok <- dir.create(outdir)
+        if(verbose) {
+            if(ok){
+                message("outdir created")
+            }
+        }
+        stop("failed creating outdir")
     }
     n.leaf <- nrow(clusters)
     n.cuts <- ncol(clusters)
@@ -53,18 +61,18 @@ treeluts <- function(clusters   = read.tree(),
     trc <- tree.ranges(clusters)
 
     ## list of color matrices
-    base.lut  <-  hue.range.colors(lapply(1:n.cuts,
-                                          function(i) {
-                                              grDevices::col2rgb(hue.range.colors(trc[[i]])[clusters[,i]])}
-    ))
+    base.lut  <- lapply(1:n.cuts,
+                        function(i) {
+                            grDevices::col2rgb(hue.range.colors(trc[[i]])[clusters[,i]])}
+    )
 
-    lut.list <- apply(clusters, 2,   # for each cut
-                      function(v){
-                          n <- vlevels(v)
+    lut.list <- lapply(1:ncol(clusters),   # for each cut
+                      function(i){
+                          n <- vlevels(clusters[,i])
 
                           ## pal <- c(rainbow(n, end = 0.65))
                           ## fullpal <- pal[v]
-                          fullpal <- cutshades(v, ...)
+                          #fullpal <- cutshades(v, ...)
 
                           file <- path.expand(file.path(outdir,
                                   sprintf("%s%03d.lut",
@@ -72,7 +80,7 @@ treeluts <- function(clusters   = read.tree(),
                                           n)))
                           if(verbose) cat(file,"\n")
 
-                          return(colmat2lutfile(fullpal,
+                          return(colmat2lutfile(base.lut[[i]], #fullpal,
                                                 file,
                                                 fill = TRUE,
                                                 length = 256))
@@ -100,6 +108,7 @@ treeluts <- function(clusters   = read.tree(),
                       )
     return(invisible(lut.list))
 }
+
 ##' Add entries with \code{fill.col} to reach \code{length} colors in
 ##' color matrix.
 ##'
@@ -136,11 +145,14 @@ expand.colmat <- function(cm,
 
 #' Write color matrix to LUT file
 #'
+#' Companion function to \code{\link{writelut}} that sets up a correct
+#' lookup table.
 #' @param colmat color matrix
 #' @param file file to write to
 #' @param fill whether to fill
 #' @param length desired length (only when \code{fill} is TRUE)
 #' @param bw add 'black' as first and 'white' as last entry?
+#' @param truncate truncate if too long
 #' @param ... ignored
 #'
 #' @return color matrix that was written (possibly filled)
@@ -148,14 +160,25 @@ expand.colmat <- function(cm,
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
 #' @examples
+#' colmat2lutfile(rainbow_lab(6), tempfile(), fill = FALSE)
 colmat2lutfile <- function(colmat,
                            file,
-                           fill   = FALSE,
-                           length = 256,
-                           bw     = TRUE,
+                           fill     = TRUE,
+                           length   = 256,
+                           bw       = TRUE,
+                           truncate = FALSE,
                            ...) {
+    n.in <- ncol(colmat)
+    if(n.in>256) warning("longer than regular LUT: ", n.in)
+    if(n.in>length){
+        if(!truncate){
+            stop("longer than specified")
+        } else {
+            warning("truncate to ", length, ", dropping ", n.in - length)
+            colmat <- colmat[, 1:length, drop = FALSE]
+        }
+    }
     if(fill){
-        n.in <- ncol(colmat)
         n.bl <- length - n.in - ifelse(bw, 2, 0)              # negative OK
         pmat <- cbind(if((n.in < length) &&                   # space for entry?
                          bw){
@@ -214,6 +237,9 @@ colmat2lutfile <- function(colmat,
 readlut <- function(file,
                     length = file.size(file) %/% 3,
                     ...){
+    if (!file.exists(file)){
+        stop("no such file")
+    }
     fsize <- file.size(file)
     if(fsize < 3 * length){
         if (fsize %% 3 == 0){
@@ -231,6 +257,9 @@ readlut <- function(file,
                  size   = 1,
                  signed = FALSE,
                  n      = 3 * length)
+    if(length(l) != 3 * length){
+        stop(sprintf("could not read expected %d bytes\n", 3 * length))
+    }
     return(matrix(l,
                   nrow  = 3,
                   byrow = TRUE))
@@ -622,10 +651,10 @@ between <- function(x,
         browser(expr = DBG>1)   # start browser by setting `DBG=2` on command line
 
     if(is.logical(high) || is.character(high)){
-                                        # high was not provided and some of the other parameters were given
-                                        # unnamed and, thus, assigned in a wrong order
-                                        #        print(c(hasArg(high), hasArg(index), hasArg(named), hasArg(edges)))
-                                        #        print(c(missing(high), missing(index), missing(named), missing(edges)))
+        ## high was not provided and some of the other parameters were given
+        ## unnamed and, thus, assigned in a wrong order
+        ##        print(c(hasArg(high), hasArg(index), hasArg(named), hasArg(edges)))
+        ##        print(c(missing(high), missing(index), missing(named), missing(edges)))
         if(is.character(high)){
             if (is.null(edges)){
                 edges <- high
@@ -747,7 +776,7 @@ concat.tbl.list <- function(tbl.lst,
 
 #' vector levels
 #'
-#' count the number of unique entries in vector (usually an index vector with
+#' Count the number of unique entries in vector (usually an index vector with
 #' integer elements)
 #'
 #' @param v vector
@@ -928,14 +957,16 @@ vec2hsv <- function(v,
 #'
 #' @param col color (valid input to \code{\link[grDevices]{col2rgb}}
 #' @param n number of repetitions (should be a positive integer value)
-#'
+#' @param alpha either logical or actual alpha (in [0..255])
 #' @return color matrix with \code{n} columns of color \code{col}
 #' @export
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
 #' @examples
 #' col.rep('red', 3)
-col.rep <- function(col, n, alpha = FALSE) {
+col.rep <- function(col,
+                    n,
+                    alpha = FALSE) {
     if(!is.matrix(col)) col <- grDevices::col2rgb(col, alpha)
     if(n>0){
         return(matrix(rep(col,
@@ -1163,11 +1194,16 @@ hue.range.init <- function(hues      = 5/12,
 
 #' for internal testing
 #'
+#' Show hue ranges created by \code{\link{hue.range.init}}.
+#'
+#'
 #' @title hue range init plot
-#' @param hues hue seeds, passed to \code{\link{hue.range.init}
+#' @param hues hue seeds, passed to \code{\link{hue.range.init}}
 #' @param y y-level to show hue range line on (0..1)
 #' @param yoff y-offset for start/end markers
-#' @param ...  passed to \code{\link{hue.range.init}
+#' @param add add to existing plot?
+#' @param limits passed to  \code{\link{hue.range.init}}
+#' @param ... passed to \code{\link{hue.range.init}} (\code{limits}, \code{symmetric})
 #'
 #' @return new hue range (invisibly)
 #'
@@ -1201,9 +1237,9 @@ hri.plot <- function(hues,
     segments(hues  , y-yoff, y1 = y+yoff, col = 'grey')
     segments(hr[1,], y-yoff, y1 = y     , col = 'lightgrey')
     segments(hr[2,], y     , y1 = y+yoff, col = 'lightgrey')
-    text(hues, rep(y, n), 1:n)
-    text(hr[1,], y-yoff, 1:n, cex = 0.7, col = 'grey')
-    text(hr[2,], y+yoff, 1:n, cex = 0.7, col = 'grey')
+    graphics::text(hues, rep(y, n), 1:n)
+    graphics::text(hr[1,], y-yoff, 1:n, cex = 0.7, col = 'grey')
+    graphics::text(hr[2,], y+yoff, 1:n, cex = 0.7, col = 'grey')
     return(invisible(hr))
 }
 
@@ -1234,7 +1270,7 @@ tree.ranges <- function(cuts,
     if (!is.null(init)){
         warning("hue initialization not yet supported - value ignored\n")
     }
-    ct.levels <- apply(cuts, 2, vlevels)
+    ct.levels <- apply(cuts, 2, vlevels) # which cuts
 
     ## browser()
 
@@ -1296,6 +1332,28 @@ tree.ranges <- function(cuts,
 show.tree.ranges <- function(tr,
                              ...){
     concat.tbl.list(tr)
+}
+
+##' accessor function to 'sub.tables' attribute of \code{tree.ranges}.
+##'
+##' Return 'sub.tables' attribute of \code{tr}, if present, failure otherwise.
+##'
+##' @title subtables
+##' @param tr arbitrary object
+##' @param ... ignored
+##' @return 'sub.tables' attribute of \code{tr}, if present, failure otherwise
+##' @export
+##' @author Benno Pütz \email{puetz@@psych.mpg.de}
+##'
+##' @examples
+##' subtables(tree.ranges(dummy.tree()))
+subtables <- function(tr,
+                      ...){
+    if('sub.tables' %in% names(attributes(tr))){
+        attr(tr, 'sub.tables')
+    } else {
+        stop("no sub.tables found in ", deparse(substitute(tr)))
+    }
 }
 
 ##----  Display functions ----
@@ -1490,9 +1548,10 @@ hue.range.colors <- function(hr,
 #' @param spacing relative spacing between hue lines
 #' @param y position along y-axis (mainly for single hue range)
 #' @param width effective width of rectangles along axes
+#' @param v.scale relative vertical scaling to adjust rectangles' height
+#' @param show.idx add index (if boolean) or specified values (if char, numeric)
 #' @param ... ignored
 #' @param wait for internal use, should not be set by caller
-#' @param v.scale relative vertical scaling to adjust rectangles' height
 #' @param width.x width along x-axis
 #' @param width.y width along y-axis
 #'
@@ -1549,6 +1608,7 @@ show.hue.range <- function(hr,
                                   width.x    = width.x[i],
                                   width.y    = width.y[i],
                                   v.scale    = v.scale,
+                                  show.idx   = show.idx,
                                   wait       = TRUE,
                                   ...)
                }
@@ -1572,9 +1632,39 @@ show.hue.range <- function(hr,
         xs <- 1:n/n - 0.5/n
         r.x <- width.x * 0.5
         r.y <- width.y * 0.5
+        d  <- 0.001                  # offset for text shadow
+        #browser()
+        if(!is.logical(show.idx)){
+            if(length(show.idx) != n){
+                warning("incorrect length of 'show.idx'- ignored")
+                show.idx  <- FALSE
+            } else {
+                if (!is.character(show.idx)){
+                    show.idx <- as.character(show.idx)
+                }
+                use.text <- show.idx
+                max.width <- max(graphics::strwidth(use.text))
+                if(max.width>1){
+                    print(max.width)
+                    xcex <- 1/max.width
+                }
+                show.idx <- TRUE
+            }
+        } else {
+            ## simply use running index
+            use.text <- 1:n
+        }
         graphics::rect(xs - r.x, y - r.y * v.scale, xs + r.x, y + r.y * v.scale,
                        border = NA,
                        col    = grDevices::hsv(hues, 1, 1))
+        if (show.idx){
+            ## shadow
+            graphics::text(xs+d, y-d, use.text,
+                           col = 'black', ...)
+            ## white text
+            graphics::text(xs, y, use.text,
+                           col = 'white', ...)
+        }
     }
     ignore <- 0                         # suppress return value
 }
@@ -1887,6 +1977,7 @@ show.sub.tables <- function(st,
 #' \code{\link[testthat]{expect_equal}}.
 #'
 #' @param n number of cuts the table should have
+#' @param LUTdir directory where to look for LUT files
 #' @param lut alternative LUT, see description
 #' @param clusters matrix with cluster assignments (1 column per cut)
 #' @param verbose provide feedback?
@@ -1899,9 +1990,10 @@ show.sub.tables <- function(st,
 #'
 #' @examples
 #' \dontrun{
-#'   show.brain.lut(10)
+#'   show.brain.lut(10, 'luts')
 #' }
-    show.brain.lut <- function(n,
+show.brain.lut <- function(n,
+                           LUTdir,
                            lut = NULL,
                            clusters = read.tree(),
                            verbose = getOption('verbose'),
@@ -1909,7 +2001,7 @@ show.sub.tables <- function(st,
                            ...){
     if(is.null(lut)){
         # try default: file in LUTdir()
-        lut.file <- sprintf(file.path(LUTdir(),
+        lut.file <- sprintf(file.path(LUTdir,
                                       'lut%03d.lut'),
                             n)
         if(file.exists(lut.file)){
@@ -1935,10 +2027,10 @@ show.sub.tables <- function(st,
                     stop("wrong LUT format")
                 }
             }
-            n <- ncol(lut)      # adjust to input
+            n <- ncol(lut)      # get from input
         } else {
             if (is.character(lut)){
-                if(verbose) cat("lut string")
+                if(verbose) cat("lut string (filename)")
                 if(file.exists(lut)){
                     l <- readlut(lut)
                     if (nrow(l) != 3){
@@ -1947,26 +2039,28 @@ show.sub.tables <- function(st,
                         if (test) return("LUT from specified file")
                     }
                 } else {
-                    stop("cannot find '", lut, "'")
+                    stop("cannot find file '", lut, "'")
                 }
             } else {
                 stop("unknown type of lut")
             }
         }
     }
-    # rt <- rank(clusters[,(n/5)-1])
-    # rt[duplicated(rt)]<-NA
-    # orrt <- order(rank(rt,
-    #                    na.last = 'keep'))
-    # recovered.lut <- l[orrt[1:n],]
 
-    ### broken
-    # recovered.lut <- l[, order(reidx.cut(clusters[, (n/5)-1]))]
-    #
-    # lsshow <- cbind(l[,1:150], recovered.lut)
-    # show.lut(lsshow)
-    # abline(v=c(146,150))
-    #show.lut(l)
+    ## rt <- rank(clusters[,(n/5)-1])
+    ## rt[duplicated(rt)]<-NA
+    ## orrt <- order(rank(rt,
+    ##                    na.last = 'keep'))
+    ## recovered.lut <- l[orrt[1:n],]
+
+    #### broken
+    ## recovered.lut <- l[, order(reidx.cut(clusters[, (n/5)-1]))]
+    ##
+    ## lsshow <- cbind(l[,1:150], recovered.lut)
+    ## show.lut(lsshow)
+    ## abline(v=c(146,150))
+    ##show.lut(l)
+
     return(invisible(l))
 }
 
@@ -2035,6 +2129,27 @@ randomize.cutree <- function(cutree, ...){
     return(cutree)
 }
 
+##' find suitable cuts for \code{n} leaves
+##'
+##' Internal
+##'
+##' For a square \code{n} the cuts are the multiples of \eqn{\sqrt{n}}{sqrt(n)}
+##' up to \code {n}.
+##' @title default cuts
+##' @param n number of leaves in dendrogram
+##' @param ... ignored
+##' @return nice cuts
+##'
+##' @author Benno Pütz \email{puetz@@psych.mpg.de}
+##'
+##' @examples
+##' default.cuts(9)
+default.cuts <- function(n,
+                         ...){
+    return(round(seq(0, n,
+                     length.out = ceiling(sqrt(n+1)))[-1]))
+}
+
 #' dummy tree data for examples
 #'
 #' The number shoud be reasonably small to keep the example results clear.
@@ -2050,14 +2165,14 @@ randomize.cutree <- function(cutree, ...){
 #' @return cutree result
 #' @importFrom stats rnorm hclust dist cutree
 #' @export
+#' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
 #' @examples
 #' dummy.tree()
 #' dummy.tree(25)
 #' dend.with.cuts(dummy.tree(25))
 dummy.tree <- function(n    = 9,
-                       cuts = round(seq(0, n,
-                                        length.out = ceiling(sqrt(n+1)))[-1]),
+                       cuts = default.cuts(n),
                        ...,
                        seed = 1234){
     set.seed(seed)                                        # make reproducible
@@ -2095,16 +2210,23 @@ dummy.tree <- function(n    = 9,
 #' @examples
 #' dt <- dummy.tree()
 #' dend.with.cuts(dt)
-dend.with.cuts <- function(dt,
-                           cuts = NULL,
-                           cut.col =  "#ffa050",
+dend.with.cuts <- function(hc.or.dt,
+                           cuts    = NULL,
+                           cut.col = "#ffa050",
                            ...){
     ## simple dendrogram plot
-    if('hc' %in% names(attributes(dt))){
-        ## interpret as output of dummy.tree and extract underlying hclust object
-        hc <- attr(dt, 'hc')
+    if('hclust' %in% class(hc.or.dt)){
+        hc <- hc.or.dt
     } else {
-        stop("not recognized as dummy.tree output")
+        if('hc' %in% names(attributes(hc.or.dt))){
+            ## interpret as output of dummy.tree and extract underlying hclust object
+            hc <- attr(hc.or.dt, 'hc')
+            if(!('hclust' %in% class(hc))){
+                stop("found attribute 'hc' but not of class 'hclust'")
+            }
+        } else {
+            stop("not recognized as either hclust or dummy.tree output")
+        }
     }
 
     hr <- range(hc$height)
@@ -2130,7 +2252,11 @@ dend.with.cuts <- function(dt,
     par(op)
 
     if(is.null(cuts)){
-        cuts <- as.numeric(colnames(dt))
+        if(!is.null(cn <- colnames(hc.or.dt))){
+            cuts <- as.numeric(cn)
+        } else {
+            cuts  <- default.cuts(n)
+        }
     }
 
     ## determine appropriate cur levels
