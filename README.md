@@ -4,6 +4,9 @@ output:
   html_document: 
     highlight: tango
 ---
+<!-- badges: start -->
+[![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+<!-- badges: end -->
 # Cluster Lookup Tables - cluster LUTs
 
 Coloring for a cluster tree with 145 leaves and 28 levels (10 (top), 15, ..., 145 clusters (bottom)):

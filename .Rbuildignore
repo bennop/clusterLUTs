@@ -6,3 +6,4 @@ mydocs/.*
 src/min.lut
 R/huerange.R
 docs
+^.travis.yml$
