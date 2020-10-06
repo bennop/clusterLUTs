@@ -1,7 +1,7 @@
 Package: clusterLUTs
 Type: Package
 Title: Color lookup ables for use with hierarchical clustering
-Version: 0.5.0
+Version: 0.5.1
 Date: 2020-07-14
 Authors@R: person("Benno", "Pütz",
                   email = "puetz@psych.mpg.de",
@@ -15,12 +15,13 @@ License: GPL (>= 2)
 Imports: 
     Rcpp (>= 1.0.4)
 LinkingTo: Rcpp
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Suggests: 
     testthat,
     colorspace,
     dendextend,
     gtools,
-    R.matlab
-    
-    
+    R.matlab,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

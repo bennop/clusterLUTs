@@ -278,6 +278,7 @@ readlut <- function(file,
 #'
 #' @param file Matlab hclust result file (Matlab *.mat-file)
 #' @param path directory where to find file
+#' @param add.full add a fully specified column if there is none?
 #' @param ... ignored
 #'
 #' @return a matrix with just the cluster assignments
@@ -290,8 +291,9 @@ readlut <- function(file,
 read.tree <- function(file = system.file('extdata/sbm_1_145_0_atlas.mat',
                                          package = 'clusterLUTs'),
                       path = '.',
+                      add.full = TRUE,
                       ...){
-    if(!grepl("^/", file)){      # path not absolute?
+    if(!grepl("^~?/", file)){      # path not absolute or refering to HOME?
         file <- file.path(path, file)
     }
     if(!file.exists(file)){
@@ -299,9 +301,17 @@ read.tree <- function(file = system.file('extdata/sbm_1_145_0_atlas.mat',
                      file))
     }
 
+    # ignore RStudio warning about '<-' - should be like this
     suppressWarnings( ci <- R.matlab::readMat(file)$cluster.info )
+    
     tree <- sapply(ci, function(l)l[[1]])
+    n <- nrow(tree)
     cuts <- apply(tree, 2, vlevels)
+    #browser()
+    if(add.full && !any(cuts == n)){
+        tree <- cbind(tree, 1:n)
+        cuts <- c(cuts, n)
+    }
     colnames(tree) <- cuts
     return(invisible(tree))
 }
@@ -2131,7 +2141,7 @@ randomize.cutree <- function(cutree, ...){
 
 ##' find suitable cuts for \code{n} leaves
 ##'
-##' Internal
+##' Internal, used with \code{\link{dummy.tree}}
 ##'
 ##' For a square \code{n} the cuts are the multiples of \eqn{\sqrt{n}}{sqrt(n)}
 ##' up to \code {n}.
