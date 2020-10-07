@@ -657,8 +657,8 @@ between <- function(x,
                     named = TRUE,
                     edges = NULL,
                     ...) {
-    if(exists("DBG"))
-        browser(expr = DBG>1)   # start browser by setting `DBG=2` on command line
+    # if(exists("DBG"))
+    #     browser(expr = DBG>1)   # start browser by setting `DBG=2` on command line
 
     if(is.logical(high) || is.character(high)){
         ## high was not provided and some of the other parameters were given
@@ -2144,11 +2144,12 @@ randomize.cutree <- function(cutree, ...){
 ##' Internal, used with \code{\link{dummy.tree}}
 ##'
 ##' For a square \code{n} the cuts are the multiples of \eqn{\sqrt{n}}{sqrt(n)}
-##' up to \code {n}.
+##' up to \code{n}.
 ##' @title default cuts
 ##' @param n number of leaves in dendrogram
 ##' @param ... ignored
 ##' @return nice cuts
+##' @export
 ##'
 ##' @author Benno Pütz \email{puetz@@psych.mpg.de}
 ##'
@@ -2207,7 +2208,7 @@ dummy.tree <- function(n    = 9,
 #'
 #' When \code{cuts} are not provided, an estimate close to \eqn{\sqrt{n}{sqrt(n)}
 #' where \eqn{n} is the number of leaves.
-#' @param dt output of \code{\link{dummy.tree}}
+#' @param hc.or.dt output of \code{\link{dummy.tree}}
 #' @param cuts cut levels to show (cluster numbers) (optional, see description)
 #' @param cut.col color to use for cut lines ("#ffa050" which is a light orange)
 #' @param ... passed to \code{\link{abline}} (\code{col}, \code{lty}, ...)

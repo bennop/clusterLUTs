@@ -1,16 +1,18 @@
 ---
 output:
-  pdf_document: default
   html_document: 
     highlight: tango
+  pdf_document: default
 ---
 <!-- badges: start -->
 [![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+[![Travis build status](https://travis-ci.com/github/bennop/clusterLUTs.svg?branch=master)](https://travis-ci.com/github/bennop/clusterLUTs)
 <!-- badges: end -->
+
 # Cluster Lookup Tables - cluster LUTs
 
 Coloring for a cluster tree with 145 leaves and 28 levels (10 (top), 15, ..., 145 clusters (bottom)):
-![colortree](reference/colortree.png)
+
 
 ## Concepts
 
