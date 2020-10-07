@@ -1,10 +1,3 @@
-
-
-## needed packages ----
-## require(R.matlab)    # for readMat()
-## require(gtools)      # for even()
-
-
 ##---  R functions -----------------
 
 #' LUT generation for hierarchical clustering tree
@@ -13,7 +6,7 @@
 #' per cut. The number of clusters
 #' is taken from the unique values per column (need not be regular).
 #'
-#' In order to show the substructure of clusters ... (\code{\link{cutshades}})
+#' In order to show the substructure of clusters ... (\code{\link{cutshades}}).
 #'
 #' The LUTs are named \code{sprintf("%s%03d.lut",basename,n)} where \code{n} is
 #' the number of clusters in the cut.
@@ -283,6 +276,7 @@ readlut <- function(file,
 #'
 #' @return a matrix with just the cluster assignments
 #' @export
+#' @importFrom R.matlab readMat
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
 #' @examples
@@ -1633,8 +1627,8 @@ show.hue.range <- function(hr,
             width.x <-  1/n * (1-spacing)
         if(is.null(width.y))
             width.y <- width.x
-        if(exists("DBG"))
-            browser(expr = DBG>0)   # start browser by setting `DBG=1` on command line
+        # if(exists("DBG"))
+        #     browser(expr = DBG>0)   # start browser by setting `DBG=1` on command line
 
         hues <- hue.range.colors(hr,
                                  extractfun,
@@ -2208,7 +2202,7 @@ dummy.tree <- function(n    = 9,
 #'
 #' When \code{cuts} are not provided, an estimate close to \eqn{\sqrt{n}{sqrt(n)}
 #' where \eqn{n} is the number of leaves.
-#' @param hc.or.dt output of \code{\link{dummy.tree}}
+#' @param hc.or.dt output of \code{\link{dummy.tree}} or \code{link[stats]{hclust}}
 #' @param cuts cut levels to show (cluster numbers) (optional, see description)
 #' @param cut.col color to use for cut lines ("#ffa050" which is a light orange)
 #' @param ... passed to \code{\link{abline}} (\code{col}, \code{lty}, ...)
