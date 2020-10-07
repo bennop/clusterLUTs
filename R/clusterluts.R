@@ -2,10 +2,12 @@
 
 #' LUT generation for hierarchical clustering tree
 #'
+#' @description 
 #' Main function of this package: \code{clusters} defines the cluster assignments
 #' per cut. The number of clusters
 #' is taken from the unique values per column (need not be regular).
 #'
+#' @details 
 #' In order to show the substructure of clusters ... (\code{\link{cutshades}}).
 #'
 #' The LUTs are named \code{sprintf("%s%03d.lut",basename,n)} where \code{n} is
