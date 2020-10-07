@@ -1,0 +1,55 @@
+---
+title: "Basics"
+author: "Benno Pütz"
+output: 
+  rmarkdown::html_vignette
+#  rmarkdown::pdf_document
+vignette: >
+  %\VignetteIndexEntry{Basics}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      collapse = TRUE,
+                      comment = "#>"
+)
+```
+
+```{r setup}
+library(clusterLUTs)
+```
+
+## Load Atlas File
+
+Atlas file is located in current working directory so simply read it
+
+```{r atlas}
+atlas <- read.tree(system.file('extdata/sbm_1_145_0_atlas.mat',
+                               package = 'clusterLUTs'))
+```
+
+By default a column for individual areas is added if that is not present in the
+input file.
+
+## Create LUT files
+
+The LUTs are derived directly from the atlas file with a single call to `treeluts`:
+
+```{r treeluts}
+tl <- treeluts(atlas, outdir = '.', basename = 'oct_')
+```
+This command also creates the `*lut` files in the current directory.
+
+## Visualization
+
+To visualize the LUTs create the tree and plot it
+
+```{r vis}
+tr <- tree.ranges(atlas)
+tree.ranges.plot(tr, show.tree = TRUE, lwd = 10, lend = 1)
+```
+
+Note: The order of colors does NOT correspond to the cluster indices in the atlas file.
