@@ -20,6 +20,7 @@ using namespace Rcpp;
 //' Write RGB color lookup table (LUT) of 3\eqn{\times}{x}256 bytes. 
 //' Implemented with Rcpp to allow writing bytes.
 //' 
+//' @name writelut
 //' @param x vector of 768 bytes (treated as unsigned integer)
 //' @param filename name for output file
 //' 
