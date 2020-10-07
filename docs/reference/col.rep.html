@@ -73,7 +73,7 @@ RGB color matrix. Analog to rep which is used internally." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">clusterLUTs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -87,6 +87,18 @@ RGB color matrix. Analog to rep which is used internally." />
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/Basics.html">Basics</a>
+    </li>
+  </ul>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -114,7 +126,7 @@ RGB color matrix. Analog to rep which is used internally." />
 RGB color matrix. Analog to <code><a href='https://rdrr.io/r/base/rep.html'>rep</a></code> which is used internally.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>col.rep</span>(<span class='no'>col</span>, <span class='no'>n</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>col.rep</span><span class='op'>(</span><span class='va'>col</span>, <span class='va'>n</span>, alpha <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -143,9 +155,13 @@ the usual rules to reach <code>n</code> colors. In the special case where <code>
 is smaller than thenumber of colors in <code>col</code>, only the first <code>n</code>
 colors will be returned.</p>
 <p>For <code>n</code>&lt;1 an empty matrix is returned.</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Benno Pütz <a href='mailto:puetz@psych.mpg.de'>puetz@psych.mpg.de</a></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>col.rep</span>(<span class='st'>'red'</span>, <span class='fl'>3</span>)</div><div class='output co'>#&gt;      [,1] [,2] [,3]
+    <pre class="examples"><div class='input'><span class='fu'>col.rep</span><span class='op'>(</span><span class='st'>'red'</span>, <span class='fl'>3</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;      [,1] [,2] [,3]
 #&gt; [1,]  255  255  255
 #&gt; [2,]    0    0    0
 #&gt; [3,]    0    0    0</div></pre>
@@ -164,7 +180,7 @@ colors will be returned.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

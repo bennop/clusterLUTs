@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">clusterLUTs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -86,6 +86,18 @@
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/Basics.html">Basics</a>
+    </li>
+  </ul>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -112,7 +124,7 @@
     <p>The number shoud be reasonably small to keep the example results clear.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>dummy.tree</span>(<span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>9</span>, <span class='kw'>cuts</span> <span class='kw'>=</span> <span class='fu'><a href='default.cuts.html'>default.cuts</a></span>(<span class='no'>n</span>), <span class='no'>...</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>1234</span>)</pre>
+    <pre class="usage"><span class='fu'>dummy.tree</span><span class='op'>(</span>n <span class='op'>=</span> <span class='fl'>9</span>, cuts <span class='op'>=</span> <span class='fu'><a href='default.cuts.html'>default.cuts</a></span><span class='op'>(</span><span class='va'>n</span><span class='op'>)</span>, <span class='va'>...</span>, seed <span class='op'>=</span> <span class='fl'>1234</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -142,9 +154,13 @@
 
     <p>The <code>cut</code> vector specifies the number of branches in the dendrogram at
 which the cuts should be made.</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Benno Pütz <a href='mailto:puetz@psych.mpg.de'>puetz@psych.mpg.de</a></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>dummy.tree</span>()</div><div class='output co'>#&gt;       3 6 9
+    <pre class="examples"><div class='input'><span class='fu'>dummy.tree</span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;       3 6 9
 #&gt;  [1,] 1 1 1
 #&gt;  [2,] 2 2 2
 #&gt;  [3,] 3 3 3
@@ -162,7 +178,8 @@ which the cuts should be made.</p>
 #&gt; Cluster method   : complete 
 #&gt; Distance         : euclidean 
 #&gt; Number of objects: 9 
-#&gt; </div><div class='input'><span class='fu'>dummy.tree</span>(<span class='fl'>25</span>)</div><div class='output co'>#&gt;       5 10 15 20 25
+#&gt; </div><div class='input'><span class='fu'>dummy.tree</span><span class='op'>(</span><span class='fl'>25</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;       5 10 15 20 25
 #&gt;  [1,] 1  1  1  1  1
 #&gt;  [2,] 2  2  2  2  2
 #&gt;  [3,] 3  3  3  3  3
@@ -196,7 +213,8 @@ which the cuts should be made.</p>
 #&gt; Cluster method   : complete 
 #&gt; Distance         : euclidean 
 #&gt; Number of objects: 25 
-#&gt; </div><div class='input'><span class='fu'><a href='dend.with.cuts.html'>dend.with.cuts</a></span>(<span class='fu'>dummy.tree</span>(<span class='fl'>25</span>))</div><div class='img'><img src='dummy.tree-1.png' alt='' width='700' height='433' /></div></pre>
+#&gt; </div><div class='input'><span class='fu'><a href='dend.with.cuts.html'>dend.with.cuts</a></span><span class='op'>(</span><span class='fu'>dummy.tree</span><span class='op'>(</span><span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='img'><img src='dummy.tree-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -212,7 +230,7 @@ which the cuts should be made.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

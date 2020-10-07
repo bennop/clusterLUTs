@@ -75,7 +75,7 @@ entries)" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">clusterLUTs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -89,6 +89,18 @@ entries)" />
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/Basics.html">Basics</a>
+    </li>
+  </ul>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -118,11 +130,12 @@ assignments (the number of clusters at each cut is given by the number of unique
 entries)</p>
     </div>
 
-    <pre class="usage"><span class='fu'>read.tree</span>(
-  <span class='kw'>file</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/sbm_1_145_0_atlas.mat"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"clusterLUTs"</span>),
-  <span class='kw'>path</span> <span class='kw'>=</span> <span class='st'>"."</span>,
-  <span class='no'>...</span>
-)</pre>
+    <pre class="usage"><span class='fu'>read.tree</span><span class='op'>(</span>
+  file <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/sbm_1_145_0_atlas.mat"</span>, package <span class='op'>=</span> <span class='st'>"clusterLUTs"</span><span class='op'>)</span>,
+  path <span class='op'>=</span> <span class='st'>"."</span>,
+  add.full <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -134,6 +147,10 @@ entries)</p>
     <tr>
       <th>path</th>
       <td><p>directory where to find file</p></td>
+    </tr>
+    <tr>
+      <th>add.full</th>
+      <td><p>add a fully specified column if there is none?</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -149,9 +166,13 @@ entries)</p>
     <p>Each of these matrices (vectors) is forms one column in the output matrix as
 would be obtained by <code><a href='https://rdrr.io/r/stats/cutree.html'>cutree</a></code>. The matrix is given column
 names indicating the number of clusters for that cut.</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Benno Pütz <a href='mailto:puetz@psych.mpg.de'>puetz@psych.mpg.de</a></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>   <span class='no'>tree</span> <span class='kw'>&lt;-</span> <span class='fu'>read.tree</span>()</div></pre>
+    <pre class="examples"><div class='input'>   <span class='va'>tree</span> <span class='op'>&lt;-</span> <span class='fu'>read.tree</span><span class='op'>(</span><span class='op'>)</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -167,7 +188,7 @@ names indicating the number of clusters for that cut.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

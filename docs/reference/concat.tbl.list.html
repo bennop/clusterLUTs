@@ -76,7 +76,7 @@ via cbind." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">clusterLUTs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -90,6 +90,18 @@ via cbind." />
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/Basics.html">Basics</a>
+    </li>
+  </ul>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -120,7 +132,7 @@ to 2-row matrices via <code>rbind</code>. Those matrices are in turn concatenate
 via <code>cbind</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>concat.tbl.list</span>(<span class='no'>tbl.lst</span>, <span class='kw'>idx</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>concat.tbl.list</span><span class='op'>(</span><span class='va'>tbl.lst</span>, idx <span class='op'>=</span> <span class='cn'>FALSE</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -148,12 +160,17 @@ via <code>cbind</code>.</p>
 i.e., indicate which table an entry came from (off by default)</p>
 <p>Names of the sub-tables are assumed to be numeric as is the case for the table
 lists</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Benno Pütz <a href='mailto:puetz@psych.mpg.de'>puetz@psych.mpg.de</a></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>table.list</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fl'>1</span>:<span class='fl'>3</span>, <span class='fl'>10</span>, <span class='fl'>TRUE</span>)), <span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fl'>7</span>:<span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>TRUE</span>)))
-<span class='fu'>concat.tbl.list</span>(<span class='no'>table.list</span>)</div><div class='output co'>#&gt;          [,1] [,2] [,3] [,4] [,5] [,6] [,7]
+    <pre class="examples"><div class='input'><span class='va'>table.list</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span>, <span class='fl'>10</span>, <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='fl'>7</span><span class='op'>:</span><span class='fl'>10</span>, <span class='fl'>10</span>, <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'>concat.tbl.list</span><span class='op'>(</span><span class='va'>table.list</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;          [,1] [,2] [,3] [,4] [,5] [,6] [,7]
 #&gt; downlink    1    2    3    7    8    9   10
-#&gt; n           3    2    5    3    2    4    1</div><div class='input'><span class='fu'>concat.tbl.list</span>(<span class='no'>table.list</span>, <span class='kw'>idx</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt;          [,1] [,2] [,3] [,4] [,5] [,6] [,7]
+#&gt; n           3    2    5    3    2    4    1</div><div class='input'><span class='fu'>concat.tbl.list</span><span class='op'>(</span><span class='va'>table.list</span>, idx <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;          [,1] [,2] [,3] [,4] [,5] [,6] [,7]
 #&gt; index       1    1    1    2    2    2    2
 #&gt; downlink    1    2    3    7    8    9   10
 #&gt; n           3    2    5    3    2    4    1</div></pre>
@@ -172,7 +189,7 @@ lists</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
