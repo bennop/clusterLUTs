@@ -5,7 +5,7 @@ Version: 0.5.2
 Date: 2020-07-14
 Authors@R: person("Benno", "Pütz",
                   email = "puetz@psych.mpg.de",
-                  role = c("aut", "cre"))
+                  role = c("aut", "cre", "cph"))
 Maintainer: Benno Pütz  <puetz@psych.mpg.de>
 Description: Create related color lookup tables (LUTs) so that for clustering 
   across different cluster numbers the individual clusters stay in a fixed hue 
@@ -13,15 +13,16 @@ Description: Create related color lookup tables (LUTs) so that for clustering
 Encoding: UTF-8
 License: GPL (>= 2)
 Imports: 
-    Rcpp (>= 1.0.4)
+    Rcpp (>= 1.0.4),
+    gtools,
+    R.matlab
 LinkingTo: Rcpp
-RoxygenNote: 7.1.1
 Suggests: 
     testthat,
     colorspace,
     dendextend,
-    gtools,
-    R.matlab,
     knitr,
-    rmarkdown
+    rmarkdown,
+    roxygen2
+RoxygenNote: 7.1.1
 VignetteBuilder: knitr
