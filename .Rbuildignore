@@ -1,6 +1,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-README.Rmd
+^README.Rmd$
+^README.html$
 docs/.*html$
 mydocs/.*
 src/min.lut
