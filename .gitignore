@@ -9,3 +9,6 @@ man/*.Rd
 R/RcppExports.R
 src/RcppExports.cpp
 inst/doc
+*.afdesign
+vignettes/*.lut
+*.afpub

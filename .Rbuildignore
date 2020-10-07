@@ -5,6 +5,6 @@
 docs/.*html$
 mydocs/.*
 src/min.lut
-R/huerange.R
+R/huerange\.R
 docs
 ^.travis.yml$
