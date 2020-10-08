@@ -5,7 +5,6 @@
 src/*.o
 src/*.so
 src/*.dll
-man/*.Rd
 R/RcppExports.R
 src/RcppExports.cpp
 inst/doc
