@@ -1,26 +1,28 @@
 ##---  R functions -----------------
 
-#' LUT generation for hierarchical clustering tree
-#'
-#' @description 
-#' Main function of this package: \code{clusters} defines the cluster assignments
-#' per cut. The number of clusters
-#' is taken from the unique values per column (need not be regular).
-#'
-#' @details 
-#' In order to show the substructure of clusters ... (\code{\link{cutshades}}).
-#'
-#' The LUTs are named \code{sprintf("%s%03d.lut",basename,n)} where \code{n} is
-#' the number of clusters in the cut.
-#'
+#' @title LUT generation for hierarchical clustering tree
+#' 
+#' @description
+#'     Main function of this package: \code{clusters} defines the cluster assignments
+#'     per cut. The number of clusters is taken from the unique values per column
+#'     (need not be regular).
+#' 
 #' @param clusters matrix with cluster assignments, one column per cut
-#' @param outdir where to write the LUTs to
+#' @param outdir where to write the LUTs to [subdir 'luts']
 #' @param basename prefix for LUT names ['lut']
 #' @param lut.length length of the LUT (number of entries [256])
 #' @param verbose set to TRUE to see the LUT filenames
 #' @param ... ignored
 #'
 #' @return a vector with the number of color entries per LUT generated (invisibly)
+#'
+#' @details
+#' In order to show the substructure of clusters ... (\code{\link{cutshades}}).
+#'
+#' The LUTs are named \code{sprintf("%s%03d.lut",basename,n)} where \code{n} is
+#' the number of clusters in the cut.
+#' 
+#' 
 #' @export
 #' @importFrom Rcpp evalCpp
 #' @useDynLib clusterLUTs
@@ -108,8 +110,9 @@ treeluts <- function(clusters   = read.tree(),
 ##' color matrix.
 ##'
 ##' Should \code{cm} have more entries than specified by \code{length},
-##' the input martix is returned unchanged
-##' @title expand color matrix
+##' the input matrix is returned unchanged - it is not trimmed but a warning
+##' is issued.
+##' @title pad color matrix
 ##' @param cm color matrix (or valid input to \code{\link[grDevices]{col2rgb}})
 ##' @param length desired number of color entries
 ##' @param fill.col color to fill matrix with ('black')
@@ -118,11 +121,11 @@ treeluts <- function(clusters   = read.tree(),
 ##' @export
 ##'
 ##' @author Benno Pütz \email{puetz@@psych.mpg.de}
-expand.colmat <- function(cm,
-                          length   = 256,
-                          fill.col = "#000000",
-                          ...){
-
+pad.colmat <- function(cm,
+                       length   = 256,
+                       fill.col = "#000000",
+                       ...){
+    
     if(!is.matrix(cm)){
         cm <- grDevices::col2rgb(cm)
     }
@@ -345,8 +348,11 @@ ColorShadeRamp <- function(col,
 #' create color shades
 #'
 #' For each color in \code{col} create as many shades as indicated by the value
-#' of \code{reps} at the corresponding index by grading towards 'white' - the
-#' shades are going \code{scale} of the way to white/black.
+#' of \code{reps} at the corresponding index by grading towards 'white'.
+#' 
+#' The
+#' shades are going \code{scale} of the way to white/black (0 meaning not at all, 
+#' 1 all the way, the parameter is internally limited to 0.1..0.9, though)
 #'
 #' If \code{col} is provided and  \code{reps} is scalar it is recycled to the
 #' length of \code{col}, otherwise it is filled with ones should
@@ -355,9 +361,10 @@ ColorShadeRamp <- function(col,
 #' The shades can be constructed either towards white, black, or, symmetrically.
 #' This is determined by setting \code{direction} to 'bright', 'dark', or 'all',
 #' respectively. The latter is the default.
-#' When \code{gscale} is TRUE, all shade steps are the same, independent
-#' of the individual repetitions, otherwise each shade range covers the range
-#' given by \code{scale}.
+#' 
+#' When \code{gscale} is TRUE, all shade steps are the same, governed by the 
+#' largest value in \code{reps} and independent of the individual repetitions,
+#' otherwise each shade range covers the range given by \code{scale}.
 #'
 #' @param reps vector of repetitions
 #' @param col color vector; must be a valid argument to \code{\link[grDevices]{col2rgb}}
@@ -366,12 +373,15 @@ ColorShadeRamp <- function(col,
 #' @param scale how much of the range to black/white should be covered
 #' @param gscale global shade steps?
 #' @param direction which way to build the shades, see Description
+#' @param symmetric symmetric shading? (only for code{direction == 'all'})
 #' @param col.fun function to calculate default colors
 #' @param ... passed to \code{\link{ColorShadeRamp}}
 #'
 #' @return Color matrix with on entry per column
 #' @export
-#'
+#' @seealso 
+#'     \code{\link{ColorShadeRamp}},
+#'     \code{\link{show.shades}}
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
 #' @examples
@@ -379,16 +389,21 @@ ColorShadeRamp <- function(col,
 #' show.shades(color.shades(2:4, c('red', 'green', 'blue')))
 ## checked
 color.shades <- function(reps,
-                         col       = col.fun(length(reps)),
+                         col       = col.fun(length(reps), ...),
                          scale     = ifelse(direction == 'bright', 0.7, 0.5),
                          gscale    = TRUE,
                          direction = c('all', 'bright', 'dark'),
+                         symmetric = FALSE,
                          col.fun   = default.hcl,
                          ...){
     ## handle parameters
     direction <- match.arg(direction)
-    scale <- min(0.9, max(0.1, scale))
-
+    scale <- min(0.9, max(0.1, scale))           # hopefully reasonable lmits
+    if(symmetric){
+        if(direction != 'all') 
+            message('symmetric only applies when direction == "all"')
+        warning('handling of "symmetric" not yet implemented')
+    }
     ##
     if(is.null(dim(col))){
         col <- grDevices::col2rgb(col)
@@ -513,7 +528,8 @@ reidx.cut <- function(cut){
 #' RGB-based rainbow
 #'
 #' @param n number of colors
-#' @param ...  passed to rainbow_rgb
+#' @param alpha provide default, passed to \code{\link[grDevices]{rainbow}}
+#' @param ...  passed to \code{\link[grDevices]{rainbow}}
 #'
 #' @return rainbow colors
 #' @export
@@ -522,8 +538,8 @@ reidx.cut <- function(cut){
 #' @examples
 #' default.rgb()
 ## checked
-default.rgb <- function(n = 12, ...){
-    grDevices::rainbow(n, end = 5/6)
+default.rgb <- function(n = 12, alpha = 1, ...){
+    grDevices::rainbow(n, end = 5/6, alpha = alpha)
 }
 
 #' HCL-based rainbow
@@ -1399,7 +1415,7 @@ show.colmat <- function(cv,
                 ceiling(sqrt(lcv)),
                 width)
     m <- ceiling(lcv/n)  # ifelse(lcv <= n*(n-1), n-1, n)
-    plot(c(0,n)+.5, c(0, m)+.5,
+    plot(c(0,n)+.5, c(0, m)+.5,              # empty plot
          type = 'n',
          axes = FALSE,
          xlab = '',
@@ -1847,7 +1863,7 @@ show.lut <- function(lut,
 #' @author Benno Pütz \email{puetz@@psych.mpg.de}
 #'
 #' @examples
-#' rainbow.shades <- color.shades(sample(1:10, 20, TRUE))
+#' rainbow.shades <- color.shades(sample(5:10, 20, TRUE))
 #' show.shades(rainbow.shades)
 show.shades <- function(shades,
                         orient = c('horizontal', 'vertical'),
