@@ -5,6 +5,7 @@ output:
   pdf_document: default
 ---
 <!-- badges: start -->
+[![Maintainability](https://api.codeclimate.com/v1/badges/fc9b78585c15a6d0ed30/maintainability)](https://codeclimate.com/github/bennop/clusterLUTs/maintainability)
 [![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 [![Travis build status](https://travis-ci.com/github/bennop/clusterLUTs.svg?branch=master)](https://travis-ci.com/github/bennop/clusterLUTs)
 <!-- badges: end -->
